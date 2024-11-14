@@ -21,9 +21,9 @@ import java.util.Locale;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.launch.knot.Knot;
-import net.fabricmc.loader.impl.util.SystemProperties;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.launch.knot.Knot;
+import net.aoqia.loader.impl.util.SystemProperties;
 
 public class FabricLoaderLauncherSessionListener implements LauncherSessionListener {
 	static {
