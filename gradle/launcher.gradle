@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 
 // A task to install the development version of Fabric Loader to the Minecraft launcher
 tasks.register("installDevelopmentVersion", InstallDevelopmentVersionTask) {
-	installerJson = file("src/main/resources/leaf-installer.json")
+	installerJson = file("src/main/resources/fabric-installer.json")
 	loaderJar = finalJar.archiveFile
 }
 
@@ -29,7 +29,7 @@ abstract class InstallDevelopmentVersionTask extends DefaultTask {
 	abstract RegularFileProperty getLoaderLibraryFile()
 
 	InstallDevelopmentVersionTask() {
-		versionName.convention("leaf-loader-${project.version.toString()}")
+		versionName.convention("fabric-loader-${project.version.toString()}")
 		minecraftVersion.convention("1.20.2")
 		versionJsonFile.set(project.layout.file(project.provider {
 			new File(getDotMinecraftDirectory(), "versions/${versionName.get()}/${versionName.get()}.json")
