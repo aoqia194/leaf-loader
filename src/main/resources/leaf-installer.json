@@ -52,7 +52,7 @@
                 "size": 94519
             },
             {
-                "name": "net.fabricmc:sponge-mixin:0.15.4+mixin.0.8.7",
+                "name": "net.aoqia:sponge-mixin:0.15.4+mixin.0.8.7",
                 "url": "https://maven.fabricmc.net/",
                 "md5": "991ca8be2c408fe19eb64014d8a18243",
                 "sha1": "6a12aacc794f1078458433116e9ed42c1cc98096",
@@ -77,7 +77,7 @@
         ]
     },
     "mainClass": {
-        "client": "net.fabricmc.loader.impl.launch.knot.KnotClient",
-        "server": "net.fabricmc.loader.impl.launch.knot.KnotServer"
+        "client": "net.aoqia.loader.impl.launch.knot.KnotClient",
+        "server": "net.aoqia.loader.impl.launch.knot.KnotServer"
     }
 }

@@ -51,7 +51,7 @@ public interface FabricLoader {
 	/**
 	 * Returns all entrypoints declared under a {@code key}, assuming they are of a specific type.
 	 *
-	 * @param key  the key in entrypoint declaration in {@code fabric.mod.json}
+	 * @param key  the key in entrypoint declaration in {@code leaf.mod.json}
 	 * @param type the type of entrypoints
 	 * @param <T>  the type of entrypoints
 	 * @return the obtained entrypoints
@@ -62,7 +62,7 @@ public interface FabricLoader {
 	/**
 	 * Returns all entrypoints declared under a {@code key}, assuming they are of a specific type.
 	 *
-	 * <p>The entrypoint is declared in the {@code fabric.mod.json} as following:
+	 * <p>The entrypoint is declared in the {@code leaf.mod.json} as following:
 	 * <pre><blockquote>
 	 *   "entrypoints": {
 	 *     "&lt;a key&gt;": [
@@ -91,7 +91,7 @@ public interface FabricLoader {
 	 * where the {@code default} adapter is the {@linkplain LanguageAdapter adapter}
 	 * offered by Fabric Loader. </p>
 	 *
-	 * @param key  the key in entrypoint declaration in {@code fabric.mod.json}
+	 * @param key  the key in entrypoint declaration in {@code leaf.mod.json}
 	 * @param type the type of entrypoints
 	 * @param <T>  the type of entrypoints
 	 * @return the entrypoint containers related to this key
@@ -108,7 +108,7 @@ public interface FabricLoader {
 	 *
 	 * <p>Exceptions thrown by <code>invoker</code> will be collected and thrown after all entrypoints have been invoked.
 	 *
-	 * @param key     the key in entrypoint declaration in {@code fabric.mod.json}
+	 * @param key     the key in entrypoint declaration in {@code leaf.mod.json}
 	 * @param type    the type of entrypoints
 	 * @param invoker applied to each entrypoint to invoke the desired action
 	 * @param <T>     the type of entrypoints
@@ -163,7 +163,7 @@ public interface FabricLoader {
 	/**
 	 * Checks if a mod with a given ID is loaded.
 	 *
-	 * @param id the ID of the mod, as defined in {@code fabric.mod.json}
+	 * @param id the ID of the mod, as defined in {@code leaf.mod.json}
 	 * @return whether or not the mod is present in this Fabric Loader instance
 	 */
 	boolean isModLoaded(String id);

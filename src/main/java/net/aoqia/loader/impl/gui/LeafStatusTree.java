@@ -76,7 +76,7 @@ public final class FabricStatusTree {
 	public static final String ICON_TYPE_FABRIC = "fabric";
 	/** Generic JSON file. */
 	public static final String ICON_TYPE_JSON = "json";
-	/** A file called "fabric.mod.json". */
+	/** A file called "leaf.mod.json". */
 	public static final String ICON_TYPE_FABRIC_JSON = "json+fabric";
 	/** Java bytecode class file. */
 	public static final String ICON_TYPE_JAVA_CLASS = "java_class";
