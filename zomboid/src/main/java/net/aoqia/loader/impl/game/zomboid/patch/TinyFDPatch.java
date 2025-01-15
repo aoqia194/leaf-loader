@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.minecraft.patch;
+package net.aoqia.loader.impl.game.zomboid.patch;
 
 import java.util.ListIterator;
 import java.util.function.Consumer;
@@ -29,10 +29,9 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.impl.game.patch.GamePatch;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.game.patch.GamePatch;
+import net.aoqia.loader.impl.launch.LeafLauncher;
 
 /**
  * Patch the TinyFileDialogs.tinyfd_openFileDialog call to use a trusted string in MoreOptionsDialog.
@@ -46,7 +45,7 @@ public final class TinyFDPatch extends GamePatch {
 	private static final String DIALOG_TITLE = "Select settings file (.json)";
 
 	@Override
-	public void process(FabricLauncher launcher, Function<String, ClassNode> classSource, Consumer<ClassNode> classEmitter) {
+	public void process(LeafLauncher launcher, Function<String, ClassNode> classSource, Consumer<ClassNode> classEmitter) {
 		if (launcher.getEnvironmentType() != EnvType.CLIENT) {
 			// Fix should only be applied to clients.
 			return;
@@ -56,8 +55,8 @@ public final class TinyFDPatch extends GamePatch {
 
 		// Only remap the classname when needed to prevent loading the mappings when not required in prod.
 		if (!launcher.getMappingConfiguration().getTargetNamespace().equals("intermediary")
-				&& FabricLoader.getInstance().getMappingResolver().getNamespaces().contains("intermediary")) {
-			className = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", MORE_OPTIONS_DIALOG_CLASS_NAME);
+            && net.aoqia.loader.api.LeafLoader.getInstance().getMappingResolver().getNamespaces().contains("intermediary")) {
+			className = net.aoqia.loader.api.LeafLoader.getInstance().getMappingResolver().mapClassName("intermediary", MORE_OPTIONS_DIALOG_CLASS_NAME);
 		}
 
 		final ClassNode classNode = classSource.apply(className);

@@ -31,9 +31,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.fabricmc.loader.impl.game.minecraft.McVersion;
-import net.fabricmc.loader.impl.game.minecraft.McVersionLookup;
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
+import net.aoqia.loader.impl.game.zomboid.ZomboidVersion;
+import net.aoqia.loader.impl.game.zomboid.McVersionLookup;
+import net.aoqia.loader.impl.lib.gson.JsonReader;
 
 public final class McVersionLookupTest {
 	public static void main(String[] args) throws IOException {
@@ -103,7 +103,7 @@ public final class McVersionLookupTest {
 			throw new RuntimeException(e);
 		}
 
-		McVersion result = McVersionLookup.getVersionExceptClassVersion(file);
+		ZomboidVersion result = McVersionLookup.getVersionExceptClassVersion(file);
 		String msg = String.format("%s: %s (raw=%s id=%s name=%s)", name, result.getNormalized(), result.getRaw(), jsonId, jsonName);
 		System.out.println(msg);
 

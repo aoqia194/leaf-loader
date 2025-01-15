@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.minecraft.patch;
+package net.aoqia.loader.impl.game.zomboid.patch;
 
 import java.util.ListIterator;
 import java.util.function.Consumer;
@@ -26,15 +26,15 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.fabricmc.loader.impl.game.minecraft.Hooks;
-import net.fabricmc.loader.impl.game.patch.GamePatch;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.game.zomboid.Hooks;
+import net.aoqia.loader.impl.game.patch.GamePatch;
+import net.aoqia.loader.impl.launch.LeafLauncher;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public final class BrandingPatch extends GamePatch {
 	@Override
-	public void process(FabricLauncher launcher, Function<String, ClassNode> classSource, Consumer<ClassNode> classEmitter) {
+	public void process(LeafLauncher launcher, Function<String, ClassNode> classSource, Consumer<ClassNode> classEmitter) {
 		for (String brandClassName : new String[] {
 				"net.minecraft.client.ClientBrandRetriever",
 				"net.minecraft.server.MinecraftServer"

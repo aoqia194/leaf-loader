@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.minecraft;
+package net.aoqia.loader.impl.game.zomboid;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -31,13 +31,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggerContext;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.impl.util.ManifestUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.log.LogHandler;
-import net.fabricmc.loader.impl.util.log.LogLevel;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.VersionParsingException;
+import net.aoqia.loader.impl.util.ManifestUtil;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.util.log.LogHandler;
+import net.aoqia.loader.impl.util.log.LogLevel;
 
 public final class Log4jLogHandler implements LogHandler {
 	@Override

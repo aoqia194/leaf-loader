@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.minecraft;
+package net.aoqia.loader.impl.game.zomboid;
 
 import java.io.File;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.ClientModInitializer;
+import net.aoqia.api.DedicatedServerModInitializer;
+import net.aoqia.api.ModInitializer;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public final class Hooks {
 	public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');
@@ -47,7 +46,7 @@ public final class Hooks {
 			runDir = new File(".");
 		}
 
-		FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
+		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
 		loader.prepareModInit(runDir.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
@@ -58,13 +57,13 @@ public final class Hooks {
 			runDir = new File(".");
 		}
 
-		FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
+		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
 		loader.prepareModInit(runDir.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("server", DedicatedServerModInitializer.class, DedicatedServerModInitializer::onInitializeServer);
 	}
 
 	public static void setGameInstance(Object gameInstance) {
-		FabricLoaderImpl.INSTANCE.setGameInstance(gameInstance);
+		net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.setGameInstance(gameInstance);
 	}
 }

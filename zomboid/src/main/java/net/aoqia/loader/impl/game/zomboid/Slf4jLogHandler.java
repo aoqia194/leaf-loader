@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.minecraft;
+package net.aoqia.loader.impl.game.zomboid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.log.LogHandler;
-import net.fabricmc.loader.impl.util.log.LogLevel;
+import net.aoqia.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.util.log.LogHandler;
+import net.aoqia.loader.impl.util.log.LogLevel;
 
 public final class Slf4jLogHandler implements LogHandler {
 	@Override
