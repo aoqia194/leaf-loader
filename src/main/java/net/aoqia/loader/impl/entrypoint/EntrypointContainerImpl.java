@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.entrypoint;
+package net.aoqia.loader.impl.entrypoint;
 
-import net.fabricmc.loader.api.EntrypointException;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
+import net.aoqia.loader.api.EntrypointException;
+import net.aoqia.loader.api.ModContainer;
+import net.aoqia.loader.api.entrypoint.EntrypointContainer;
 
 public final class EntrypointContainerImpl<T> implements EntrypointContainer<T> {
 	private final String key;

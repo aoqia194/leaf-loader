@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,32 +46,31 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.FormattedException;
-import net.fabricmc.loader.impl.discovery.ModCandidateFinder.ModCandidateConsumer;
-import net.fabricmc.loader.impl.game.GameProvider.BuiltinMod;
-import net.fabricmc.loader.impl.metadata.BuiltinModMetadata;
-import net.fabricmc.loader.impl.metadata.DependencyOverrides;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.MetadataVerifier;
-import net.fabricmc.loader.impl.metadata.ModMetadataParser;
-import net.fabricmc.loader.impl.metadata.NestedJarEntry;
-import net.fabricmc.loader.impl.metadata.ParseMetadataException;
-import net.fabricmc.loader.impl.metadata.VersionOverrides;
-import net.fabricmc.loader.impl.util.ExceptionUtil;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.SemanticVersion;
+import net.aoqia.loader.api.metadata.ModMetadata;
+import net.aoqia.loader.impl.FormattedException;
+import net.aoqia.loader.impl.discovery.ModCandidateFinder.ModCandidateConsumer;
+import net.aoqia.loader.impl.game.GameProvider.BuiltinMod;
+import net.aoqia.loader.impl.metadata.BuiltinModMetadata;
+import net.aoqia.loader.impl.metadata.DependencyOverrides;
+import net.aoqia.loader.impl.metadata.LoaderModMetadata;
+import net.aoqia.loader.impl.metadata.MetadataVerifier;
+import net.aoqia.loader.impl.metadata.ModMetadataParser;
+import net.aoqia.loader.impl.metadata.NestedJarEntry;
+import net.aoqia.loader.impl.metadata.ParseMetadataException;
+import net.aoqia.loader.impl.metadata.VersionOverrides;
+import net.aoqia.loader.impl.util.ExceptionUtil;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public final class ModDiscoverer {
 	private final VersionOverrides versionOverrides;
 	private final DependencyOverrides depOverrides;
 	private final List<ModCandidateFinder> candidateFinders = new ArrayList<>();
-	private final EnvType envType = FabricLoaderImpl.INSTANCE.getEnvironmentType();
+	private final EnvType envType = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getEnvironmentType();
 	private final Map<Long, ModScanTask> jijDedupMap = new ConcurrentHashMap<>(); // avoids reading the same jar twice
 	private final List<NestedModInitData> nestedModInitDatas = Collections.synchronizedList(new ArrayList<>()); // breaks potential cycles from deduplication
 	private final List<Path> nonFabricMods = Collections.synchronizedList(new ArrayList<>());
@@ -85,7 +84,7 @@ public final class ModDiscoverer {
 		candidateFinders.add(f);
 	}
 
-	public List<ModCandidateImpl> discoverMods(FabricLoaderImpl loader, Map<String, Set<ModCandidateImpl>> envDisabledModsOut) throws ModResolutionException {
+	public List<ModCandidateImpl> discoverMods(net.aoqia.loader.impl.LeafLoaderImpl loader, Map<String, Set<ModCandidateImpl>> envDisabledModsOut) throws ModResolutionException {
 		long startTime = System.nanoTime();
 		ForkJoinPool pool = new ForkJoinPool();
 		Set<Path> processedPaths = new HashSet<>(); // suppresses duplicate paths
@@ -217,7 +216,7 @@ public final class ModDiscoverer {
 		return new ArrayList<>(ret);
 	}
 
-	public List<Path> getNonFabricMods() {
+	public List<Path> getNonLeafMods() {
 		return Collections.unmodifiableList(nonFabricMods);
 	}
 
@@ -305,7 +304,7 @@ public final class ModDiscoverer {
 		}
 
 		private ModCandidateImpl computeDir(Path path) throws IOException, ParseMetadataException {
-			Path modJson = path.resolve("fabric.mod.json");
+			Path modJson = path.resolve("leaf.mod.json");
 			if (!Files.exists(modJson)) return null;
 
 			LoaderModMetadata metadata;
@@ -319,7 +318,7 @@ public final class ModDiscoverer {
 
 		private ModCandidateImpl computeJarFile(Path path) throws IOException, ParseMetadataException {
 			try (ZipFile zf = new ZipFile(path.toFile())) {
-				ZipEntry entry = zf.getEntry("fabric.mod.json");
+				ZipEntry entry = zf.getEntry("leaf.mod.json");
 
 				if (entry == null) {
 					nonFabricMods.add(path);
@@ -372,7 +371,7 @@ public final class ModDiscoverer {
 						private ZipEntry currentEntry;
 					});
 
-					if (!nestedJarPaths.isEmpty() && FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+					if (!nestedJarPaths.isEmpty() && net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
 						Log.warn(LogCategory.METADATA, "Mod %s %s references missing nested jars: %s", metadata.getId(), metadata.getVersion(), nestedJarPaths);
 					}
 				}
@@ -396,7 +395,7 @@ public final class ModDiscoverer {
 
 			try (ZipInputStream zis = new ZipInputStream(is)) {
 				while ((entry = zis.getNextEntry()) != null) {
-					if (entry.getName().equals("fabric.mod.json")) {
+					if (entry.getName().equals("leaf.mod.json")) {
 						metadata = parseMetadata(zis, localPath);
 						break;
 					}
@@ -450,7 +449,7 @@ public final class ModDiscoverer {
 					});
 				}
 
-				if (!nestedJarPaths.isEmpty() && FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+				if (!nestedJarPaths.isEmpty() && net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
 					Log.warn(LogCategory.METADATA, "Mod %s %s references missing nested jars: %s", metadata.getId(), metadata.getVersion(), nestedJarPaths);
 				}
 			}
@@ -507,7 +506,7 @@ public final class ModDiscoverer {
 		}
 
 		private LoaderModMetadata parseMetadata(InputStream is, String localPath) throws ParseMetadataException {
-			return ModMetadataParser.parseMetadata(is, localPath, parentPaths, versionOverrides, depOverrides, FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment());
+			return ModMetadataParser.parseMetadata(is, localPath, parentPaths, versionOverrides, depOverrides, net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment());
 		}
 	}
 

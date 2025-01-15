@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package net.aoqia.loader.impl.launch.knot;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.jar.Manifest;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.game.GameProvider;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.game.GameProvider;
 
 interface KnotClassLoaderInterface {
 	@SuppressWarnings("resource")

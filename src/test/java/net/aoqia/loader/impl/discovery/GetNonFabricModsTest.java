@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,17 +33,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.LoaderUtil;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.game.GameProvider;
+import net.aoqia.loader.impl.launch.LeafLauncher;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.util.LoaderUtil;
 
 public class GetNonFabricModsTest {
-	private FabricLoaderImpl loader;
+	private net.aoqia.loader.impl.LeafLoaderImpl loader;
 	private ModDiscoverer discoverer;
-	private MockedConstruction<FabricLoaderImpl> loaderConstruction;
+	private MockedConstruction<net.aoqia.loader.impl.LeafLoaderImpl> loaderConstruction;
 
 	/*
 	 * Set up the mock loader and discoverer
@@ -53,15 +52,15 @@ public class GetNonFabricModsTest {
 		GameProvider provider = mock();
 		when(provider.getBuiltinMods()).thenReturn(Collections.emptyList());
 
-		FabricLauncher launcher = mock();
+		LeafLauncher launcher = mock();
 		when(launcher.getEnvironmentType()).thenReturn(EnvType.CLIENT);
 		when(launcher.isDevelopment()).thenReturn(false);
-		FabricLauncherBase.setLauncher(launcher);
+		LeafLauncherBase.setLauncher(launcher);
 		loader = mock();
 		when(loader.getGameProvider()).thenReturn(provider);
 		when(loader.isDevelopmentEnvironment()).thenReturn(false);
 
-		loaderConstruction = Mockito.mockConstructionWithAnswer(FabricLoaderImpl.class, invocation -> loader);
+		loaderConstruction = Mockito.mockConstructionWithAnswer(net.aoqia.loader.impl.LeafLoaderImpl.class, invocation -> loader);
 
 		discoverer = new ModDiscoverer(mock(), mock());
 		discoverer.addCandidateFinder(new MockCandidateFinder());
@@ -90,7 +89,7 @@ public class GetNonFabricModsTest {
 
 		Assertions.assertTrue(foundDummyFabricMod);
 
-		List<Path> nonFabricMods = discoverer.getNonFabricMods();
+		List<Path> nonFabricMods = discoverer.getNonLeafMods();
 		Assertions.assertEquals(1, nonFabricMods.size());
 		Assertions.assertEquals(Paths.get("src/test/resources/testing/discovery/dummyNonFabricMod.jar").toAbsolutePath(),
 				nonFabricMods.get(0));

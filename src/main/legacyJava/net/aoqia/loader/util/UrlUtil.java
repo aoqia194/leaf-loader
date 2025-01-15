@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.util;
+package net.aoqia.loader.util;
 
 import java.net.URL;
 import java.nio.file.Path;
 
-import net.fabricmc.loader.impl.util.ExceptionUtil.WrappedException;
+import net.aoqia.loader.impl.util.ExceptionUtil.WrappedException;
 
 /**
  * @deprecated Internal API, do not use
@@ -30,7 +30,7 @@ public final class UrlUtil {
 
 	public static Path asPath(URL url) throws UrlConversionException {
 		try {
-			return net.fabricmc.loader.impl.util.UrlUtil.asPath(url);
+			return net.aoqia.loader.impl.util.UrlUtil.asPath(url);
 		} catch (WrappedException e) {
 			throw new UrlConversionException(e.getCause());
 		}

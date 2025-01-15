@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.fabricmc.loader.api.Version;
+import net.aoqia.loader.api.Version;
 
 final class ModPrioSorter {
 	/**

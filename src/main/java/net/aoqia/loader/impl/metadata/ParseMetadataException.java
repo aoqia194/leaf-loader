@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
+import net.aoqia.loader.impl.lib.gson.JsonReader;
 
 @SuppressWarnings("serial")
 public class ParseMetadataException extends Exception {
@@ -48,7 +48,7 @@ public class ParseMetadataException extends Exception {
 
 	@Override
 	public String getMessage() {
-		String ret = "Error reading fabric.mod.json file for mod at ";
+		String ret = "Error reading leaf.mod.json file for mod at ";
 
 		if (modPaths == null) {
 			ret += "unknown location";

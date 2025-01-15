@@ -1,4 +1,4 @@
-import net.fabricmc.loom.build.nesting.JarNester
+import net.aoqia.loom.build.nesting.JarNester
 import org.slf4j.LoggerFactory
 
 buildscript {
@@ -13,15 +13,14 @@ plugins {
 	id 'java-library'
 	id 'eclipse'
 	id 'maven-publish'
-	id 'checkstyle'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'fabric-loom' version '1.4-SNAPSHOT' apply false
+	id 'leaf-loom' version '1.9.local' apply false
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
 	id 'me.modmuss50.remotesign' version "0.4.0"
 }
 
 base {
-	archivesName = "fabric-loader"
+	archivesName = "leaf-loader"
 }
 
 def ENV = System.getenv()
@@ -29,10 +28,9 @@ def ENV = System.getenv()
 allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'eclipse'
-	apply plugin: 'checkstyle'
 	apply plugin: "com.diffplug.spotless"
 
-	def constantsSource = rootProject.file("src/main/java/net/fabricmc/loader/impl/FabricLoaderImpl.java").text
+	def constantsSource = rootProject.file("src/main/java/net/aoqia/loader/impl/LeafLoaderImpl.java").text
 	version = (constantsSource =~ /\s+VERSION\s*=\s*"(.*)";/)[0][1] + (ENV.GITHUB_ACTIONS ? "" : "+local")
 
 	repositories {
@@ -42,10 +40,9 @@ allprojects {
 		}
 		mavenCentral() {
 			content {
-				// Force ASM and ME to come from the fabric maven.
+				// Force ASM to come from the fabric maven.
 				// This ensures that the version has been mirrored for use by the launcher/installer.
 				excludeGroupByRegex "org.ow2.asm"
-				excludeGroupByRegex "io.github.llamalad7"
 			}
 		}
 	}
@@ -88,17 +85,6 @@ configurations {
 	}
 }
 
-repositories {
-	maven {
-		name = 'Mojang'
-		url = 'https://libraries.minecraft.net/'
-		content {
-			includeGroup "net.minecraft"
-		}
-	}
-}
-
-
 dependencies {
 	// fabric-loader dependencies
 	installer "org.ow2.asm:asm:${project.asm_version}"
@@ -107,7 +93,6 @@ dependencies {
 	installer "org.ow2.asm:asm-tree:${project.asm_version}"
 	installer "org.ow2.asm:asm-util:${project.asm_version}"
 	installer "net.fabricmc:sponge-mixin:${project.mixin_version}"
-	installerLaunchWrapper "net.minecraft:launchwrapper:1.12"
 
 	// impl dependencies
 	include 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.6'
@@ -119,7 +104,7 @@ dependencies {
 		transitive = false
 	}
 
-	development "io.github.llamalad7:mixinextras-fabric:$mixin_extras_version"
+//	 development "io.github.llamalad7:mixinextras-common:$mixin_extras_version"
 
 	testCompileOnly 'org.jetbrains:annotations:23.0.0'
 
@@ -136,7 +121,7 @@ apply from: rootProject.file('gradle/launcher.gradle')
 processResources {
 	inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
+	filesMatching("leaf.mod.json") {
 		expand "version": project.version
 	}
 }
@@ -177,7 +162,7 @@ tasks.register('getSat4jAbout', Copy) {
 		}
 	}
 
-	rename 'about.html', 'net/fabricmc/loader/impl/lib/sat4j/about-sat4j.html'
+	rename 'about.html', 'net/aoqia/loader/impl/lib/sat4j/about-sat4j.html'
 
 	into layout.buildDirectory.dir("sat4j")
 }
@@ -185,7 +170,7 @@ tasks.register('getSat4jAbout', Copy) {
 tasks.register('fatJar', ShadowJar) {
 	dependsOn getSat4jAbout
 	from sourceSets.main.output
-	from project(":minecraft").sourceSets.main.output
+	from project(":zomboid").sourceSets.main.output
 	from getSat4jAbout.destinationDir
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}" }
@@ -193,9 +178,9 @@ tasks.register('fatJar', ShadowJar) {
 
 	manifest {
 		attributes(
-			'Main-Class': 'net.fabricmc.loader.impl.launch.server.FabricServerLauncher',
-			'Fabric-Loom-Remap': 'false',
-			'Automatic-Module-Name': 'net.fabricmc.loader',
+			'Main-Class': 'net.aoqia.loader.impl.launch.server.LeafServerLauncher',
+			'Leaf-Loom-Remap': 'false',
+			'Automatic-Module-Name': 'net.aoqia.loader',
 			'Multi-Release': 'true'
 		)
 	}
@@ -203,10 +188,10 @@ tasks.register('fatJar', ShadowJar) {
 	archiveClassifier = "fat"
 	configurations = [project.configurations.include]
 
-	relocate 'org.sat4j', 'net.fabricmc.loader.impl.lib.sat4j'
-	relocate 'net.fabricmc.accesswidener', 'net.fabricmc.loader.impl.lib.accesswidener'
-	relocate 'net.fabricmc.tinyremapper', 'net.fabricmc.loader.impl.lib.tinyremapper'
-	relocate 'net.fabricmc.mappingio', 'net.fabricmc.loader.impl.lib.mappingio'
+	relocate 'org.sat4j', 'net.aoqia.loader.impl.lib.sat4j'
+	relocate 'net.fabricmc.accesswidener', 'net.aoqia.loader.impl.lib.accesswidener'
+	relocate 'net.fabricmc.tinyremapper', 'net.aoqia.loader.impl.lib.tinyremapper'
+	relocate 'net.fabricmc.mappingio', 'net.aoqia.loader.impl.lib.mappingio'
 
 	exclude 'about.html'
 	exclude 'sat4j.version'
@@ -221,13 +206,13 @@ tasks.register('fatJar', ShadowJar) {
 	outputs.upToDateWhen { false }
 }
 
-File proguardTmpFile = file("build/tmp/fabric-loader-${version}.jar")
+File proguardTmpFile = file("build/tmp/leaf-loader-${version}.jar")
 
 import proguard.gradle.ProGuardTask
 
 tasks.register('proguardJar', ProGuardTask) {
 	dependsOn fatJar
-	def classpath = project(":minecraft").configurations.compileClasspath
+	def classpath = project(":zomboid").configurations.compileClasspath
 
 	inputs.files(fatJar, classpath)
 	outputs.files(proguardTmpFile)
@@ -269,7 +254,7 @@ tasks.withType(AbstractArchiveTask) {
 
 sourcesJar {
 	from sourceSets.main.allSource
-	from project(":minecraft").sourceSets.main.allSource
+	from project(":zomboid").sourceSets.main.allSource
 }
 
 // useful for creating test mod jar
@@ -279,18 +264,15 @@ tasks.register('testJar', Jar) {
 }
 
 tasks.register('copyJson') {
-	def inJson = file('src/main/resources/fabric-installer.json')
-	def inLwJson = file('src/main/resources/fabric-installer.launchwrapper.json')
+	def inJson = file('src/main/resources/leaf-installer.json')
 
 	def outJson = file("build/libs/${project.base.archivesName.get()}-${version}.json")
-	def outLwJson = file("build/libs/${project.base.archivesName.get()}-${version}.launchwrapper.json")
 
-	inputs.files(inJson, inLwJson)
-	outputs.files(outJson, outLwJson)
+	inputs.files(inJson)
+	outputs.files(outJson)
 
 	doLast {
 		outJson.text = inJson.text
-		outLwJson.text = inLwJson.text
 	}
 }
 
@@ -334,11 +316,6 @@ tasks.register('javadocJar', Jar) {
 build.dependsOn javadocJar
 
 allprojects {
-	checkstyle {
-		configFile = project.rootProject.file("checkstyle.xml")
-		toolVersion = '8.44'
-	}
-
 	spotless {
 		java {
 			licenseHeaderFile(rootProject.file("HEADER"))
@@ -352,7 +329,7 @@ tasks.withType(GenerateModuleMetadata) {
 	enabled = false
 }
 
-File signedJar = file("build/libs/fabric-loader-${version}-signed.jar")
+File signedJar = file("build/libs/leaf-loader-${version}-signed.jar")
 
 remoteSign {
 	requestUrl = ENV.SIGNING_SERVER
@@ -380,12 +357,8 @@ publishing {
 			}
 			artifact(sourcesJar)
 			artifact javadocJar
-			artifact(file('src/main/resources/fabric-installer.json')) {
+			artifact(file('src/main/resources/leaf-installer.json')) {
 				builtBy copyJson
-			}
-			artifact(file('src/main/resources/fabric-installer.launchwrapper.json')) {
-				builtBy copyJson
-				classifier = "launchwrapper"
 			}
 		}
 	}
@@ -427,7 +400,7 @@ task github(dependsOn: publish) {
 		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
-		releaseBuilder.name("Fabric Loader $version")
+		releaseBuilder.name("Leaf Loader $version")
 		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
 		releaseBuilder.commitish(getBranch())
 		releaseBuilder.prerelease(false)
@@ -439,7 +412,7 @@ task github(dependsOn: publish) {
 // A task to ensure that the version being released has not already been released.
 task checkVersion {
 	doFirst {
-		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml").text
+		def xml = new URL("https://maven.fabricmc.net/net/aoqia/fabric-loader/maven-metadata.xml").text
 		def metadata = new XmlSlurper().parseText(xml)
 		def versions = metadata.versioning.versions.version*.text();
 		if (versions.contains(version)) {

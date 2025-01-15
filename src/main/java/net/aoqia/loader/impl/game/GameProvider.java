@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game;
+package net.aoqia.loader.impl.game;
 
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.impl.game.patch.GameTransformer;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.util.Arguments;
-import net.fabricmc.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.api.metadata.ModMetadata;
+import net.aoqia.loader.impl.game.patch.GameTransformer;
+import net.aoqia.loader.impl.launch.LeafLauncher;
+import net.aoqia.loader.impl.util.Arguments;
+import net.aoqia.loader.impl.util.LoaderUtil;
 
-public interface GameProvider { // name directly referenced in net.fabricmc.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader records
+public interface GameProvider { // name directly referenced in net.aoqia.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader records
 	String getGameId();
 	String getGameName();
 	String getRawGameVersion();
@@ -40,10 +40,10 @@ public interface GameProvider { // name directly referenced in net.fabricmc.load
 	boolean requiresUrlClassLoader();
 
 	boolean isEnabled();
-	boolean locateGame(FabricLauncher launcher, String[] args);
-	void initialize(FabricLauncher launcher);
+	boolean locateGame(LeafLauncher launcher, String[] args);
+	void initialize(LeafLauncher launcher);
 	GameTransformer getEntrypointTransformer();
-	void unlockClassPath(FabricLauncher launcher);
+	void unlockClassPath(LeafLauncher launcher);
 	void launch(ClassLoader loader);
 
 	default boolean displayCrash(Throwable exception, String context) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,16 +31,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.impl.discovery.ModSolver.AddModVar;
-import net.fabricmc.loader.impl.discovery.ModSolver.InactiveReason;
-import net.fabricmc.loader.impl.metadata.AbstractModMetadata;
-import net.fabricmc.loader.impl.util.Localization;
-import net.fabricmc.loader.impl.util.StringUtil;
-import net.fabricmc.loader.impl.util.version.VersionIntervalImpl;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.SemanticVersion;
+import net.aoqia.loader.api.metadata.ModDependency;
+import net.aoqia.loader.api.metadata.version.VersionInterval;
+import net.aoqia.loader.impl.discovery.ModSolver.AddModVar;
+import net.aoqia.loader.impl.discovery.ModSolver.InactiveReason;
+import net.aoqia.loader.impl.metadata.AbstractModMetadata;
+import net.aoqia.loader.impl.util.Localization;
+import net.aoqia.loader.impl.util.StringUtil;
+import net.aoqia.loader.impl.util.version.VersionIntervalImpl;
 
 final class ResultAnalyzer {
 	private static final boolean SHOW_PATH_INFO = false;

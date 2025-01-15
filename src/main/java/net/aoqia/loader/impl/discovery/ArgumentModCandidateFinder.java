@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,12 +28,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.util.Arguments;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.util.Arguments;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public class ArgumentModCandidateFinder implements ModCandidateFinder {
 	private final boolean requiresRemap;
@@ -47,7 +46,7 @@ public class ArgumentModCandidateFinder implements ModCandidateFinder {
 		String list = System.getProperty(SystemProperties.ADD_MODS);
 		if (list != null) addMods(list, "system property", out);
 
-		list = FabricLoaderImpl.INSTANCE.getGameProvider().getArguments().remove(Arguments.ADD_MODS);
+		list = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getGameProvider().getArguments().remove(Arguments.ADD_MODS);
 		if (list != null) addMods(list, "argument", out);
 	}
 
@@ -93,7 +92,7 @@ public class ArgumentModCandidateFinder implements ModCandidateFinder {
 				return;
 			}
 
-			if (Files.exists(path.resolve("fabric.mod.json"))) { // extracted mod
+			if (Files.exists(path.resolve("leaf.mod.json"))) { // extracted mod
 				out.accept(path, requiresRemap);
 			} else { // dir containing jars
 				try {

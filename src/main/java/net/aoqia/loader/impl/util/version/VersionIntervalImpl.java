@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.version;
+package net.aoqia.loader.impl.util.version;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
+import net.aoqia.loader.api.SemanticVersion;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.metadata.version.VersionInterval;
 
 public final class VersionIntervalImpl implements VersionInterval {
 	private final Version min;

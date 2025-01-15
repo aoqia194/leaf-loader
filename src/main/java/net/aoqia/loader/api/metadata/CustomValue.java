@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata;
+package net.aoqia.loader.api.metadata;
 
 import java.util.Map;
 
 /**
- * Represents a custom value in the {@code fabric.mod.json}.
+ * Represents a custom value in the {@code leaf.mod.json}.
  */
 public interface CustomValue {
 	/**

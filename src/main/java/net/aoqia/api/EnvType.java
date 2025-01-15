@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.api;
+package net.aoqia.api;
 
 /**
  * Represents a type of environment.

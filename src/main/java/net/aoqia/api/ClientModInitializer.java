@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.api;
+package net.aoqia.api;
 
 /**
  * A mod initializer ran only on {@link EnvType#CLIENT}.
@@ -22,11 +22,11 @@ package net.fabricmc.api;
  * <p>This entrypoint is suitable for setting up client-specific logic, such as rendering
  * or integrated server tweaks.</p>
  *
- * <p>In {@code fabric.mod.json}, the entrypoint is defined with {@code client} key.</p>
+ * <p>In {@code leaf.mod.json}, the entrypoint is defined with {@code client} key.</p>
  *
  * @see ModInitializer
  * @see DedicatedServerModInitializer
- * @see net.fabricmc.loader.api.FabricLoader#getEntrypointContainers(String, Class)
+ * @see net.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
  */
 @FunctionalInterface
 public interface ClientModInitializer {

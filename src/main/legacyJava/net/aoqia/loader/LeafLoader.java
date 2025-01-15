@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader;
+package net.aoqia.loader;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-
 /**
  * The main class for mod loading operations.
  *
- * @deprecated Use {@link net.fabricmc.loader.api.FabricLoader}
+ * @deprecated Use {@link net.aoqia.loader.api.LeafLoader}
  */
 @Deprecated
-public abstract class FabricLoader implements net.fabricmc.loader.api.FabricLoader {
+public abstract class LeafLoader implements net.aoqia.loader.api.LeafLoader {
 	/**
-	 * @deprecated Use {@link net.fabricmc.loader.api.FabricLoader#getInstance()} where possible,
+	 * @deprecated Use {@link net.aoqia.loader.api.LeafLoader#getInstance()} where possible,
 	 * report missing areas as an issue.
 	 */
 	@Deprecated
-	public static final FabricLoader INSTANCE = FabricLoaderImpl.InitHelper.get();
+	public static final net.aoqia.loader.LeafLoader INSTANCE = net.aoqia.loader.impl.LeafLoaderImpl.InitHelper.get();
 
 	public File getModsDirectory() {
 		return getModsDirectory0().toFile();

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata.version;
+package net.aoqia.loader.api.metadata.version;
 
 import java.util.Collection;
 import java.util.List;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.impl.util.version.VersionIntervalImpl;
+import net.aoqia.loader.api.SemanticVersion;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.impl.util.version.VersionIntervalImpl;
 
 /**
  * Representation of a version interval, closed or open.

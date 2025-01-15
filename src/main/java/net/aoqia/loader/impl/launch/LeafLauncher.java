@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch;
+package net.aoqia.loader.impl.launch;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.jar.Manifest;
 
-import net.fabricmc.api.EnvType;
+import net.aoqia.api.EnvType;
 
-public interface FabricLauncher {
+public interface LeafLauncher {
 	MappingConfiguration getMappingConfiguration();
 
 	void addToClassPath(Path path, String... allowedPrefixes);

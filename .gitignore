@@ -21,7 +21,7 @@
 !/settings.gradle
 !/proguard.conf
 
-!/minecraft
+!/zomboid
 !/junit
 
 # MacOS junk files

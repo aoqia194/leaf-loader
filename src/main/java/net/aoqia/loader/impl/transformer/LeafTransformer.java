@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.transformer;
+package net.aoqia.loader.impl.transformer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
 
-public final class FabricTransformer {
+public final class LeafTransformer {
 	public static byte[] transform(boolean isDevelopment, EnvType envType, String name, byte[] bytes) {
-		boolean isMinecraftClass = name.startsWith("net.minecraft.") || name.startsWith("com.mojang.blaze3d.") || name.indexOf('.') < 0;
-		boolean transformAccess = isMinecraftClass && FabricLauncherBase.getLauncher().getMappingConfiguration().requiresPackageAccessHack();
-		boolean environmentStrip = !isMinecraftClass || isDevelopment;
-		boolean applyAccessWidener = isMinecraftClass && FabricLoaderImpl.INSTANCE.getAccessWidener().getTargets().contains(name);
+		boolean isZomboidClass = name.startsWith("zomboid.") || name.indexOf('.') < 0;
+		boolean transformAccess = isZomboidClass && LeafLauncherBase.getLauncher().getMappingConfiguration().requiresPackageAccessHack();
+		boolean environmentStrip = !isZomboidClass || isDevelopment;
+		boolean applyAccessWidener = isZomboidClass && net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getAccessWidener().getTargets().contains(name);
 
 		if (!transformAccess && !environmentStrip && !applyAccessWidener) {
 			return bytes;
@@ -42,17 +41,17 @@ public final class FabricTransformer {
 		int visitorCount = 0;
 
 		if (applyAccessWidener) {
-			visitor = AccessWidenerClassVisitor.createClassVisitor(FabricLoaderImpl.ASM_VERSION, visitor, FabricLoaderImpl.INSTANCE.getAccessWidener());
+			visitor = AccessWidenerClassVisitor.createClassVisitor(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor, net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getAccessWidener());
 			visitorCount++;
 		}
 
 		if (transformAccess) {
-			visitor = new PackageAccessFixer(FabricLoaderImpl.ASM_VERSION, visitor);
+			visitor = new PackageAccessFixer(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor);
 			visitorCount++;
 		}
 
 		if (environmentStrip) {
-			EnvironmentStrippingData stripData = new EnvironmentStrippingData(FabricLoaderImpl.ASM_VERSION, envType.toString());
+			EnvironmentStrippingData stripData = new EnvironmentStrippingData(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, envType.toString());
 			classReader.accept(stripData, ClassReader.SKIP_CODE | ClassReader.SKIP_FRAMES);
 
 			if (stripData.stripEntireClass()) {
@@ -60,7 +59,7 @@ public final class FabricTransformer {
 			}
 
 			if (!stripData.isEmpty()) {
-				visitor = new ClassStripper(FabricLoaderImpl.ASM_VERSION, visitor, stripData.getStripInterfaces(), stripData.getStripFields(), stripData.getStripMethods());
+				visitor = new ClassStripper(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor, stripData.getStripInterfaces(), stripData.getStripFields(), stripData.getStripMethods());
 				visitorCount++;
 			}
 		}

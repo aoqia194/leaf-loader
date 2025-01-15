@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl;
+package net.aoqia.loader.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,45 +40,45 @@ import org.objectweb.asm.Opcodes;
 
 import net.fabricmc.accesswidener.AccessWidener;
 import net.fabricmc.accesswidener.AccessWidenerReader;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.LanguageAdapter;
-import net.fabricmc.loader.api.MappingResolver;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.ObjectShare;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.impl.discovery.ArgumentModCandidateFinder;
-import net.fabricmc.loader.impl.discovery.ClasspathModCandidateFinder;
-import net.fabricmc.loader.impl.discovery.DirectoryModCandidateFinder;
-import net.fabricmc.loader.impl.discovery.ModCandidateImpl;
-import net.fabricmc.loader.impl.discovery.ModDiscoverer;
-import net.fabricmc.loader.impl.discovery.ModResolutionException;
-import net.fabricmc.loader.impl.discovery.ModResolver;
-import net.fabricmc.loader.impl.discovery.RuntimeModRemapper;
-import net.fabricmc.loader.impl.entrypoint.EntrypointStorage;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.launch.knot.Knot;
-import net.fabricmc.loader.impl.metadata.DependencyOverrides;
-import net.fabricmc.loader.impl.metadata.EntrypointMetadata;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.VersionOverrides;
-import net.fabricmc.loader.impl.util.DefaultLanguageAdapter;
-import net.fabricmc.loader.impl.util.ExceptionUtil;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.LanguageAdapter;
+import net.aoqia.loader.api.MappingResolver;
+import net.aoqia.loader.api.ModContainer;
+import net.aoqia.loader.api.ObjectShare;
+import net.aoqia.loader.api.entrypoint.EntrypointContainer;
+import net.aoqia.loader.impl.discovery.ArgumentModCandidateFinder;
+import net.aoqia.loader.impl.discovery.ClasspathModCandidateFinder;
+import net.aoqia.loader.impl.discovery.DirectoryModCandidateFinder;
+import net.aoqia.loader.impl.discovery.ModCandidateImpl;
+import net.aoqia.loader.impl.discovery.ModDiscoverer;
+import net.aoqia.loader.impl.discovery.ModResolutionException;
+import net.aoqia.loader.impl.discovery.ModResolver;
+import net.aoqia.loader.impl.discovery.RuntimeModRemapper;
+import net.aoqia.loader.impl.entrypoint.EntrypointStorage;
+import net.aoqia.loader.impl.game.GameProvider;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.launch.knot.Knot;
+import net.aoqia.loader.impl.metadata.DependencyOverrides;
+import net.aoqia.loader.impl.metadata.EntrypointMetadata;
+import net.aoqia.loader.impl.metadata.LoaderModMetadata;
+import net.aoqia.loader.impl.metadata.VersionOverrides;
+import net.aoqia.loader.impl.util.DefaultLanguageAdapter;
+import net.aoqia.loader.impl.util.ExceptionUtil;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 @SuppressWarnings("deprecation")
-public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
-	public static final FabricLoaderImpl INSTANCE = InitHelper.get();
+public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
+	public static final net.aoqia.loader.impl.LeafLoaderImpl INSTANCE = InitHelper.get();
 
 	public static final int ASM_VERSION = Opcodes.ASM9;
 
 	public static final String VERSION = "0.16.9";
-	public static final String MOD_ID = "fabricloader";
+	public static final String MOD_ID = "leafloader";
 
-	public static final String CACHE_DIR_NAME = ".fabric"; // relative to game dir
+	public static final String CACHE_DIR_NAME = ".leaf"; // relative to game dir
 	private static final String PROCESSED_MODS_DIR_NAME = "processedMods"; // relative to cache dir
 	public static final String REMAPPED_JARS_DIR_NAME = "remappedJars"; // relative to cache dir
 	private static final String TMP_DIR_NAME = "tmp"; // relative to cache dir
@@ -102,7 +102,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	private Path gameDir;
 	private Path configDir;
 
-	private FabricLoaderImpl() { }
+	private LeafLoaderImpl() { }
 
 	/**
 	 * Freeze the FabricLoader, preventing additional mods from being loaded.
@@ -144,7 +144,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 
 	@Override
 	public EnvType getEnvironmentType() {
-		return FabricLauncherBase.getLauncher().getEnvironmentType();
+		return LeafLauncherBase.getLauncher().getEnvironmentType();
 	}
 
 	/**
@@ -201,7 +201,9 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	}
 
 	private void setup() throws ModResolutionException {
-		boolean remapRegularMods = isDevelopmentEnvironment();
+//		boolean remapRegularMods = isDevelopmentEnvironment();
+        // Never remap mods because we never need to.
+		boolean remapRegularMods = false;
 		VersionOverrides versionOverrides = new VersionOverrides();
 		DependencyOverrides depOverrides = new DependencyOverrides(configDir);
 
@@ -230,7 +232,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 		modCandidates = ModResolver.resolve(modCandidates, getEnvironmentType(), envDisabledMods);
 
 		dumpModList(modCandidates);
-		dumpNonFabricMods(discoverer.getNonFabricMods());
+		dumpNonLeafMods(discoverer.getNonLeafMods());
 
 		Path cacheDir = gameDir.resolve(CACHE_DIR_NAME);
 		Path outputdir = cacheDir.resolve(PROCESSED_MODS_DIR_NAME);
@@ -239,7 +241,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 
 		if (remapRegularMods) {
 			if (System.getProperty(SystemProperties.REMAP_CLASSPATH_FILE) == null) {
-				Log.warn(LogCategory.MOD_REMAP, "Runtime mod remapping disabled due to no fabric.remapClasspathFile being specified. You may need to update loom.");
+				Log.warn(LogCategory.MOD_REMAP, "Runtime mod remapping disabled due to no leaf.remapClasspathFile being specified. You may need to update loom.");
 			} else {
 				RuntimeModRemapper.remap(modCandidates, cacheDir.resolve(TMP_DIR_NAME), outputdir);
 			}
@@ -285,16 +287,16 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	}
 
 	@VisibleForTesting
-	public void dumpNonFabricMods(List<Path> nonFabricMods) {
-		if (nonFabricMods.isEmpty()) return;
+	public void dumpNonLeafMods(List<Path> nonLeafMods) {
+		if (nonLeafMods.isEmpty()) return;
 		StringBuilder outputText = new StringBuilder();
 
-		for (Path nonFabricMod : nonFabricMods) {
+		for (Path nonFabricMod : nonLeafMods) {
 			outputText.append("\n\t- ").append(nonFabricMod.getFileName());
 		}
 
-		int modsCount = nonFabricMods.size();
-		Log.warn(LogCategory.GENERAL, "Found %d non-fabric mod%s:%s", modsCount, modsCount != 1 ? "s" : "", outputText);
+		int modsCount = nonLeafMods.size();
+		Log.warn(LogCategory.GENERAL, "Found %d non-leaf mod%s:%s", modsCount, modsCount != 1 ? "s" : "", outputText);
 	}
 
 	private void dumpModList(List<ModCandidateImpl> mods) {
@@ -359,7 +361,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 		for (ModContainerImpl mod : mods) {
 			if (!mod.getMetadata().getId().equals(MOD_ID) && !mod.getMetadata().getType().equals("builtin")) {
 				for (Path path : mod.getCodeSourcePaths()) {
-					FabricLauncherBase.getLauncher().addToClassPath(path);
+					LeafLauncherBase.getLauncher().addToClassPath(path);
 				}
 			}
 		}
@@ -390,7 +392,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 		}
 
 		RuntimeException exception = null;
-		Collection<EntrypointContainer<T>> entrypoints = FabricLoaderImpl.INSTANCE.getEntrypointContainers(key, type);
+		Collection<EntrypointContainer<T>> entrypoints = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getEntrypointContainers(key, type);
 
 		Log.debug(LogCategory.ENTRYPOINT, "Iterating over entrypoint '%s'", key);
 
@@ -414,10 +416,10 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	@Override
 	public MappingResolver getMappingResolver() {
 		if (mappingResolver == null) {
-			final String targetNamespace = FabricLauncherBase.getLauncher().getTargetNamespace();
+			final String targetNamespace = LeafLauncherBase.getLauncher().getTargetNamespace();
 
 			mappingResolver = new LazyMappingResolver(() -> new MappingResolverImpl(
-				FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings(),
+				LeafLauncherBase.getLauncher().getMappingConfiguration().getMappings(),
 				targetNamespace
 			), targetNamespace);
 		}
@@ -441,7 +443,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	}
 
 	@Override
-	public Optional<net.fabricmc.loader.api.ModContainer> getModContainer(String id) {
+	public Optional<net.aoqia.loader.api.ModContainer> getModContainer(String id) {
 		return Optional.ofNullable(modMap.get(id));
 	}
 
@@ -461,7 +463,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 
 	@Override
 	public boolean isDevelopmentEnvironment() {
-		return FabricLauncherBase.getLauncher().isDevelopment();
+		return LeafLauncherBase.getLauncher().isDevelopment();
 	}
 
 	private void addMod(ModCandidateImpl candidate) throws ModResolutionException {
@@ -485,7 +487,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 				}
 
 				try {
-					adapterMap.put(laEntry.getKey(), (LanguageAdapter) Class.forName(laEntry.getValue(), true, FabricLauncherBase.getLauncher().getTargetClassLoader()).getDeclaredConstructor().newInstance());
+					adapterMap.put(laEntry.getKey(), (LanguageAdapter) Class.forName(laEntry.getValue(), true, LeafLauncherBase.getLauncher().getTargetClassLoader()).getDeclaredConstructor().newInstance());
 				} catch (Exception e) {
 					throw new RuntimeException("Failed to instantiate language adapter: " + laEntry.getKey(), e);
 				}
@@ -515,7 +517,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	public void loadAccessWideners() {
 		AccessWidenerReader accessWidenerReader = new AccessWidenerReader(accessWidener);
 
-		for (net.fabricmc.loader.api.ModContainer modContainer : getAllMods()) {
+		for (net.aoqia.loader.api.ModContainer modContainer : getAllMods()) {
 			LoaderModMetadata modMetadata = (LoaderModMetadata) modContainer.getMetadata();
 			String accessWidener = modMetadata.getAccessWidener();
 			if (accessWidener == null) continue;
@@ -524,7 +526,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 			if (path == null) throw new RuntimeException(String.format("Missing accessWidener file %s from mod %s", accessWidener, modContainer.getMetadata().getId()));
 
 			try (BufferedReader reader = Files.newBufferedReader(path)) {
-				accessWidenerReader.read(reader, FabricLauncherBase.getLauncher().getTargetNamespace());
+				accessWidenerReader.read(reader, LeafLauncherBase.getLauncher().getTargetNamespace());
 			} catch (Exception e) {
 				throw new RuntimeException("Failed to read accessWidener file from mod " + modMetadata.getId(), e);
 			}
@@ -536,9 +538,9 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 			throw new RuntimeException("Cannot instantiate mods when not frozen!");
 		}
 
-		if (gameInstance != null && FabricLauncherBase.getLauncher() instanceof Knot) {
+		if (gameInstance != null && LeafLauncherBase.getLauncher() instanceof Knot) {
 			ClassLoader gameClassLoader = gameInstance.getClass().getClassLoader();
-			ClassLoader targetClassLoader = FabricLauncherBase.getLauncher().getTargetClassLoader();
+			ClassLoader targetClassLoader = LeafLauncherBase.getLauncher().getTargetClassLoader();
 			boolean matchesKnot = (gameClassLoader == targetClassLoader);
 			boolean containsKnot = false;
 
@@ -564,7 +566,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 							+ " - Expected game class loader: %s\n"
 							+ " - Actual game class loader: %s\n"
 							+ "Could not find the expected class loader in game class loader parents!\n",
-							FabricLauncherBase.getLauncher().getTargetClassLoader(), gameClassLoader);
+							LeafLauncherBase.getLauncher().getTargetClassLoader(), gameClassLoader);
 				}
 			}
 		}
@@ -621,16 +623,16 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	 * Provides singleton for static init assignment regardless of load order.
 	 */
 	public static class InitHelper {
-		private static FabricLoaderImpl instance;
+		private static net.aoqia.loader.impl.LeafLoaderImpl instance;
 
-		public static FabricLoaderImpl get() {
-			if (instance == null) instance = new FabricLoaderImpl();
+		public static net.aoqia.loader.impl.LeafLoaderImpl get() {
+			if (instance == null) instance = new net.aoqia.loader.impl.LeafLoaderImpl();
 
 			return instance;
 		}
 	}
 
 	static {
-		LoaderUtil.verifyNotInTargetCl(FabricLoaderImpl.class);
+		LoaderUtil.verifyNotInTargetCl(net.aoqia.loader.impl.LeafLoaderImpl.class);
 	}
 }

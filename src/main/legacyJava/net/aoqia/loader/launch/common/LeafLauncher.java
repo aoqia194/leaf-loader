@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.launch.common;
+package net.aoqia.loader.launch.common;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 
-import net.fabricmc.api.EnvType;
+import net.aoqia.api.EnvType;
 
 /**
  * @deprecated Internal API, do not use
  */
 @Deprecated
-public interface FabricLauncher {
+public interface LeafLauncher {
 	void propose(URL url);
 	EnvType getEnvironmentType();
 	boolean isClassLoaded(String name);

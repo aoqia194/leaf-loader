@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package net.aoqia.loader.api;
 
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.impl.util.version.VersionParser;
+import net.aoqia.loader.api.metadata.ModMetadata;
+import net.aoqia.loader.impl.util.version.VersionParser;
 
 /**
  * Represents a version of a mod.

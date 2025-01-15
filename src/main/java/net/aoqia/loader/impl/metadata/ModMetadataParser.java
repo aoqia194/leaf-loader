@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,10 +24,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
-import net.fabricmc.loader.impl.lib.gson.JsonToken;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.lib.gson.JsonReader;
+import net.aoqia.loader.impl.lib.gson.JsonToken;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public final class ModMetadataParser {
 	public static final int LATEST_VERSION = 1;
@@ -62,7 +62,7 @@ public final class ModMetadataParser {
 	private static LoaderModMetadata readModMetadata(InputStream is, boolean isDevelopment) throws IOException, ParseMetadataException {
 		// So some context:
 		// Per the json specification, ordering of fields is not typically enforced.
-		// Furthermore we cannot guarantee the `schemaVersion` is the first field in every `fabric.mod.json`
+		// Furthermore we cannot guarantee the `schemaVersion` is the first field in every `leaf.mod.json`
 		//
 		// To work around this, we do the following:
 		// Try to read first field
@@ -80,7 +80,7 @@ public final class ModMetadataParser {
 			reader.setRewindEnabled(true);
 
 			if (reader.peek() != JsonToken.BEGIN_OBJECT) {
-				throw new ParseMetadataException("Root of \"fabric.mod.json\" must be an object", reader);
+				throw new ParseMetadataException("Root of \"leaf.mod.json\" must be an object", reader);
 			}
 
 			reader.beginObject();
@@ -128,7 +128,7 @@ public final class ModMetadataParser {
 			reader.endObject();
 
 			if (isDevelopment) {
-				Log.warn(LogCategory.METADATA, "\"fabric.mod.json\" from mod %s did not have \"schemaVersion\" as first field.", ret.getId());
+				Log.warn(LogCategory.METADATA, "\"leaf.mod.json\" from mod %s did not have \"schemaVersion\" as first field.", ret.getId());
 			}
 
 			return ret;

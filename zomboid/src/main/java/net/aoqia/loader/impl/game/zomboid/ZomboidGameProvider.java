@@ -16,9 +16,7 @@
 
 package net.aoqia.loader.impl.game.zomboid;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -38,13 +36,15 @@ import net.aoqia.loader.impl.game.LibClassifier;
 import net.aoqia.loader.impl.game.patch.GameTransformer;
 import net.aoqia.loader.impl.game.zomboid.patch.BrandingPatch;
 import net.aoqia.loader.impl.game.zomboid.patch.EntrypointPatch;
-import net.aoqia.loader.impl.game.zomboid.patch.EntrypointPatchFML125;
 import net.aoqia.loader.impl.game.zomboid.patch.TinyFDPatch;
 import net.aoqia.loader.impl.launch.LeafLauncher;
 import net.aoqia.loader.impl.launch.MappingConfiguration;
 import net.aoqia.loader.impl.metadata.BuiltinModMetadata;
 import net.aoqia.loader.impl.metadata.ModDependencyImpl;
-import net.aoqia.loader.impl.util.*;
+import net.aoqia.loader.impl.util.Arguments;
+import net.aoqia.loader.impl.util.ExceptionUtil;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
 import net.aoqia.loader.impl.util.log.Log;
 import net.aoqia.loader.impl.util.log.LogCategory;
 import net.aoqia.loader.impl.util.log.LogHandler;
@@ -69,7 +69,6 @@ public class ZomboidGameProvider implements GameProvider {
     private final GameTransformer transformer = new GameTransformer(
         new EntrypointPatch(this),
         new BrandingPatch(),
-        new EntrypointPatchFML125(),
         new TinyFDPatch());
     private EnvType envType;
     private String entrypoint;
@@ -79,6 +78,27 @@ public class ZomboidGameProvider implements GameProvider {
     private Collection<Path> validParentClassPath; // computed parent class path restriction (loader+deps)
     private ZomboidVersion versionData;
     private boolean hasModLoader = false;
+
+    private static void processArgumentMap(Arguments argMap, EnvType envType) {
+        switch (envType) {
+            case CLIENT:
+                if (!argMap.containsKey("cachedir")) {
+                    argMap.put("cachedir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
+                }
+
+                break;
+            case SERVER:
+                // TODO: Handle server args
+                argMap.remove("version");
+                argMap.remove("gameDir");
+                argMap.remove("assetsDir");
+                break;
+        }
+    }
+
+    private static Path getLaunchDirectory(Arguments argMap) {
+        return Paths.get(argMap.getOrDefault("cachedir", "."));
+    }
 
     public Path getGameJar() {
         return gameJars.get(0);
@@ -124,7 +144,6 @@ public class ZomboidGameProvider implements GameProvider {
         return Collections.singletonList(new BuiltinMod(gameJars, metadata.build()));
     }
 
-
     @Override
     public String getEntrypoint() {
         return entrypoint;
@@ -162,8 +181,8 @@ public class ZomboidGameProvider implements GameProvider {
 
         try {
             LibClassifier<ZomboidLibrary> classifier = new LibClassifier<>(ZomboidLibrary.class, envType, this);
-            ZomboidLibrary envGameLib =
-                envType == EnvType.CLIENT ? ZomboidLibrary.ZOMBOID_CLIENT : ZomboidLibrary.ZOMBOID_SERVER;
+            ZomboidLibrary envGameLib = envType == EnvType.CLIENT
+                ? ZomboidLibrary.ZOMBOID_CLIENT : ZomboidLibrary.ZOMBOID_SERVER;
             Path commonGameJar = GameProviderHelper.getCommonGameJar();
             Path envGameJar = GameProviderHelper.getEnvGameJar(envType);
             boolean commonGameJarDeclared = commonGameJar != null;
@@ -234,60 +253,10 @@ public class ZomboidGameProvider implements GameProvider {
         if (version == null) {
             version = System.getProperty(SystemProperties.GAME_VERSION);
         }
-
-        ZomboidVersion.Builder builder = new ZomboidVersion.Builder();
-        try (SimpleClassPath cp = new SimpleClassPath(gameJars)) {
-            if (entrypoint != null) {
-                try (InputStream is = cp.getInputStream(LoaderUtil.getClassFileName(entrypoint));
-                     DataInputStream dis = new DataInputStream(is)) {
-                    if (dis.readInt() == 0xCAFEBABE) {
-                        builder.setId(version).setClassVersion(dis.readUnsignedShort());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw ExceptionUtil.wrap(e);
-        }
-        versionData = builder.build();
+        versionData = ZomboidVersionLookup.getVersion(gameJars, entrypoint, version);
 
         processArgumentMap(arguments, envType);
         return true;
-    }
-
-    private static void processArgumentMap(Arguments argMap, EnvType envType) {
-        switch (envType) {
-            case CLIENT:
-                if (!argMap.containsKey("accessToken")) {
-                    argMap.put("accessToken", "FabricMC");
-                }
-
-                if (!argMap.containsKey("version")) {
-                    argMap.put("version", "Fabric");
-                }
-
-                String versionType = "";
-
-                if (argMap.containsKey("versionType") && !argMap.get("versionType").equalsIgnoreCase("release")) {
-                    versionType = argMap.get("versionType") + "/";
-                }
-
-                argMap.put("versionType", versionType + "Fabric");
-
-                if (!argMap.containsKey("gameDir")) {
-                    argMap.put("gameDir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
-                }
-
-                break;
-            case SERVER:
-                argMap.remove("version");
-                argMap.remove("gameDir");
-                argMap.remove("assetsDir");
-                break;
-        }
-    }
-
-    private static Path getLaunchDirectory(Arguments argMap) {
-        return Paths.get(argMap.getOrDefault("gameDir", "."));
     }
 
     @Override
@@ -353,6 +322,98 @@ public class ZomboidGameProvider implements GameProvider {
         transformer.locateEntrypoints(launcher, gameJars);
     }
 
+    @Override
+    public GameTransformer getEntrypointTransformer() {
+        return transformer;
+    }
+
+    @Override
+    public void unlockClassPath(LeafLauncher launcher) {
+        for (Path gameJar : gameJars) {
+            if (logJars.contains(gameJar)) {
+                launcher.setAllowedPrefixes(gameJar);
+            } else {
+                launcher.addToClassPath(gameJar);
+            }
+        }
+
+        for (Path lib : miscGameLibraries) {
+            launcher.addToClassPath(lib);
+        }
+    }
+
+    @Override
+    public void launch(ClassLoader loader) {
+        String targetClass = entrypoint;
+
+        MethodHandle invoker;
+
+        try {
+            Class<?> c = loader.loadClass(targetClass);
+            invoker = MethodHandles.lookup().findStatic(c, "main", MethodType.methodType(void.class, String[].class));
+        } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+            throw FormattedException.ofLocalized("exception.zomboid.invokeFailure", e);
+        }
+
+        try {
+            invoker.invokeExact(arguments.toArray());
+        } catch (Throwable t) {
+            throw FormattedException.ofLocalized("exception.zomboid.generic", t);
+        }
+    }
+
+    @Override
+    public Arguments getArguments() {
+        return arguments;
+    }
+
+    @Override
+    public String[] getLaunchArguments(boolean sanitize) {
+        if (arguments == null) {
+            return new String[0];
+        }
+
+        String[] ret = arguments.toArray();
+        if (!sanitize) {
+            return ret;
+        }
+
+        int writeIdx = 0;
+
+        for (int i = 0; i < ret.length; i++) {
+            String arg = ret[i];
+
+            if (i + 1 < ret.length
+                && arg.startsWith("-")
+                && SENSITIVE_ARGS.contains(arg.substring(2).toLowerCase(Locale.ENGLISH))) {
+                i++; // skip value
+            } else {
+                ret[writeIdx++] = arg;
+            }
+        }
+
+        if (writeIdx < ret.length) {
+            ret = Arrays.copyOf(ret, writeIdx);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public boolean canOpenErrorGui() {
+        if (arguments == null || envType == EnvType.CLIENT) {
+            return true;
+        }
+
+        return arguments.contains("gui");
+    }
+
+    @Override
+    public boolean hasAwtSupport() {
+        // MC always sets -XstartOnFirstThread for LWJGL
+        return !LoaderUtil.hasMacOs();
+    }
+
     private void setupLogHandler(LeafLauncher launcher, boolean useTargetCl) {
         System.setProperty("log4j2.formatMsgNoLookups",
             "true"); // lookups are not used by mc and cause issues with older log4j2 versions
@@ -382,99 +443,6 @@ public class ZomboidGameProvider implements GameProvider {
             Thread.currentThread().setContextClassLoader(prevCl);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Arguments getArguments() {
-        return arguments;
-    }
-
-    @Override
-    public String[] getLaunchArguments(boolean sanitize) {
-        if (arguments == null) {
-            return new String[0];
-        }
-
-        String[] ret = arguments.toArray();
-        if (!sanitize) {
-            return ret;
-        }
-
-        int writeIdx = 0;
-
-        for (int i = 0; i < ret.length; i++) {
-            String arg = ret[i];
-
-            if (i + 1 < ret.length
-                && arg.startsWith("--")
-                && SENSITIVE_ARGS.contains(arg.substring(2).toLowerCase(Locale.ENGLISH))) {
-                i++; // skip value
-            } else {
-                ret[writeIdx++] = arg;
-            }
-        }
-
-        if (writeIdx < ret.length) {
-            ret = Arrays.copyOf(ret, writeIdx);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public GameTransformer getEntrypointTransformer() {
-        return transformer;
-    }
-
-    @Override
-    public boolean canOpenErrorGui() {
-        if (arguments == null || envType == EnvType.CLIENT) {
-            return true;
-        }
-
-        List<String> extras = arguments.getExtraArgs();
-        return !extras.contains("nogui") && !extras.contains("--nogui");
-    }
-
-    @Override
-    public boolean hasAwtSupport() {
-        // MC always sets -XstartOnFirstThread for LWJGL
-        return !LoaderUtil.hasMacOs();
-    }
-
-    @Override
-    public void unlockClassPath(LeafLauncher launcher) {
-        for (Path gameJar : gameJars) {
-            if (logJars.contains(gameJar)) {
-                launcher.setAllowedPrefixes(gameJar);
-            } else {
-                launcher.addToClassPath(gameJar);
-            }
-        }
-
-        for (Path lib : miscGameLibraries) {
-            launcher.addToClassPath(lib);
-        }
-    }
-
-    @Override
-    public void launch(ClassLoader loader) {
-        String targetClass = entrypoint;
-
-        MethodHandle invoker;
-
-        try {
-            Class<?> c = loader.loadClass(targetClass);
-            invoker = MethodHandles.lookup().findStatic(c, "main", MethodType.methodType(void.class, String[].class));
-        } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-            throw FormattedException.ofLocalized("exception.minecraft.invokeFailure", e);
-        }
-
-        try {
-            invoker.invokeExact(arguments.toArray());
-        } catch (Throwable t) {
-            throw FormattedException.ofLocalized("exception.minecraft.generic", t);
         }
     }
 }

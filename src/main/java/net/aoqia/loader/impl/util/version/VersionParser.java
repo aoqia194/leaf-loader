@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.version;
+package net.aoqia.loader.impl.util.version;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
+import net.aoqia.loader.api.SemanticVersion;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.VersionParsingException;
 
 public final class VersionParser {
 	public static Version parse(String s, boolean storeX) throws VersionParsingException {

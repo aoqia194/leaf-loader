@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package net.aoqia.loader.api;
 
 import java.util.Optional;
 
-import net.fabricmc.loader.impl.util.version.VersionParser;
+import net.aoqia.loader.impl.util.version.VersionParser;
 
 /**
  * Represents a <a href="https://semver.org/">Sematic Version</a>.

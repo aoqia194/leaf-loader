@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.VersionParsingException;
+import net.aoqia.loader.api.metadata.ModDependency;
+import net.aoqia.loader.api.metadata.version.VersionInterval;
+import net.aoqia.loader.api.metadata.version.VersionPredicate;
 
 public final class ModDependencyImpl implements ModDependency {
 	private Kind kind;

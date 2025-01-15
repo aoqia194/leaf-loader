@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.gui;
+package net.aoqia.loader.impl.gui;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -31,10 +31,10 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.UnaryOperator;
 
-import net.fabricmc.loader.impl.FormattedException;
+import net.aoqia.loader.impl.FormattedException;
 
-public final class FabricStatusTree {
-	public enum FabricTreeWarningLevel {
+public final class LeafStatusTree {
+	public enum LeafTreeWarningLevel {
 		ERROR,
 		WARN,
 		INFO,
@@ -42,15 +42,15 @@ public final class FabricStatusTree {
 
 		public final String lowerCaseName = name().toLowerCase(Locale.ROOT);
 
-		public boolean isHigherThan(FabricTreeWarningLevel other) {
+		public boolean isHigherThan(LeafTreeWarningLevel other) {
 			return ordinal() < other.ordinal();
 		}
 
-		public boolean isAtLeast(FabricTreeWarningLevel other) {
+		public boolean isAtLeast(LeafTreeWarningLevel other) {
 			return ordinal() <= other.ordinal();
 		}
 
-		public static FabricTreeWarningLevel getHighest(FabricTreeWarningLevel a, FabricTreeWarningLevel b) {
+		public static LeafTreeWarningLevel getHighest(LeafTreeWarningLevel a, LeafTreeWarningLevel b) {
 			return a.isHigherThan(b) ? a : b;
 		}
 	}
@@ -95,7 +95,7 @@ public final class FabricStatusTree {
 	public final List<FabricStatusTab> tabs = new ArrayList<>();
 	public final List<FabricStatusButton> buttons = new ArrayList<>();
 
-	public FabricStatusTree(String title, String mainText) {
+	public LeafStatusTree(String title, String mainText) {
 		Objects.requireNonNull(title, "null title");
 		Objects.requireNonNull(mainText, "null mainText");
 
@@ -103,7 +103,7 @@ public final class FabricStatusTree {
 		this.mainText = mainText;
 	}
 
-	public FabricStatusTree(DataInputStream is) throws IOException {
+	public LeafStatusTree(DataInputStream is) throws IOException {
 		title = is.readUTF();
 		mainText = is.readUTF();
 
@@ -200,7 +200,7 @@ public final class FabricStatusTree {
 		public final FabricStatusNode node;
 
 		/** The minimum warning level to display for this tab. */
-		public FabricTreeWarningLevel filterLevel = FabricTreeWarningLevel.NONE;
+		public LeafTreeWarningLevel filterLevel = LeafTreeWarningLevel.NONE;
 
 		public FabricStatusTab(String name) {
 			this.node = new FabricStatusNode(null, name);
@@ -208,7 +208,7 @@ public final class FabricStatusTree {
 
 		public FabricStatusTab(DataInputStream is) throws IOException {
 			node = new FabricStatusNode(null, is);
-			filterLevel = FabricTreeWarningLevel.valueOf(is.readUTF());
+			filterLevel = LeafTreeWarningLevel.valueOf(is.readUTF());
 		}
 
 		public void writeTo(DataOutputStream os) throws IOException {
@@ -225,10 +225,10 @@ public final class FabricStatusTree {
 		private FabricStatusNode parent;
 		public String name;
 		/** The icon type. There can be a maximum of 2 decorations (added with "+" symbols), or 3 if the
-		 * {@link #setWarningLevel(FabricTreeWarningLevel) warning level} is set to
-		 * {@link FabricTreeWarningLevel#NONE } */
+		 * {@link #setWarningLevel(LeafTreeWarningLevel) warning level} is set to
+		 * {@link LeafTreeWarningLevel#NONE } */
 		public String iconType = ICON_TYPE_DEFAULT;
-		private FabricTreeWarningLevel warningLevel = FabricTreeWarningLevel.NONE;
+		private LeafTreeWarningLevel warningLevel = LeafTreeWarningLevel.NONE;
 		public boolean expandByDefault = false;
 		/** Extra text for more information. Lines should be separated by "\n". */
 		public String details;
@@ -246,7 +246,7 @@ public final class FabricStatusTree {
 
 			name = is.readUTF();
 			iconType = is.readUTF();
-			warningLevel = FabricTreeWarningLevel.valueOf(is.readUTF());
+			warningLevel = LeafTreeWarningLevel.valueOf(is.readUTF());
 			expandByDefault = is.readBoolean();
 			if (is.readBoolean()) details = is.readUTF();
 
@@ -275,11 +275,11 @@ public final class FabricStatusTree {
 			newParent.children.add(this);
 		}
 
-		public FabricTreeWarningLevel getMaximumWarningLevel() {
+		public LeafTreeWarningLevel getMaximumWarningLevel() {
 			return warningLevel;
 		}
 
-		public void setWarningLevel(FabricTreeWarningLevel level) {
+		public void setWarningLevel(LeafTreeWarningLevel level) {
 			if (this.warningLevel == level) {
 				return;
 			}
@@ -293,20 +293,20 @@ public final class FabricStatusTree {
 				}
 
 				this.warningLevel = level;
-				expandByDefault |= level.isAtLeast(FabricTreeWarningLevel.WARN);
+				expandByDefault |= level.isAtLeast(LeafTreeWarningLevel.WARN);
 			}
 		}
 
 		public void setError() {
-			setWarningLevel(FabricTreeWarningLevel.ERROR);
+			setWarningLevel(LeafTreeWarningLevel.ERROR);
 		}
 
 		public void setWarning() {
-			setWarningLevel(FabricTreeWarningLevel.WARN);
+			setWarningLevel(LeafTreeWarningLevel.WARN);
 		}
 
 		public void setInfo() {
-			setWarningLevel(FabricTreeWarningLevel.INFO);
+			setWarningLevel(LeafTreeWarningLevel.INFO);
 		}
 
 		private FabricStatusNode addChild(String string) {
@@ -340,7 +340,7 @@ public final class FabricStatusTree {
 			return string;
 		}
 
-		public FabricStatusNode addMessage(String message, FabricTreeWarningLevel warningLevel) {
+		public FabricStatusNode addMessage(String message, LeafTreeWarningLevel warningLevel) {
 			String[] lines = message.split("\n");
 
 			FabricStatusNode sub = new FabricStatusNode(this, lines[0]);
@@ -420,7 +420,7 @@ public final class FabricStatusTree {
 				msg = String.format("%s: %s", exception.getClass().getSimpleName(), exception.getMessage());
 			}
 
-			FabricStatusNode sub = addMessage(msg, FabricTreeWarningLevel.ERROR);
+			FabricStatusNode sub = addMessage(msg, LeafTreeWarningLevel.ERROR);
 
 			if (!showTrace) return sub;
 
@@ -502,7 +502,7 @@ public final class FabricStatusTree {
 					}
 				}
 
-				if (fileNode.iconType.equals(FabricStatusTree.ICON_TYPE_DEFAULT)) {
+				if (fileNode.iconType.equals(LeafStatusTree.ICON_TYPE_DEFAULT)) {
 					fileNode.iconType = folderType;
 				}
 

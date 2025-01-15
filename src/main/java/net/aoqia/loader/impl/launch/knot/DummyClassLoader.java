@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package net.aoqia.loader.impl.launch.knot;
 
 import java.io.IOException;
 import java.net.URL;

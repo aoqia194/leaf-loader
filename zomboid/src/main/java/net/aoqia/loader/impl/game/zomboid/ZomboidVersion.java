@@ -44,17 +44,31 @@ public final class ZomboidVersion {
     }
 
     public static final class Builder {
-        private String id; // id as in version.json
+        private String id;
         private OptionalInt classVersion = OptionalInt.empty();
+
+        public Builder setClassVersion(int classVersion) {
+            this.classVersion = OptionalInt.of(classVersion);
+            return this;
+        }
+
+        public Builder setFromFileName(String name) {
+            // strip extension
+            int pos = name.lastIndexOf('.');
+            if (pos > 0) {
+                name = name.substring(0, pos);
+            }
+
+            return setIdLookup(name);
+        }
+
+        public Builder setIdLookup(String version) {
+            return setId(ZomboidVersionLookup.getRelease(version));
+        }
 
         // Setters
         public Builder setId(String id) {
             this.id = id;
-            return this;
-        }
-
-        public Builder setClassVersion(int classVersion) {
-            this.classVersion = OptionalInt.of(classVersion);
             return this;
         }
 

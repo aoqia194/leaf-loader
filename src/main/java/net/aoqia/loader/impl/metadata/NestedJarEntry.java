@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 public interface NestedJarEntry {
 	String getFile();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util;
+package net.aoqia.loader.impl.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +26,8 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 public final class Localization {
-	public static final ResourceBundle BUNDLE = createBundle("net.fabricmc.loader.Messages", Locale.getDefault());
-	public static final ResourceBundle ROOT_LOCALE_BUNDLE = createBundle("net.fabricmc.loader.Messages", Locale.ROOT);
+	public static final ResourceBundle BUNDLE = createBundle("net.aoqia.loader.Messages", Locale.getDefault());
+	public static final ResourceBundle ROOT_LOCALE_BUNDLE = createBundle("net.aoqia.loader.Messages", Locale.ROOT);
 
 	public static String format(String key, Object... args) {
 		String pattern = BUNDLE.getString(key);

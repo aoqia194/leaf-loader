@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl;
+package net.aoqia.loader.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,17 +28,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.ModOrigin;
-import net.fabricmc.loader.impl.discovery.ModCandidateImpl;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.ModOriginImpl;
-import net.fabricmc.loader.impl.util.FileSystemUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.api.ModContainer;
+import net.aoqia.loader.api.metadata.ModOrigin;
+import net.aoqia.loader.impl.discovery.ModCandidateImpl;
+import net.aoqia.loader.impl.metadata.LoaderModMetadata;
+import net.aoqia.loader.impl.metadata.ModOriginImpl;
+import net.aoqia.loader.impl.util.FileSystemUtil;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 @SuppressWarnings("deprecation")
-public class ModContainerImpl extends net.fabricmc.loader.ModContainer {
+public class ModContainerImpl extends net.aoqia.loader.ModContainer {
 	private final LoaderModMetadata info;
 	private final ModOrigin origin;
 	private final List<Path> codeSourcePaths;
@@ -83,7 +83,7 @@ public class ModContainerImpl extends net.fabricmc.loader.ModContainer {
 		List<Path> paths = getRootPaths();
 
 		if (paths.size() != 1 && !warnedMultiPath) {
-			if (!FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedMultiPath = true;
+			if (!LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedMultiPath = true;
 			Log.warn(LogCategory.GENERAL, "getRootPath access for %s with multiple paths, returning only one which may incur unexpected behavior!", this);
 		}
 
@@ -108,7 +108,7 @@ public class ModContainerImpl extends net.fabricmc.loader.ModContainer {
 			if (path.getFileSystem().isOpen()) continue;
 
 			if (!warnedClose) {
-				if (!FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedClose = true;
+				if (!LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedClose = true;
 				Log.warn(LogCategory.GENERAL, "FileSystem for %s has been closed unexpectedly, existing root path references may break!", this);
 			}
 
@@ -184,7 +184,7 @@ public class ModContainerImpl extends net.fabricmc.loader.ModContainer {
 
 	@Override
 	public Optional<ModContainer> getContainingMod() {
-		return parentModId != null ? FabricLoaderImpl.INSTANCE.getModContainer(parentModId) : Optional.empty();
+		return parentModId != null ? LeafLoaderImpl.INSTANCE.getModContainer(parentModId) : Optional.empty();
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class ModContainerImpl extends net.fabricmc.loader.ModContainer {
 		List<ModContainer> ret = new ArrayList<>(childModIds.size());
 
 		for (String id : childModIds) {
-			ModContainer mod = FabricLoaderImpl.INSTANCE.getModContainer(id).orElse(null);
+			ModContainer mod = LeafLoaderImpl.INSTANCE.getModContainer(id).orElse(null);
 			if (mod != null) ret.add(mod);
 		}
 

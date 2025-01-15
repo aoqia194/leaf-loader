@@ -25,7 +25,7 @@ import net.aoqia.api.EnvType;
 import net.aoqia.loader.impl.launch.knot.Knot;
 import net.aoqia.loader.impl.util.SystemProperties;
 
-public class FabricLoaderLauncherSessionListener implements LauncherSessionListener {
+public class LeafLoaderLauncherSessionListener implements LauncherSessionListener {
 	static {
 		System.setProperty(SystemProperties.DEVELOPMENT, "true");
 		System.setProperty(SystemProperties.UNIT_TEST, "true");
@@ -36,7 +36,7 @@ public class FabricLoaderLauncherSessionListener implements LauncherSessionListe
 
 	private ClassLoader launcherSessionClassLoader;
 
-	public FabricLoaderLauncherSessionListener() {
+	public LeafLoaderLauncherSessionListener() {
 		final Thread currentThread = Thread.currentThread();
 		final ClassLoader originalClassLoader = currentThread.getContextClassLoader();
 

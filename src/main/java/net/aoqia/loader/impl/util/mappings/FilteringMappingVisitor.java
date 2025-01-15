@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.mappings;
+package net.aoqia.loader.impl.util.mappings;
 
 import java.io.IOException;
 

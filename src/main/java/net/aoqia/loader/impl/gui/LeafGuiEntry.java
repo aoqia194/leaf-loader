@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.gui;
+package net.aoqia.loader.impl.gui;
 
 import java.awt.GraphicsEnvironment;
 import java.io.DataInputStream;
@@ -27,24 +27,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricBasicButtonType;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricStatusTab;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricTreeWarningLevel;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.Localization;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.game.GameProvider;
+import net.aoqia.loader.impl.gui.LeafStatusTree.FabricBasicButtonType;
+import net.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusTab;
+import net.aoqia.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.Localization;
+import net.aoqia.loader.impl.util.UrlUtil;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 /** The main entry point for all fabric-based stuff. */
-public final class FabricGuiEntry {
-	/** Opens the given {@link FabricStatusTree} in a new swing window.
+public final class LeafGuiEntry {
+	/** Opens the given {@link LeafStatusTree} in a new swing window.
 	 *
 	 * @throws Exception if something went wrong while opening the window. */
-	public static void open(FabricStatusTree tree) throws Exception {
-		GameProvider provider = FabricLoaderImpl.INSTANCE.tryGetGameProvider();
+	public static void open(LeafStatusTree tree) throws Exception {
+		GameProvider provider = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (provider == null && LoaderUtil.hasAwtSupport()
 				|| provider != null && provider.hasAwtSupport()) {
@@ -54,7 +53,7 @@ public final class FabricGuiEntry {
 		}
 	}
 
-	private static void openForked(FabricStatusTree tree) throws IOException, InterruptedException {
+	private static void openForked(LeafStatusTree tree) throws IOException, InterruptedException {
 		Path javaBinDir = LoaderUtil.normalizePath(Paths.get(System.getProperty("java.home"), "bin"));
 		String[] executables = { "javaw.exe", "java.exe", "java" };
 		Path javaPath = null;
@@ -70,7 +69,7 @@ public final class FabricGuiEntry {
 
 		if (javaPath == null) throw new RuntimeException("can't find java executable in "+javaBinDir);
 
-		Process process = new ProcessBuilder(javaPath.toString(), "-Xmx100M", "-cp", UrlUtil.LOADER_CODE_SOURCE.toString(), FabricGuiEntry.class.getName())
+		Process process = new ProcessBuilder(javaPath.toString(), "-Xmx100M", "-cp", UrlUtil.LOADER_CODE_SOURCE.toString(), LeafGuiEntry.class.getName())
 				.redirectOutput(ProcessBuilder.Redirect.INHERIT)
 				.redirectError(ProcessBuilder.Redirect.INHERIT)
 				.start();
@@ -91,7 +90,7 @@ public final class FabricGuiEntry {
 	}
 
 	public static void main(String[] args) throws Exception {
-		FabricStatusTree tree = new FabricStatusTree(new DataInputStream(System.in));
+		LeafStatusTree tree = new LeafStatusTree(new DataInputStream(System.in));
 		FabricMainWindow.open(tree, true);
 		System.exit(0);
 	}
@@ -118,18 +117,18 @@ public final class FabricGuiEntry {
 		}, exitAfter);
 	}
 
-	public static void displayError(String mainText, Throwable exception, Consumer<FabricStatusTree> treeCustomiser, boolean exitAfter) {
-		GameProvider provider = FabricLoaderImpl.INSTANCE.tryGetGameProvider();
+	public static void displayError(String mainText, Throwable exception, Consumer<LeafStatusTree> treeCustomiser, boolean exitAfter) {
+		GameProvider provider = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (!GraphicsEnvironment.isHeadless() && (provider == null || provider.canOpenErrorGui())) {
-			String title = "Fabric Loader " + FabricLoaderImpl.VERSION;
-			FabricStatusTree tree = new FabricStatusTree(title, mainText);
+			String title = "Fabric Loader " + net.aoqia.loader.impl.LeafLoaderImpl.VERSION;
+			LeafStatusTree tree = new LeafStatusTree(title, mainText);
 			FabricStatusTab crashTab = tree.addTab(Localization.format("gui.tab.crash"));
 
 			if (exception != null) {
 				crashTab.node.addCleanedException(exception);
 			} else {
-				crashTab.node.addMessage(Localization.format("gui.error.missingException"), FabricTreeWarningLevel.NONE);
+				crashTab.node.addMessage(Localization.format("gui.error.missingException"), LeafTreeWarningLevel.NONE);
 			}
 
 			// Maybe add an "open mods folder" button?

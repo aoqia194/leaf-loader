@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.fabricmc.loader.api.metadata.ModOrigin;
+import net.aoqia.loader.api.metadata.ModOrigin;
 
 public final class ModOriginImpl implements ModOrigin {
 	private final Kind kind;

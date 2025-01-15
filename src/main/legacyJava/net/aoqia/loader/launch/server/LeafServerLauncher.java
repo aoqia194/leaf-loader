@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.launch.server;
+package net.aoqia.loader.launch.server;
 
 /**
- * @deprecated Use {@link net.fabricmc.loader.impl.launch.server.FabricServerLauncher} instead
+ * @deprecated Use {@link net.aoqia.loader.impl.launch.server.LeafServerLauncher} instead
  */
 @Deprecated
-public final class FabricServerLauncher {
+public final class LeafServerLauncher {
 	public static void main(String[] args) {
-		net.fabricmc.loader.impl.launch.server.FabricServerLauncher.main(args);
+		net.aoqia.loader.impl.launch.server.LeafServerLauncher.main(args);
 	}
 }

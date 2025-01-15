@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch;
+package net.aoqia.loader.impl.launch;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.aoqia.loader.impl.LeafLoaderImpl;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.FabricUtil;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -29,30 +30,28 @@ import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfig;
 import org.spongepowered.asm.mixin.transformer.Config;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.ModDependency.Kind;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.ModContainerImpl;
-import net.fabricmc.loader.impl.launch.knot.MixinServiceKnot;
-import net.fabricmc.loader.impl.launch.knot.MixinServiceKnotBootstrap;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.mappings.MixinIntermediaryDevRemapper;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.SemanticVersion;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.VersionParsingException;
+import net.aoqia.loader.api.metadata.ModDependency;
+import net.aoqia.loader.api.metadata.ModDependency.Kind;
+import net.aoqia.loader.api.metadata.version.VersionInterval;
+import net.aoqia.loader.impl.ModContainerImpl;
+import net.aoqia.loader.impl.launch.knot.MixinServiceKnot;
+import net.aoqia.loader.impl.launch.knot.MixinServiceKnotBootstrap;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 import net.fabricmc.mappingio.tree.MappingTree;
 
-public final class FabricMixinBootstrap {
-	private FabricMixinBootstrap() { }
+public final class LeafMixinBootstrap {
+	private LeafMixinBootstrap() { }
 
 	private static boolean initialized = false;
 
-	public static void init(EnvType side, FabricLoaderImpl loader) {
+	public static void init(EnvType side, LeafLoaderImpl loader) {
 		if (initialized) {
-			throw new RuntimeException("FabricMixinBootstrap has already been initialized!");
+			throw new RuntimeException("LeafMixinBootstrap has already been initialized!");
 		}
 
 		System.setProperty("mixin.bootstrapService", MixinServiceKnotBootstrap.class.getName());
@@ -60,27 +59,8 @@ public final class FabricMixinBootstrap {
 
 		MixinBootstrap.init();
 
-		if (FabricLauncherBase.getLauncher().isDevelopment()) {
-			MappingConfiguration mappingConfiguration = FabricLauncherBase.getLauncher().getMappingConfiguration();
-			MappingTree mappings = mappingConfiguration.getMappings();
-
-			if (mappings != null) {
-				List<String> namespaces = new ArrayList<>(mappings.getDstNamespaces());
-				namespaces.add(mappings.getSrcNamespace());
-
-				if (namespaces.contains("intermediary") && namespaces.contains(mappingConfiguration.getTargetNamespace())) {
-					System.setProperty("mixin.env.remapRefMap", "true");
-
-					try {
-						MixinIntermediaryDevRemapper remapper = new MixinIntermediaryDevRemapper(mappings, "intermediary", mappingConfiguration.getTargetNamespace());
-						MixinEnvironment.getDefaultEnvironment().getRemappers().add(remapper);
-						Log.info(LogCategory.MIXIN, "Loaded Fabric development mappings for mixin remapper!");
-					} catch (Exception e) {
-						Log.error(LogCategory.MIXIN, "Fabric development environment setup error - the game will probably crash soon!");
-						e.printStackTrace();
-					}
-				}
-			}
+		if (LeafLauncherBase.getLauncher().isDevelopment()) {
+            // Intermediary remapping is usually done here. I nuked it because don't need it.
 		}
 
 		Map<String, ModContainerImpl> configToModMap = new HashMap<>();
@@ -142,7 +122,7 @@ public final class FabricMixinBootstrap {
 			List<VersionInterval> reqIntervals = Collections.singletonList(VersionInterval.INFINITE);
 
 			for (ModDependency dep : mod.getMetadata().getDependencies()) {
-				if (dep.getModId().equals("fabricloader") || dep.getModId().equals("fabric-loader")) {
+				if (dep.getModId().equals("leafloader") || dep.getModId().equals("leaf-loader")) {
 					if (dep.getKind() == Kind.DEPENDS) {
 						reqIntervals = VersionInterval.and(reqIntervals, dep.getVersionIntervals());
 					} else if (dep.getKind() == Kind.BREAKS) {

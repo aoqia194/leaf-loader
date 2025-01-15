@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader;
+package net.aoqia.loader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.metadata.LoaderModMetadata;
+import net.aoqia.loader.impl.util.UrlUtil;
+import net.aoqia.loader.metadata.LoaderModMetadata;
 
 /**
- * @deprecated Use {@link net.fabricmc.loader.api.ModContainer} instead
+ * @deprecated Use {@link net.aoqia.loader.api.ModContainer} instead
  */
 @Deprecated
-public abstract class ModContainer implements net.fabricmc.loader.api.ModContainer {
+public abstract class ModContainer implements net.aoqia.loader.api.ModContainer {
 	public abstract LoaderModMetadata getInfo();
 	protected abstract List<Path> getCodeSourcePaths();
 

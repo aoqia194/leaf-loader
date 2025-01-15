@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl;
+package net.aoqia.loader.impl;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-import net.fabricmc.loader.api.MappingResolver;
+import net.aoqia.loader.api.MappingResolver;
 import net.fabricmc.mappingio.tree.MappingTree;
 
 class MappingResolverImpl implements MappingResolver {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.log;
+package net.aoqia.loader.impl.util.log;
 
 public final class LogCategory {
 	public static final LogCategory DISCOVERY = create("Discovery");

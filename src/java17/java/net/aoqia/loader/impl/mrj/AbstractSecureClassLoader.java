@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.mrj;
+package net.aoqia.loader.impl.mrj;
 
 import java.security.SecureClassLoader;
 

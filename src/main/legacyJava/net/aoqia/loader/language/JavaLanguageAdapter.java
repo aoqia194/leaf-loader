@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.language;
+package net.aoqia.loader.language;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,10 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.objectweb.asm.ClassReader;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.LoaderUtil;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.util.LoaderUtil;
 
 @Deprecated
 public class JavaLanguageAdapter implements LanguageAdapter {
@@ -34,18 +33,18 @@ public class JavaLanguageAdapter implements LanguageAdapter {
 		// TODO: Be a bit more involved
 		switch (itfString) {
 		case "net/fabricmc/api/ClientModInitializer":
-			if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+			if (net.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 				return false;
 			}
 
 			break;
 		case "net/fabricmc/api/DedicatedServerModInitializer":
-			if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			if (net.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 				return false;
 			}
 		}
 
-		InputStream stream = FabricLauncherBase.getLauncher().getResourceAsStream(LoaderUtil.getClassFileName(itfString));
+		InputStream stream = LeafLauncherBase.getLauncher().getResourceAsStream(LoaderUtil.getClassFileName(itfString));
 		if (stream == null) return false;
 
 		ClassReader reader = new ClassReader(stream);
@@ -62,7 +61,7 @@ public class JavaLanguageAdapter implements LanguageAdapter {
 	}
 
 	public static Class<?> getClass(String className, Options options) throws ClassNotFoundException, IOException {
-		InputStream stream = FabricLauncherBase.getLauncher().getResourceAsStream(LoaderUtil.getClassFileName(className));
+		InputStream stream = LeafLauncherBase.getLauncher().getResourceAsStream(LoaderUtil.getClassFileName(className));
 		if (stream == null) throw new ClassNotFoundException("Could not find or load class " + className);
 
 		ClassReader reader = new ClassReader(stream);
@@ -82,7 +81,7 @@ public class JavaLanguageAdapter implements LanguageAdapter {
 		}
 
 		stream.close();
-		return FabricLauncherBase.getClass(className);
+		return LeafLauncherBase.getClass(className);
 	}
 
 	@Override

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
-import net.fabricmc.loader.api.metadata.ModDependency;
+import net.aoqia.loader.api.metadata.ModDependency;
 
 class Explanation implements Comparable<Explanation> {
 	private static int nextCmpId;

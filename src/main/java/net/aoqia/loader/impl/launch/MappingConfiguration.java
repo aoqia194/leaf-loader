@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch;
+package net.aoqia.loader.impl.launch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,11 +29,11 @@ import java.util.zip.ZipError;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.loader.impl.util.ManifestUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.mappings.FilteringMappingVisitor;
+import net.aoqia.loader.impl.util.ManifestUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.util.mappings.FilteringMappingVisitor;
 import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.format.MappingFormat;
 import net.fabricmc.mappingio.format.tiny.Tiny1FileReader;
@@ -91,7 +91,7 @@ public final class MappingConfiguration {
 	}
 
 	public String getTargetNamespace() {
-		return FabricLauncherBase.getLauncher().isDevelopment() ? "named" : "intermediary";
+		return LeafLauncherBase.getLauncher().isDevelopment() ? "named" : "official";
 	}
 
 	public boolean requiresPackageAccessHack() {

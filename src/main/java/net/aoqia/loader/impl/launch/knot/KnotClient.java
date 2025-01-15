@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package net.aoqia.loader.impl.launch.knot;
 
-import net.fabricmc.api.EnvType;
+import net.aoqia.api.EnvType;
 
 public class KnotClient {
 	public static void main(String[] args) {

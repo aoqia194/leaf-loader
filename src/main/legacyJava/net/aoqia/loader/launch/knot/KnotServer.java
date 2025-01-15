@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.launch.knot;
+package net.aoqia.loader.launch.knot;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.launch.knot.Knot;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.launch.knot.Knot;
 
 /**
- * @deprecated Use {@link net.fabricmc.loader.impl.launch.knot.KnotServer} instead
+ * @deprecated Use {@link net.aoqia.loader.impl.launch.knot.KnotServer} instead
  */
 @Deprecated
 public final class KnotServer {

@@ -18,12 +18,12 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "net.fabricmc.test.mod.ClientEntrypoint",
-      "net.fabricmc.test.mod.ClientEntrypoint2"
+      "net.aoqia.test.mod.ClientEntrypoint",
+      "net.aoqia.test.mod.ClientEntrypoint2"
     ],
     "custom_entrypoint": [
       {
-        "value": "net.fabricmc.test.mod.extension.CustomEntrypoint",
+        "value": "net.aoqia.test.mod.extension.CustomEntrypoint",
         "adapter": "default"
       }
     ]

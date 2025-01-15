@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package net.aoqia.loader.impl.launch.knot;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,20 +36,19 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.FormattedException;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.launch.FabricMixinBootstrap;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.aoqia.loader.impl.FormattedException;
+import net.aoqia.loader.impl.game.GameProvider;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.launch.LeafMixinBootstrap;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.UrlUtil;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
-public final class Knot extends FabricLauncherBase {
+public final class Knot extends LeafLauncherBase {
 	private static final boolean IS_DEVELOPMENT = Boolean.parseBoolean(System.getProperty(SystemProperties.DEVELOPMENT, "false"));
 
 	protected Map<String, Object> properties = new HashMap<>();
@@ -129,11 +128,11 @@ public final class Knot extends FabricLauncherBase {
 
 		provider = createGameProvider(args);
 		Log.finishBuiltinConfig();
-		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Fabric Loader %s", provider.getGameName(), provider.getRawGameVersion(), FabricLoaderImpl.VERSION);
+		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Leaf Loader %s", provider.getGameName(), provider.getRawGameVersion(), net.aoqia.loader.impl.LeafLoaderImpl.VERSION);
 
 		// Setup classloader
 		// TODO: Provide KnotCompatibilityClassLoader in non-exclusive-Fabric pre-1.13 environments?
-		boolean useCompatibility = provider.requiresUrlClassLoader() || Boolean.parseBoolean(System.getProperty("fabric.loader.useCompatibilityClassLoader", "false"));
+		boolean useCompatibility = provider.requiresUrlClassLoader() || Boolean.parseBoolean(System.getProperty("leaf.loader.useCompatibilityClassLoader", "false"));
 		classLoader = KnotClassLoaderInterface.create(useCompatibility, isDevelopment(), envType, provider);
 		ClassLoader cl = classLoader.getClassLoader();
 
@@ -141,15 +140,15 @@ public final class Knot extends FabricLauncherBase {
 
 		Thread.currentThread().setContextClassLoader(cl);
 
-		FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
+		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
 		loader.setGameProvider(provider);
 		loader.load();
 		loader.freeze();
 
-		FabricLoaderImpl.INSTANCE.loadAccessWideners();
+		net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.loadAccessWideners();
 
-		FabricMixinBootstrap.init(getEnvironmentType(), loader);
-		FabricLauncherBase.finishMixinBootstrapping();
+		LeafMixinBootstrap.init(getEnvironmentType(), loader);
+		LeafLauncherBase.finishMixinBootstrapping();
 
 		classLoader.initializeTransformers();
 
@@ -223,7 +222,7 @@ public final class Knot extends FabricLauncherBase {
 			if (flPath == null || !flPath.getFileName().toString().endsWith(".jar")) return null; // not a jar
 
 			try (ZipFile zf = new ZipFile(flPath.toFile())) {
-				ZipEntry entry = zf.getEntry("META-INF/services/net.fabricmc.loader.impl.game.GameProvider"); // same file as used by service loader
+				ZipEntry entry = zf.getEntry("META-INF/services/net.aoqia.loader.impl.game.GameProvider"); // same file as used by service loader
 				if (entry == null) return null;
 
 				try (InputStream is = zf.getInputStream(entry)) {
@@ -257,7 +256,7 @@ public final class Knot extends FabricLauncherBase {
 	@Override
 	public String getTargetNamespace() {
 		// TODO: Won't work outside of Yarn
-		return IS_DEVELOPMENT ? "named" : "intermediary";
+		return IS_DEVELOPMENT ? "named" : "official";
 	}
 
 	@Override

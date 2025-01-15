@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package net.aoqia.loader.impl.launch.knot;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.game.GameProvider;
+import net.aoqia.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
 
 class KnotCompatibilityClassLoader extends URLClassLoader implements ClassLoaderAccess {
 	private final KnotClassDelegate<KnotCompatibilityClassLoader> delegate;

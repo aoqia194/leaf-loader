@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package net.aoqia.loader.impl.launch.knot;
 
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -25,9 +25,9 @@ import org.spongepowered.asm.logging.ILogger;
 import org.spongepowered.asm.logging.Level;
 import org.spongepowered.asm.logging.LoggerAdapterAbstract;
 
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.log.LogLevel;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.util.log.LogLevel;
 
 final class MixinLogger extends LoggerAdapterAbstract {
 	private static final Map<String, ILogger> LOGGER_MAP = new ConcurrentHashMap<>();

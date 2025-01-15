@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.metadata;
+package net.aoqia.loader.metadata;
 
 /**
  * @deprecated Internal API, do not use

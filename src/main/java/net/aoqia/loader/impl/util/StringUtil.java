@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util;
+package net.aoqia.loader.impl.util;
 
 public final class StringUtil {
 	public static String capitalize(String s) {

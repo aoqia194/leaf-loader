@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.transformer;
+package net.aoqia.loader.impl.transformer;
 
 import java.util.ArrayList;
 import java.util.Collection;

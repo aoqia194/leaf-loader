@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,15 +24,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.ContactInformation;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.ModEnvironment;
-import net.fabricmc.loader.api.metadata.Person;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.metadata.ContactInformation;
+import net.aoqia.loader.api.metadata.CustomValue;
+import net.aoqia.loader.api.metadata.ModDependency;
+import net.aoqia.loader.api.metadata.ModEnvironment;
+import net.aoqia.loader.api.metadata.Person;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
 	static final IconEntry NO_ICON = size -> Optional.empty();
@@ -276,7 +276,7 @@ final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetada
 	@Override
 	public void emitFormatWarnings() {
 		if (hasRequires) {
-			Log.warn(LogCategory.METADATA, "Mod `%s` (%s) uses 'requires' key in fabric.mod.json, which is not supported - use 'depends'", this.id, this.version);
+			Log.warn(LogCategory.METADATA, "Mod `%s` (%s) uses 'requires' key in leaf.mod.json, which is not supported - use 'depends'", this.id, this.version);
 		}
 	}
 

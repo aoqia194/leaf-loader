@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
-import net.fabricmc.loader.api.Version;
+import net.aoqia.loader.api.Version;
 
 interface DomainObject {
 	String getId();

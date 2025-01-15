@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl;
+package net.aoqia.loader.impl;
 
-import net.fabricmc.loader.impl.util.Localization;
+import net.aoqia.loader.impl.util.Localization;
 
 @SuppressWarnings("serial")
 public final class FormattedException extends RuntimeException {

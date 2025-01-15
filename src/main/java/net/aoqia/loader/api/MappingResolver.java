@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package net.aoqia.loader.api;
 
 import java.util.Collection;
 

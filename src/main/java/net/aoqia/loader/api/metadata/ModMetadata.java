@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata;
+package net.aoqia.loader.api.metadata;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import net.fabricmc.loader.api.Version;
+import net.aoqia.loader.api.Version;
 
 /**
  * The metadata of a mod.
@@ -170,7 +170,7 @@ public interface ModMetadata {
 	Optional<String> getIconPath(int size);
 
 	/**
-	 * Returns if the mod's {@code fabric.mod.json} declares a custom value under {@code key}.
+	 * Returns if the mod's {@code leaf.mod.json} declares a custom value under {@code key}.
 	 *
 	 * @param key the key
 	 * @return whether a custom value is present
@@ -178,7 +178,7 @@ public interface ModMetadata {
 	boolean containsCustomValue(String key);
 
 	/**
-	 * Returns the mod's {@code fabric.mod.json} declared custom value under {@code key}.
+	 * Returns the mod's {@code leaf.mod.json} declared custom value under {@code key}.
 	 *
 	 * @param key the key
 	 * @return the custom value, or {@code null} if no such value is present

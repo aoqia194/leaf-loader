@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.log;
+package net.aoqia.loader.impl.util.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

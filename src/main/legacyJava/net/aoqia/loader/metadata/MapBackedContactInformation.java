@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.metadata;
+package net.aoqia.loader.metadata;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import net.fabricmc.loader.api.metadata.ContactInformation;
+import net.aoqia.loader.api.metadata.ContactInformation;
 
 /**
  * @deprecated Use {@link ContactInformation} instead

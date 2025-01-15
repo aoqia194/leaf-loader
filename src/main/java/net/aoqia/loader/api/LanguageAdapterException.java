@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package net.aoqia.loader.api;
 
 /**
  * An exception that occurs during a {@link LanguageAdapter}'s object creation.

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import net.fabricmc.loader.api.metadata.ContactInformation;
+import net.aoqia.loader.api.metadata.ContactInformation;
 
 public class ContactInformationImpl implements ContactInformation {
 	private final Map<String, String> map;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.log;
+package net.aoqia.loader.impl.util.log;
 
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 
 public final class Log {
-	public static final String NAME = "FabricLoader";
+	public static final String NAME = "LeafLoader";
 	private static final boolean CHECK_FOR_BRACKETS = true;
 
 	private static LogHandler handler = new BuiltinLogHandler();

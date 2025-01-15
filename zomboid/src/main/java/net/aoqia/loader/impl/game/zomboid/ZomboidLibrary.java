@@ -20,7 +20,7 @@ import net.aoqia.api.EnvType;
 import net.aoqia.loader.impl.game.LibClassifier.LibraryType;
 
 enum ZomboidLibrary implements LibraryType {
-	ZOMBOID_CLIENT(EnvType.CLIENT, "zombie/gameStates/MainScreenState.java"),
+	ZOMBOID_CLIENT(EnvType.CLIENT, "zombie/gameStates/MainScreenState.class"),
 	ZOMBOID_SERVER(EnvType.SERVER, "net/minecraft/server/Main.class"),
 	ZOMBOID_COMMON("zombie/gameStates/MainScreenState.java"),
 	MODLOADER("ModLoader"),

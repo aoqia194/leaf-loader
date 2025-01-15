@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.impl.FormattedException;
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
-import net.fabricmc.loader.impl.lib.gson.JsonToken;
-import net.fabricmc.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.api.VersionParsingException;
+import net.aoqia.loader.api.metadata.ModDependency;
+import net.aoqia.loader.impl.FormattedException;
+import net.aoqia.loader.impl.lib.gson.JsonReader;
+import net.aoqia.loader.impl.lib.gson.JsonToken;
+import net.aoqia.loader.impl.util.LoaderUtil;
 
 public final class DependencyOverrides {
 	private final Map<String, List<Entry>> dependencyOverrides;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package net.aoqia.loader.api;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -23,26 +23,25 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.entrypoint.EntrypointContainer;
 
 /**
- * The public-facing FabricLoader instance.
+ * The public-facing LeafLoader instance.
  *
  * <p>To obtain a working instance, call {@link #getInstance()}.</p>
  *
  * @since 0.4.0
  */
-public interface FabricLoader {
+public interface LeafLoader {
 	/**
 	 * Returns the public-facing Fabric Loader instance.
 	 */
-	static FabricLoader getInstance() {
-		FabricLoader ret = FabricLoaderImpl.INSTANCE;
+	static net.aoqia.loader.api.LeafLoader getInstance() {
+		net.aoqia.loader.api.LeafLoader ret = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
 
 		if (ret == null) {
-			throw new RuntimeException("Accessed FabricLoader too early!");
+			throw new RuntimeException("Accessed LeafLoader too early!");
 		}
 
 		return ret;

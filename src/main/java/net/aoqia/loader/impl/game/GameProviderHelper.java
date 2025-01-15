@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game;
+package net.aoqia.loader.impl.game;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,17 +35,16 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.FormattedException;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.launch.MappingConfiguration;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlConversionException;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.FormattedException;
+import net.aoqia.loader.impl.launch.LeafLauncher;
+import net.aoqia.loader.impl.launch.MappingConfiguration;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.UrlConversionException;
+import net.aoqia.loader.impl.util.UrlUtil;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.tinyremapper.InputTag;
 import net.fabricmc.tinyremapper.NonClassCopyMode;
@@ -155,11 +154,11 @@ public final class GameProviderHelper {
 
 	private static boolean emittedInfo = false;
 
-	public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId, String gameVersion, Path gameDir, FabricLauncher launcher) {
+	public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId, String gameVersion, Path gameDir, LeafLauncher launcher) {
 		return deobfuscate(inputFileMap, gameId, gameVersion, gameDir, launcher, "official");
 	}
 
-	public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId, String gameVersion, Path gameDir, FabricLauncher launcher, String sourceNamespace) {
+	public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId, String gameVersion, Path gameDir, LeafLauncher launcher, String sourceNamespace) {
 		Log.debug(LogCategory.GAME_REMAP, "Requesting deobfuscation of %s", inputFileMap);
 
 		if (launcher.isDevelopment()) { // in-dev is already deobfuscated
@@ -252,7 +251,7 @@ public final class GameProviderHelper {
 	}
 
 	private static Path getDeobfJarDir(Path gameDir, String gameId, String gameVersion) {
-		Path ret = gameDir.resolve(FabricLoaderImpl.CACHE_DIR_NAME).resolve(FabricLoaderImpl.REMAPPED_JARS_DIR_NAME);
+		Path ret = gameDir.resolve(net.aoqia.loader.impl.LeafLoaderImpl.CACHE_DIR_NAME).resolve(net.aoqia.loader.impl.LeafLoaderImpl.REMAPPED_JARS_DIR_NAME);
 		StringBuilder versionDirName = new StringBuilder();
 
 		if (!gameId.isEmpty()) {
@@ -265,12 +264,12 @@ public final class GameProviderHelper {
 		}
 
 		if (versionDirName.length() > 0) versionDirName.append('-');
-		versionDirName.append(FabricLoaderImpl.VERSION);
+		versionDirName.append(net.aoqia.loader.impl.LeafLoaderImpl.VERSION);
 
 		return ret.resolve(versionDirName.toString().replaceAll("[^\\w\\-\\. ]+", "_"));
 	}
 
-	private static void deobfuscate0(List<Path> inputFiles, List<Path> outputFiles, List<Path> tmpFiles, MappingTree mappings, String sourceNamespace, String targetNamespace, FabricLauncher launcher) throws IOException {
+	private static void deobfuscate0(List<Path> inputFiles, List<Path> outputFiles, List<Path> tmpFiles, MappingTree mappings, String sourceNamespace, String targetNamespace, LeafLauncher launcher) throws IOException {
 		TinyRemapper remapper = TinyRemapper.newRemapper()
 				.withMappings(TinyUtils.createMappingProvider(mappings, sourceNamespace, targetNamespace))
 				.rebuildSourceFilenames(true)

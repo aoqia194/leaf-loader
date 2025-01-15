@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata;
+package net.aoqia.loader.api.metadata;
 
-import net.fabricmc.api.EnvType;
+import net.aoqia.api.EnvType;
 
 public enum ModEnvironment {
 	CLIENT,

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata;
+package net.aoqia.loader.api.metadata;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.metadata.version.VersionInterval;
+import net.aoqia.loader.api.metadata.version.VersionPredicate;
 
 /**
  * Represents a dependency.
@@ -79,7 +79,7 @@ public interface ModDependency {
 		}
 
 		/**
-		 * Get the key for the dependency as used by fabric.mod.json (v1+) and dependency overrides.
+		 * Get the key for the dependency as used by leaf.mod.json (v1+) and dependency overrides.
 		 */
 		public String getKey() {
 			return key;

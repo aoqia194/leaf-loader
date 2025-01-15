@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,15 +26,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.ContactInformation;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.ModEnvironment;
-import net.fabricmc.loader.api.metadata.Person;
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
-import net.fabricmc.loader.impl.lib.gson.JsonToken;
-import net.fabricmc.loader.impl.util.version.VersionParser;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.VersionParsingException;
+import net.aoqia.loader.api.metadata.ContactInformation;
+import net.aoqia.loader.api.metadata.ModDependency;
+import net.aoqia.loader.api.metadata.ModEnvironment;
+import net.aoqia.loader.api.metadata.Person;
+import net.aoqia.loader.impl.lib.gson.JsonReader;
+import net.aoqia.loader.impl.lib.gson.JsonToken;
+import net.aoqia.loader.impl.util.version.VersionParser;
 
 final class V0ModMetadataParser {
 	private static final Pattern WEBSITE_PATTERN = Pattern.compile("\\((.+)\\)");
@@ -43,7 +43,7 @@ final class V0ModMetadataParser {
 	public static LoaderModMetadata parse(JsonReader reader) throws IOException, ParseMetadataException {
 		List<ParseWarning> warnings = new ArrayList<>();
 
-		// All the values the `fabric.mod.json` may contain:
+		// All the values the `leaf.mod.json` may contain:
 		// Required
 		String id = null;
 		Version version = null;

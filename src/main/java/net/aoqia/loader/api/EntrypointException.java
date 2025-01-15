@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package net.aoqia.loader.api;
 
 /**
  * Represents an exception that arises when obtaining entrypoints.
  *
- * @see FabricLoader#getEntrypointContainers(String, Class)
+ * @see LeafLoader#getEntrypointContainers(String, Class)
  */
 @SuppressWarnings("serial")
 public class EntrypointException extends RuntimeException {

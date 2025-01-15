@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package net.aoqia.loader.api;
 
-import net.fabricmc.loader.impl.util.DefaultLanguageAdapter;
+import net.aoqia.loader.impl.util.DefaultLanguageAdapter;
 
 /**
  * Creates instances of objects from custom notations.
  *
  * <p>It enables obtaining of other JVM languages' objects with custom instantiation logic.</p>
  *
- * <p>A language adapter is defined as so in {@code fabric.mod.json}:
+ * <p>A language adapter is defined as so in {@code leaf.mod.json}:
  * <pre><blockquote>
  *   "languageAdapter": {
  *     "&lt;a key&gt;": "&lt;the binary name of the language adapter class&gt;"
@@ -43,7 +43,7 @@ import net.fabricmc.loader.impl.util.DefaultLanguageAdapter;
  *   <p>An example of an entrypoint class
  *   <pre><blockquote>
  *     package net.fabricmc.example;
- *     import net.fabricmc.api.ModInitializer;
+ *     import net.aoqia.api.ModInitializer;
  *     public class ExampleMod implements ModInitializer {
  *       public ExampleMod() {} // the constructor must be public no-argument
  *       {@literal @}Override
@@ -64,7 +64,7 @@ import net.fabricmc.loader.impl.util.DefaultLanguageAdapter;
  *   <p>An example of an entrypoint field
  *   <pre><blockquote>
  *     package net.fabricmc.example;
- *     import net.fabricmc.api.ModInitializer;
+ *     import net.aoqia.api.ModInitializer;
  *     public final class ExampleMod implements ModInitializer {
  *       public static final ExampleMod INSTANCE = new ExampleMod();
  *

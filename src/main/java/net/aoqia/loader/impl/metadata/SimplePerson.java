@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
-import net.fabricmc.loader.api.metadata.ContactInformation;
-import net.fabricmc.loader.api.metadata.Person;
+import net.aoqia.loader.api.metadata.ContactInformation;
+import net.aoqia.loader.api.metadata.Person;
 
 /**
  * Represents a simple implementation of person which is only identified by name.

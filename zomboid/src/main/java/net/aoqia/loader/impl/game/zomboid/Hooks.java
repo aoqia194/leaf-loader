@@ -27,38 +27,38 @@ import net.aoqia.loader.impl.util.log.LogCategory;
 public final class Hooks {
 	public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');
 
-	public static String appletMainClass;
-
-	public static final String FABRIC = "fabric";
+	public static final String LEAF = "leaf";
 	public static final String VANILLA = "vanilla";
 
 	public static String insertBranding(final String brand) {
 		if (brand == null || brand.isEmpty()) {
 			Log.warn(LogCategory.GAME_PROVIDER, "Null or empty branding found!", new IllegalStateException());
-			return FABRIC;
+			return LEAF;
 		}
 
-		return VANILLA.equals(brand) ? FABRIC : brand + ',' + FABRIC;
+		return VANILLA.equals(brand) ? LEAF : brand + ',' + LEAF;
 	}
 
-	public static void startClient(File runDir, Object gameInstance) {
-		if (runDir == null) {
-			runDir = new File(".");
+	public static void startClient(String runDir, Object gameInstance) {
+        File runDirFile = new File(runDir);
+        if (runDirFile.toString().equals(System.getProperty("user.home"))) {
+            runDirFile = new File(".");
 		}
 
 		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
-		loader.prepareModInit(runDir.toPath(), gameInstance);
+		loader.prepareModInit(runDirFile.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
 	}
 
-	public static void startServer(File runDir, Object gameInstance) {
-		if (runDir == null) {
-			runDir = new File(".");
+	public static void startServer(String runDir, Object gameInstance) {
+        File runDirFile = new File(runDir);
+        if (runDirFile.toString().equals(System.getProperty("user.home"))) {
+            runDirFile = new File(".");
 		}
 
 		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
-		loader.prepareModInit(runDir.toPath(), gameInstance);
+		loader.prepareModInit(runDirFile.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("server", DedicatedServerModInitializer.class, DedicatedServerModInitializer::onInitializeServer);
 	}

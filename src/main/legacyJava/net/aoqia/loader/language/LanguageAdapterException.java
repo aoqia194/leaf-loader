@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.language;
+package net.aoqia.loader.language;
 
 @SuppressWarnings("serial")
 @Deprecated

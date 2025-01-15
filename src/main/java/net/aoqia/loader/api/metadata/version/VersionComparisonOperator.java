@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata.version;
+package net.aoqia.loader.api.metadata.version;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.impl.util.version.SemanticVersionImpl;
+import net.aoqia.loader.api.SemanticVersion;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.impl.util.version.SemanticVersionImpl;
 
 public enum VersionComparisonOperator {
 	// order is important to match the longest substring (e.g. try >= before >)

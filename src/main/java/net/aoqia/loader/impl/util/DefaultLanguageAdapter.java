@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util;
+package net.aoqia.loader.impl.util;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandleProxies;
@@ -25,10 +25,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.loader.api.LanguageAdapter;
-import net.fabricmc.loader.api.LanguageAdapterException;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import net.aoqia.loader.api.LanguageAdapter;
+import net.aoqia.loader.api.LanguageAdapterException;
+import net.aoqia.loader.api.ModContainer;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
 
 public final class DefaultLanguageAdapter implements LanguageAdapter {
 	public static final DefaultLanguageAdapter INSTANCE = new DefaultLanguageAdapter();
@@ -47,7 +47,7 @@ public final class DefaultLanguageAdapter implements LanguageAdapter {
 		Class<?> c;
 
 		try {
-			c = Class.forName(methodSplit[0], true, FabricLauncherBase.getLauncher().getTargetClassLoader());
+			c = Class.forName(methodSplit[0], true, LeafLauncherBase.getLauncher().getTargetClassLoader());
 		} catch (ClassNotFoundException e) {
 			throw new LanguageAdapterException(e);
 		}

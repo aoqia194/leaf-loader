@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.server;
+package net.aoqia.loader.impl.launch.server;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,16 +29,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import net.fabricmc.loader.impl.launch.knot.KnotServer;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.launch.knot.KnotServer;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
 
-public class FabricServerLauncher {
-	private static final ClassLoader parentLoader = FabricServerLauncher.class.getClassLoader();
+public class LeafServerLauncher {
+	private static final ClassLoader parentLoader = LeafServerLauncher.class.getClassLoader();
 	private static String mainClass = KnotServer.class.getName();
 
 	public static void main(String[] args) {
-		URL propUrl = parentLoader.getResource("fabric-server-launch.properties");
+		URL propUrl = parentLoader.getResource("leaf-server-launch.properties");
 
 		if (propUrl != null) {
 			Properties properties = new Properties();
@@ -60,7 +60,7 @@ public class FabricServerLauncher {
 			try {
 				setup(args);
 			} catch (Exception e) {
-				throw new RuntimeException("Failed to setup Fabric server environment!", e);
+				throw new RuntimeException("Failed to setup Leaf server environment!", e);
 			}
 		}
 
@@ -80,19 +80,19 @@ public class FabricServerLauncher {
 		Path serverJar = LoaderUtil.normalizePath(Paths.get(System.getProperty(SystemProperties.GAME_JAR_PATH)));
 
 		if (!Files.exists(serverJar)) {
-			System.err.println("The Minecraft server .JAR is missing (" + serverJar + ")!");
+			System.err.println("The Zomboid server .JAR is missing (" + serverJar + ")!");
 			System.err.println();
-			System.err.println("Fabric's server-side launcher expects the server .JAR to be provided.");
-			System.err.println("You can edit its location in fabric-server-launcher.properties.");
+			System.err.println("Leaf's server-side launcher expects the server .JAR to be provided.");
+			System.err.println("You can edit its location in leaf-server-launcher.properties.");
 			System.err.println();
-			System.err.println("Without the official Minecraft server .JAR, Fabric Loader cannot launch.");
+			System.err.println("Without the official Zomboid server .JAR, Leaf Loader cannot launch.");
 			throw new RuntimeException("Missing game jar at " + serverJar);
 		}
 	}
 
 	private static String getServerJarPath() throws IOException {
 		// Pre-load "fabric-server-launcher.properties"
-		Path propertiesFile = Paths.get("fabric-server-launcher.properties");
+		Path propertiesFile = Paths.get("leaf-server-launcher.properties");
 		Properties properties = new Properties();
 
 		if (Files.exists(propertiesFile)) {

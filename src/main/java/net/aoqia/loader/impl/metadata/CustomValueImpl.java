@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
+import net.aoqia.loader.api.metadata.CustomValue;
+import net.aoqia.loader.impl.lib.gson.JsonReader;
 
 abstract class CustomValueImpl implements CustomValue {
 	static final CustomValue BOOLEAN_TRUE = new BooleanImpl(true);

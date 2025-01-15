@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl;
+package net.aoqia.loader.impl;
 
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import net.fabricmc.loader.api.MappingResolver;
+import net.aoqia.loader.api.MappingResolver;
 
 public class LazyMappingResolver implements MappingResolver {
 	private final Supplier<MappingResolver> delegateSupplier;

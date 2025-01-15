@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata.version;
+package net.aoqia.loader.api.metadata.version;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.impl.util.version.VersionPredicateParser;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.VersionParsingException;
+import net.aoqia.loader.impl.util.version.VersionPredicateParser;
 
 public interface VersionPredicate extends Predicate<Version> {
 	/**

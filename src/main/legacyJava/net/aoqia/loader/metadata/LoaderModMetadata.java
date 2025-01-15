@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.metadata;
+package net.aoqia.loader.metadata;
 
 import java.util.Collection;
 import java.util.List;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.api.metadata.ModMetadata;
 
 /**
  * @deprecated Use {@link ModMetadata} instead

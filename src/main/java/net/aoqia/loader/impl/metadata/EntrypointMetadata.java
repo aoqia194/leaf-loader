@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package net.aoqia.loader.impl.metadata;
 
 @SuppressWarnings("deprecation")
-public interface EntrypointMetadata extends net.fabricmc.loader.metadata.EntrypointMetadata {
+public interface EntrypointMetadata extends net.aoqia.loader.metadata.EntrypointMetadata {
 	@Override
 	String getAdapter();
 	@Override

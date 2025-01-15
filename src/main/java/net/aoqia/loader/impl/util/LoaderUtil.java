@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util;
+package net.aoqia.loader.impl.util;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public final class LoaderUtil {
 	private static final ConcurrentMap<Path, Path> pathNormalizationCache = new ConcurrentHashMap<>();
-	private static final String FABRIC_LOADER_CLASS = "net/fabricmc/loader/api/FabricLoader.class";
+	private static final String LEAF_LOADER_CLASS = "net/aoqia/loader/api/LeafLoader.class";
 	private static final String ASM_CLASS = "org/objectweb/asm/ClassReader.class";
 
 	public static String getClassFileName(String className) {
@@ -58,7 +58,7 @@ public final class LoaderUtil {
 	}
 
 	public static void verifyNotInTargetCl(Class<?> cls) {
-		if (cls.getClassLoader().getClass().getName().equals("net.fabricmc.loader.impl.launch.knot.KnotClassLoader")) {
+		if (cls.getClassLoader().getClass().getName().equals("net.aoqia.loader.impl.launch.knot.KnotClassLoader")) {
 			// This usually happens when fabric loader has been added to the target class loader. This is a bad state.
 			// Such additions may be indirect, a JAR can use the Class-Path manifest attribute to drag additional
 			// libraries with it, likely recursively.
@@ -68,13 +68,14 @@ public final class LoaderUtil {
 
 	public static void verifyClasspath() {
 		try {
-			List<URL> resources = Collections.list(LoaderUtil.class.getClassLoader().getResources(FABRIC_LOADER_CLASS));
+			List<URL> resources = Collections.list(LoaderUtil.class.getClassLoader().getResources(LEAF_LOADER_CLASS));
 
 			if (resources.size() > 1) {
 				// This usually happens when fabric loader has been added to the classpath more than once.
-				throw new IllegalStateException("duplicate fabric loader classes found on classpath: " + resources.stream().map(URL::toString).collect(Collectors.joining(", ")));
+				throw new IllegalStateException("duplicate leaf loader classes found on classpath: " + resources.stream().map(URL::toString).collect(Collectors.joining(", ")));
 			} else if (resources.size() < 1) {
-				throw new AssertionError(FABRIC_LOADER_CLASS + " not detected on the classpath?! (perhaps it was renamed?)");
+				throw new AssertionError(
+                    LEAF_LOADER_CLASS + " not detected on the classpath?! (perhaps it was renamed?)");
 			}
 
 			resources = Collections.list(LoaderUtil.class.getClassLoader().getResources(ASM_CLASS));

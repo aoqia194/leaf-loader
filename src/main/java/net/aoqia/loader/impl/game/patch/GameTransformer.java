@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.patch;
+package net.aoqia.loader.impl.game.patch;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +30,13 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.util.ExceptionUtil;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SimpleClassPath;
-import net.fabricmc.loader.impl.util.SimpleClassPath.CpEntry;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.launch.LeafLauncher;
+import net.aoqia.loader.impl.util.ExceptionUtil;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SimpleClassPath;
+import net.aoqia.loader.impl.util.SimpleClassPath.CpEntry;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public class GameTransformer {
 	private final List<GamePatch> patches;
@@ -59,7 +59,7 @@ public class GameTransformer {
 		patchedClasses.put(key, writer.toByteArray());
 	}
 
-	public void locateEntrypoints(FabricLauncher launcher, List<Path> gameJars) {
+	public void locateEntrypoints(LeafLauncher launcher, List<Path> gameJars) {
 		if (entrypointsLocated) {
 			return;
 		}

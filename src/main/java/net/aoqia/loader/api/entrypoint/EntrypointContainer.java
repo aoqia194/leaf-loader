@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.entrypoint;
+package net.aoqia.loader.api.entrypoint;
 
-import net.fabricmc.loader.api.ModContainer;
+import net.aoqia.loader.api.ModContainer;
 
 /**
  * A container holding both an entrypoint instance and the {@link ModContainer} which has provided the entrypoint.
  *
  * @param <T> The type of the entrypoint
- * @see net.fabricmc.loader.api.FabricLoader#getEntrypointContainers(String, Class)
+ * @see net.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
  */
 public interface EntrypointContainer<T> {
 	/**

@@ -20,12 +20,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.ModInitializer;
+import net.aoqia.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 	/**
@@ -36,7 +35,7 @@ public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 	 */
 	@Override
 	public void onPreLaunch() {
-		if (TestMod.class.getClassLoader() != FabricLauncherBase.getLauncher().getTargetClassLoader()) {
+		if (TestMod.class.getClassLoader() != LeafLauncherBase.getLauncher().getTargetClassLoader()) {
 			throw new IllegalStateException("invalid class loader: "+TestMod.class.getClassLoader());
 		}
 
@@ -45,7 +44,7 @@ public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (TestMod.class.getClassLoader() != FabricLauncherBase.getLauncher().getTargetClassLoader()) {
+		if (TestMod.class.getClassLoader() != LeafLauncherBase.getLauncher().getTargetClassLoader()) {
 			throw new IllegalStateException("invalid class loader: "+TestMod.class.getClassLoader());
 		}
 
@@ -53,7 +52,7 @@ public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 		Log.info(LogCategory.TEST, "Hello from Fabric");
 		Log.info(LogCategory.TEST, "**************************");
 
-		Set<CustomEntry> testingInits = new LinkedHashSet<>(FabricLoader.getInstance().getEntrypoints("test:testing", CustomEntry.class));
+		Set<CustomEntry> testingInits = new LinkedHashSet<>(net.aoqia.loader.api.LeafLoader.getInstance().getEntrypoints("test:testing", CustomEntry.class));
 		Log.info(LogCategory.TEST, "Found %d testing inits", testingInits.size());
 		Log.info(LogCategory.TEST, testingInits.stream().map(CustomEntry::describe).collect(Collectors.joining(", ")));
 	}

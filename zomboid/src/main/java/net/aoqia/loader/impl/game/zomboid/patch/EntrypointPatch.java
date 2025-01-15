@@ -16,6 +16,10 @@
 
 package net.aoqia.loader.impl.game.zomboid.patch;
 
+import java.util.ListIterator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import net.aoqia.api.EnvType;
 import net.aoqia.loader.api.Version;
 import net.aoqia.loader.api.VersionParsingException;
@@ -29,11 +33,6 @@ import net.aoqia.loader.impl.util.log.LogCategory;
 import net.aoqia.loader.impl.util.version.VersionPredicateParser;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
-
-import java.util.ListIterator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class EntrypointPatch extends GamePatch {
     private final ZomboidGameProvider gameProvider;
@@ -50,30 +49,32 @@ public class EntrypointPatch extends GamePatch {
         }
     }
 
-    private void finishEntrypoint(EnvType type, ListIterator<AbstractInsnNode> it) {
-        String methodName = String.format("start%s", type == EnvType.CLIENT ? "Client" : "Server");
-        it.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, methodName,
-            "(Ljava/io/File;Ljava/lang/Object;)V", false));
-    }
-
     @Override
-    public void process(LeafLauncher launcher, Function<String, ClassNode> classSource,
+    public void process(LeafLauncher launcher,
+        Function<String, ClassNode> classSource,
         Consumer<ClassNode> classEmitter) {
-        EnvType envType = launcher.getEnvironmentType();
+        EnvType type = launcher.getEnvironmentType();
         String entrypoint = launcher.getEntrypoint();
         Version gameVersion = getGameVersion();
 
-        if (!entrypoint.startsWith("zomboid.")) {
+        if (!entrypoint.startsWith("zombie.")) {
             return;
         }
-        boolean serverHasFile = true;
 
+        String gameEntrypoint = null;
         ClassNode mainClass = classSource.apply(entrypoint);
+
         if (mainClass == null) {
             throw new RuntimeException("Could not load main class " + entrypoint + "!");
         }
 
-        // Find the main() method in MainScreenState or GameServer.
+        // Main -> Game entrypoint search
+        // -- CLIENT --
+        // 41.78.16 - MainScreenState#main() has a GameWindow.InitGameThread();
+        // -- SERVER --
+        // TODO: Do it
+
+        // Find the main method in MainScreenState.
         MethodNode mainMethod = findMethod(mainClass, (method) -> {
             return method.name.equals("main") && method.desc.equals("([Ljava/lang/String;)V") &&
                    isPublicStatic(method.access);
@@ -83,48 +84,104 @@ public class EntrypointPatch extends GamePatch {
             throw new RuntimeException("Could not find main method in " + entrypoint + "!");
         }
 
-        // Find main init instructuction.
-        final Predicate<AbstractInsnNode> pred = (insn) -> {
-            return insn.getOpcode() == Opcodes.INVOKESPECIAL && ((MethodInsnNode) insn).name.equals("<init>") &&
-                   hasSuperClass(((MethodInsnNode) insn).owner, mainClass.name, classSource);
-        };
+        //        if (gameEntrypoint == null) {
+        //            throw new RuntimeException("Could not find game constructor in " + entrypoint + "!");
+        //        }
 
-        MethodInsnNode mainInsn = (MethodInsnNode) findInsn(mainMethod, pred, true);
-        if (mainInsn == null) {
-            throw new RuntimeException("Could not find game instruction in " + entrypoint + "!");
-        }
+        //        Log.debug(LogCategory.GAME_PATCH, "Found game constructor: %s -> %s", entrypoint, gameEntrypoint);
 
-        String gameEntrypoint = mainInsn.owner.replace('/', '.');
-        serverHasFile = mainInsn.desc.startsWith("(Ljava/io/File;");
-        Log.debug(LogCategory.GAME_PATCH, "Found game constructor: %s -> %s", entrypoint, gameEntrypoint);
+        // Get desired class to patch.
+        //        ClassNode gameClass;
+        //        if (gameEntrypoint.equals(entrypoint)) {
+        //            gameClass = mainClass;
+        //        } else {
+        //            gameClass = classSource.apply(gameEntrypoint);
+        //            if (gameClass == null) {
+        //                throw new RuntimeException("Could not load game class " + gameEntrypoint + "!");
+        //            }
+        //        }
 
-        ClassNode gameClass;
-        if (gameEntrypoint.equals(entrypoint)) {
-            gameClass = mainClass;
-        } else {
-            gameClass = classSource.apply(gameEntrypoint);
-            if (gameClass == null) {
-                throw new RuntimeException("Could not load game class " + gameEntrypoint + "!");
+        //        MethodNode gameMethod = findMethod(mainClass, (method) -> {
+        //            return method.name.equals("main") && method.desc.equals("([Ljava/lang/String;)V") &&
+        //                   isPublicStatic(method.access);
+        //        });
+        //
+        //        if (gameMethod == null) {
+        //            throw new RuntimeException("Could not find game constructor method in " + gameClass.name + "!");
+        //        }
+
+        AbstractInsnNode gameWindowInitInsn = null;
+        // Attempt to find the RenderThread.init() function call and store the instruction.
+        for (AbstractInsnNode insn : mainMethod.instructions) {
+            if (insn.getOpcode() == Opcodes.INVOKESTATIC && insn instanceof MethodInsnNode) {
+                final MethodInsnNode methodInsn = (MethodInsnNode) insn;
+
+                if (methodInsn.name.equals("init") && methodInsn.owner.equals("zombie/core/opengl/RenderThread")) {
+                    gameWindowInitInsn = methodInsn;
+                }
             }
         }
 
-        MethodNode gameMethod = null;
-
-        gameMethod = findMethod(mainClass, (method) -> {
-            return method.name.equals("main") && method.desc.equals("([Ljava/lang/String;)V") &&
-                   isPublicStatic(method.access);
-        });
-
-
-        if (gameMethod == null) {
-            throw new RuntimeException("Could not find game constructor method in " + gameClass.name + "!");
+        if (gameWindowInitInsn == null) {
+            throw new RuntimeException("Could not find RenderThread init method in " + entrypoint + "!");
         }
 
-        classEmitter.accept(gameClass);
+        boolean patched = false;
+        Log.debug(LogCategory.GAME_PATCH, "Patching game constructor %s%s", mainMethod.name, mainMethod.desc);
+
+        // Iterate through main() instructions and find where cacheDir is.
+        ListIterator<AbstractInsnNode> consIt = mainMethod.instructions.iterator();
+        while (consIt.hasNext()) {
+            AbstractInsnNode insn = consIt.next();
+            if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals("getCacheDir")) {
+                MethodInsnNode insnNode = ((MethodInsnNode) insn);
+                Log.debug(LogCategory.GAME_PATCH, "cacheDir is found at %s/%s", insnNode.owner, insnNode.name);
+
+                // Add the entrypoint hook just before the RenderThread.init() call.
+                moveBefore(consIt, gameWindowInitInsn);
+                
+                consIt.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                consIt.add(new InsnNode(Opcodes.POP));
+                consIt.add(new FieldInsnNode(Opcodes.GETSTATIC,
+                    insnNode.owner,
+                    "instance",
+                    "Lzombie/ZomboidFileSystem;"));
+                consIt.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
+                    insnNode.owner,
+                    insnNode.name,
+                    insnNode.desc,
+                    false));
+                consIt.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                finishEntrypoint(type, consIt);
+
+                patched = true;
+                break;
+            }
+        }
+
+        if (!patched) {
+            throw new RuntimeException("Game constructor patch not applied!");
+        }
+
+        classEmitter.accept(mainClass);
+    }
+
+    private Version getGameVersion() {
+        try {
+            return Version.parse(gameProvider.getNormalizedGameVersion());
+        } catch (VersionParsingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void finishEntrypoint(EnvType type, ListIterator<AbstractInsnNode> it) {
+        String methodName = String.format("start%s", type == EnvType.CLIENT ? "Client" : "Server");
+        it.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, methodName,
+            "(Ljava/lang/String;Ljava/lang/Object;)V", false));
     }
 
     private boolean hasSuperClass(String cls, String superCls, Function<String, ClassNode> classSource) {
-        if (cls.contains("$") || (!cls.startsWith("net/minecraft") && cls.contains("/"))) {
+        if (cls.contains("$") || (!cls.startsWith("zombie") && cls.contains("/"))) {
             return false;
         }
 
@@ -135,7 +192,7 @@ public class EntrypointPatch extends GamePatch {
 
     private boolean hasStrInMethod(String cls, String methodName, String methodDesc, String str,
         Function<String, ClassNode> classSource) {
-        if (cls.contains("$") || (!cls.startsWith("net/minecraft") && cls.contains("/"))) {
+        if (cls.contains("$") || (!cls.startsWith("zombie") && cls.contains("/"))) {
             return false;
         }
 
@@ -163,13 +220,5 @@ public class EntrypointPatch extends GamePatch {
         }
 
         return false;
-    }
-
-    private Version getGameVersion() {
-        try {
-            return Version.parse(gameProvider.getNormalizedGameVersion());
-        } catch (VersionParsingException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

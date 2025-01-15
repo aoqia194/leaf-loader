@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -33,13 +33,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.impl.game.GameProvider.BuiltinMod;
-import net.fabricmc.loader.impl.metadata.AbstractModMetadata;
-import net.fabricmc.loader.impl.metadata.DependencyOverrides;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.VersionOverrides;
+import net.aoqia.loader.api.Version;
+import net.aoqia.loader.api.metadata.ModDependency;
+import net.aoqia.loader.impl.game.GameProvider.BuiltinMod;
+import net.aoqia.loader.impl.metadata.AbstractModMetadata;
+import net.aoqia.loader.impl.metadata.DependencyOverrides;
+import net.aoqia.loader.impl.metadata.LoaderModMetadata;
+import net.aoqia.loader.impl.metadata.VersionOverrides;
 
 public final class ModCandidateImpl implements DomainObject.Mod {
 	static final Comparator<ModCandidateImpl> ID_VERSION_COMPARATOR = new Comparator<ModCandidateImpl>() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.transformer;
+package net.aoqia.loader.impl.transformer;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,9 +25,9 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.api.EnvironmentInterfaces;
+import net.aoqia.api.Environment;
+import net.aoqia.api.EnvironmentInterface;
+import net.aoqia.api.EnvironmentInterfaces;
 
 /**
  * Scans a class for Environment and EnvironmentInterface annotations to figure out what needs to be stripped.

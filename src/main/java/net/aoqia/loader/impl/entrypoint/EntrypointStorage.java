@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.entrypoint;
+package net.aoqia.loader.impl.entrypoint;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,15 +23,15 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.loader.api.EntrypointException;
-import net.fabricmc.loader.api.LanguageAdapter;
-import net.fabricmc.loader.api.LanguageAdapterException;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.impl.ModContainerImpl;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.metadata.EntrypointMetadata;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.api.EntrypointException;
+import net.aoqia.loader.api.LanguageAdapter;
+import net.aoqia.loader.api.LanguageAdapterException;
+import net.aoqia.loader.api.entrypoint.EntrypointContainer;
+import net.aoqia.loader.impl.ModContainerImpl;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.metadata.EntrypointMetadata;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public final class EntrypointStorage {
 	interface Entry {
@@ -45,8 +45,8 @@ public final class EntrypointStorage {
 
 	@SuppressWarnings("deprecation")
 	private static class OldEntry implements Entry {
-		private static final net.fabricmc.loader.language.LanguageAdapter.Options options = net.fabricmc.loader.language.LanguageAdapter.Options.Builder.create()
-				.missingSuperclassBehaviour(net.fabricmc.loader.language.LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
+		private static final net.aoqia.loader.language.LanguageAdapter.Options options = net.aoqia.loader.language.LanguageAdapter.Options.Builder.create()
+				.missingSuperclassBehaviour(net.aoqia.loader.language.LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
 				.build();
 
 		private final ModContainerImpl mod;
@@ -69,7 +69,7 @@ public final class EntrypointStorage {
 		@Override
 		public synchronized <T> T getOrCreate(Class<T> type) throws Exception {
 			if (object == null) {
-				net.fabricmc.loader.language.LanguageAdapter adapter = (net.fabricmc.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, FabricLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
+				net.aoqia.loader.language.LanguageAdapter adapter = (net.aoqia.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, LeafLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
 				object = adapter.createInstance(value, options);
 			}
 

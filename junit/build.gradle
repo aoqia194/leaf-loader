@@ -2,7 +2,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'me.modmuss50.remotesign'
 
 base {
-	archivesName = "fabric-loader-junit"
+	archivesName = "leaf-loader-junit"
 }
 
 version = rootProject.version
@@ -31,7 +31,7 @@ java {
 
 jar {
 	manifest {
-		attributes 'Automatic-Module-Name': 'net.fabricmc.loader.junit'
+		attributes 'Automatic-Module-Name': 'net.aoqia.loader.junit'
 	}
 }
 

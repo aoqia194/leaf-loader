@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package net.aoqia.loader.impl.launch.knot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,20 +39,20 @@ import java.util.jar.Manifest;
 
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
-import net.fabricmc.loader.impl.transformer.FabricTransformer;
-import net.fabricmc.loader.impl.util.ExceptionUtil;
-import net.fabricmc.loader.impl.util.FileSystemUtil;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.ManifestUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlConversionException;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.api.EnvType;
+import net.aoqia.loader.impl.game.GameProvider;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
+import net.aoqia.loader.impl.transformer.LeafTransformer;
+import net.aoqia.loader.impl.util.ExceptionUtil;
+import net.aoqia.loader.impl.util.FileSystemUtil;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.ManifestUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.UrlConversionException;
+import net.aoqia.loader.impl.util.UrlUtil;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> implements KnotClassLoaderInterface {
 	private static final boolean LOG_CLASS_LOAD = System.getProperty(SystemProperties.DEBUG_LOG_CLASS_LOAD) != null;
@@ -394,7 +394,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 					} */
 				}
 			} catch (IOException | FileSystemNotFoundException e) {
-				if (FabricLauncherBase.getLauncher().isDevelopment()) {
+				if (LeafLauncherBase.getLauncher().isDevelopment()) {
 					Log.warn(LogCategory.KNOT, "Failed to load manifest", e);
 				}
 			}
@@ -459,7 +459,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 		}
 
 		if (input != null) {
-			return FabricTransformer.transform(isDevelopment, envType, name, input);
+			return LeafTransformer.transform(isDevelopment, envType, name, input);
 		}
 
 		return null;
@@ -468,7 +468,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 	private static boolean canTransformClass(String name) {
 		name = name.replace('/', '.');
 		// Blocking Fabric Loader classes is no longer necessary here as they don't exist on the modding class loader
-		return /* !"net.fabricmc.api.EnvType".equals(name) && !name.startsWith("net.fabricmc.loader.") && */ !name.startsWith("org.apache.logging.log4j");
+		return /* !"net.aoqia.api.EnvType".equals(name) && !name.startsWith("net.aoqia.loader.") && */ !name.startsWith("org.apache.logging.log4j");
 	}
 
 	@Override

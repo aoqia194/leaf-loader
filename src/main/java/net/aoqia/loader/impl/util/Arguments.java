@@ -14,100 +14,96 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util;
+package net.aoqia.loader.impl.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public final class Arguments {
-	// set the game version for the builtin game mod/dependencies, bypassing auto-detection
-	public static final String GAME_VERSION = SystemProperties.GAME_VERSION;
-	// additional mods to load (path separator separated paths, @ prefix for meta-file with each line referencing an actual file)
-	public static final String ADD_MODS = SystemProperties.ADD_MODS;
+    // set the game version for the builtin game mod/dependencies, bypassing auto-detection
+    public static final String GAME_VERSION = SystemProperties.GAME_VERSION;
+    // additional mods to load (path separator separated paths, @ prefix for meta-file with each line referencing an
+    // actual file)
+    public static final String ADD_MODS = SystemProperties.ADD_MODS;
 
-	private final Map<String, String> values;
-	private final List<String> extraArgs;
+    // Solo args are like -arg1 -arg2 -arg3
+    private final List<String> soloArgs;
+    // Value args are like -arg1=somevalue -arg2=C:\folder\file.png
+    private final Map<String, String> valueArgs;
 
-	public Arguments() {
-		values = new LinkedHashMap<>();
-		extraArgs = new ArrayList<>();
-	}
+    public Arguments() {
+        soloArgs = new ArrayList<>();
+        valueArgs = new LinkedHashMap<>();
+    }
 
-	public Collection<String> keys() {
-		return values.keySet();
-	}
+    public Map<String, String> getValueArgs() {
+        return Collections.unmodifiableMap(valueArgs);
+    }
 
-	public List<String> getExtraArgs() {
-		return Collections.unmodifiableList(extraArgs);
-	}
+    public boolean containsKey(String key) {
+        return valueArgs.containsKey(key);
+    }
 
-	public boolean containsKey(String key) {
-		return values.containsKey(key);
-	}
+    public String get(String key) {
+        return valueArgs.get(key);
+    }
 
-	public String get(String key) {
-		return values.get(key);
-	}
+    public String getOrDefault(String key, String value) {
+        return valueArgs.getOrDefault(key, value);
+    }
 
-	public String getOrDefault(String key, String value) {
-		return values.getOrDefault(key, value);
-	}
+    public void add(String value) {
+        soloArgs.add(value);
+    }
 
-	public void put(String key, String value) {
-		values.put(key, value);
-	}
+    public boolean contains(String value) {
+        return soloArgs.contains(value);
+    }
 
-	public void addExtraArg(String value) {
-		extraArgs.add(value);
-	}
+    public void put(String key, String value) {
+        valueArgs.put(key, value);
+    }
 
-	public void parse(String[] args) {
-		parse(Arrays.asList(args));
-	}
+    public void parse(String[] args) {
+        parse(Arrays.asList(args));
+    }
 
-	public void parse(List<String> args) {
-		for (int i = 0; i < args.size(); i++) {
-			String arg = args.get(i);
+    public void parse(List<String> args) {
+        for (int i = 0; i < args.size(); i++) {
+            String arg = args.get(i);
 
-			if (arg.startsWith("--") && i < args.size() - 1) {
-				String value = args.get(i + 1);
+            if (arg.startsWith("-") && i < args.size() - 1) {
+                String[] value = arg.split("=", 2);
 
-				if (value.startsWith("--")) {
-					// Give arguments that have no value an empty string.
-					value = "";
-				} else {
-					i += 1;
-				}
+                if (value[1] == null) {
+                    // Give arguments that have no value an empty string.
+                    value[1] = "";
+                } else {
+                    i += 1;
+                }
 
-				values.put(arg.substring(2), value);
-			} else {
-				extraArgs.add(arg);
-			}
-		}
-	}
+                valueArgs.put(arg.substring(2), value[1]);
+            } else {
+                soloArgs.add(arg);
+            }
+        }
+    }
 
-	public String[] toArray() {
-		String[] newArgs = new String[values.size() * 2 + extraArgs.size()];
-		int i = 0;
+    public String[] toArray() {
+        String[] newArgs = new String[soloArgs.size() * 2 + valueArgs.size()];
+        int i = 0;
 
-		for (String s : values.keySet()) {
-			newArgs[i++] = "--" + s;
-			newArgs[i++] = values.get(s);
-		}
+        for (String s : soloArgs) {
+            newArgs[i++] = "-" + s;
+        }
 
-		for (String s : extraArgs) {
-			newArgs[i++] = s;
-		}
+        for (String s : valueArgs.keySet()) {
+            newArgs[i++] = "-" + s + "=" + valueArgs.get(s);
+        }
 
-		return newArgs;
-	}
+        return newArgs;
+    }
 
-	public String remove(String s) {
-		return values.remove(s);
-	}
+    public String remove(String s) {
+        return valueArgs.remove(s);
+    }
 }

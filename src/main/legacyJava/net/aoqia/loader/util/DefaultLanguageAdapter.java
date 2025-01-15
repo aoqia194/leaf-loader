@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.util;
+package net.aoqia.loader.util;
 
-import net.fabricmc.loader.api.LanguageAdapter;
-import net.fabricmc.loader.api.LanguageAdapterException;
-import net.fabricmc.loader.api.ModContainer;
+import net.aoqia.loader.api.LanguageAdapter;
+import net.aoqia.loader.api.LanguageAdapterException;
+import net.aoqia.loader.api.ModContainer;
 
 /**
  * @deprecated Use {@link LanguageAdapter} instead.

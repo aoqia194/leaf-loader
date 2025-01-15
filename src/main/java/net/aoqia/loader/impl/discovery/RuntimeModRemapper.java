@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,15 +44,14 @@ import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
 import net.fabricmc.accesswidener.AccessWidenerReader;
 import net.fabricmc.accesswidener.AccessWidenerRemapper;
 import net.fabricmc.accesswidener.AccessWidenerWriter;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.FormattedException;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.FileSystemUtil;
-import net.fabricmc.loader.impl.util.ManifestUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.FormattedException;
+import net.aoqia.loader.impl.launch.LeafLauncher;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.util.FileSystemUtil;
+import net.aoqia.loader.impl.util.ManifestUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 import net.fabricmc.tinyremapper.InputTag;
 import net.fabricmc.tinyremapper.NonClassCopyMode;
 import net.fabricmc.tinyremapper.OutputConsumerPath;
@@ -61,9 +60,9 @@ import net.fabricmc.tinyremapper.TinyUtils;
 import net.fabricmc.tinyremapper.extension.mixin.MixinExtension;
 
 public final class RuntimeModRemapper {
-	private static final String REMAP_TYPE_MANIFEST_KEY = "Fabric-Loom-Mixin-Remap-Type";
+	private static final String REMAP_TYPE_MANIFEST_KEY = "Leaf-Loom-Mixin-Remap-Type";
 	private static final String REMAP_TYPE_STATIC = "static";
-	private static final String SOURCE_NAMESPACE = "intermediary";
+	private static final String SOURCE_NAMESPACE = "official";
 
 	public static void remap(Collection<ModCandidateImpl> modCandidates, Path tmpDir, Path outputDir) {
 		List<ModCandidateImpl> modsToRemap = new ArrayList<>();
@@ -82,7 +81,7 @@ public final class RuntimeModRemapper {
 		TinyRemapper remapper = null;
 
 		try {
-			FabricLauncher launcher = FabricLauncherBase.getLauncher();
+			LeafLauncher launcher = LeafLauncherBase.getLauncher();
 
 			AccessWidener mergedAccessWidener = new AccessWidener();
 			mergedAccessWidener.visitHeader(SOURCE_NAMESPACE);
@@ -125,7 +124,7 @@ public final class RuntimeModRemapper {
 					.renameInvalidLocals(false)
 					.extension(new MixinExtension(remapMixins::contains))
 					.extraAnalyzeVisitor((mrjVersion, className, next) ->
-					AccessWidenerClassVisitor.createClassVisitor(FabricLoaderImpl.ASM_VERSION, next, mergedAccessWidener))
+					AccessWidenerClassVisitor.createClassVisitor(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, next, mergedAccessWidener))
 					.build();
 
 			try {

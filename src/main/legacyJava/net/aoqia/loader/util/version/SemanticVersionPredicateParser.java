@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.util.version;
+package net.aoqia.loader.util.version;
 
 import java.util.function.Predicate;
 
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate;
+import net.aoqia.loader.api.VersionParsingException;
+import net.aoqia.loader.api.metadata.version.VersionPredicate;
 
 /**
  * @deprecated Internal API, do not use

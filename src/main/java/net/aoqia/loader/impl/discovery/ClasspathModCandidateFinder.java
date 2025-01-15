@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package net.aoqia.loader.impl.discovery;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,29 +32,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlConversionException;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import net.aoqia.loader.impl.util.LoaderUtil;
+import net.aoqia.loader.impl.util.SystemProperties;
+import net.aoqia.loader.impl.util.UrlConversionException;
+import net.aoqia.loader.impl.util.UrlUtil;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 
 public class ClasspathModCandidateFinder implements ModCandidateFinder {
 	@Override
 	public void findCandidates(ModCandidateConsumer out) {
-		if (FabricLauncherBase.getLauncher().isDevelopment()) {
+		if (LeafLauncherBase.getLauncher().isDevelopment()) {
 			Map<Path, List<Path>> pathGroups = getPathGroups();
 
-			// Search for URLs which point to 'fabric.mod.json' entries, to be considered as mods.
+			// Search for URLs which point to 'leaf.mod.json' entries, to be considered as mods.
 			try {
-				Enumeration<URL> mods = FabricLauncherBase.getLauncher().getTargetClassLoader().getResources("fabric.mod.json");
+				Enumeration<URL> mods = LeafLauncherBase.getLauncher().getTargetClassLoader().getResources("leaf.mod.json");
 
 				while (mods.hasMoreElements()) {
 					URL url = mods.nextElement();
 
 					try {
-						Path path = LoaderUtil.normalizeExistingPath(UrlUtil.getCodeSource(url, "fabric.mod.json")); // code source may not be normalized if from app cl
+						Path path = LoaderUtil.normalizeExistingPath(UrlUtil.getCodeSource(url, "leaf.mod.json")); // code source may not be normalized if from app cl
 						List<Path> paths = pathGroups.get(path);
 
 						if (paths == null) {
@@ -63,7 +63,7 @@ public class ClasspathModCandidateFinder implements ModCandidateFinder {
 							out.accept(paths, false);
 						}
 					} catch (UrlConversionException e) {
-						Log.debug(LogCategory.DISCOVERY, "Error determining location for fabric.mod.json from %s", url, e);
+						Log.debug(LogCategory.DISCOVERY, "Error determining location for leaf.mod.json from %s", url, e);
 					}
 				}
 			} catch (IOException e) {
@@ -87,7 +87,7 @@ public class ClasspathModCandidateFinder implements ModCandidateFinder {
 		String prop = System.getProperty(SystemProperties.PATH_GROUPS);
 		if (prop == null) return Collections.emptyMap();
 
-		Set<Path> cp = new HashSet<>(FabricLauncherBase.getLauncher().getClassPath());
+		Set<Path> cp = new HashSet<>(LeafLauncherBase.getLauncher().getClassPath());
 		Map<Path, List<Path>> ret = new HashMap<>();
 
 		for (String group : prop.split(File.pathSeparator+File.pathSeparator)) {
