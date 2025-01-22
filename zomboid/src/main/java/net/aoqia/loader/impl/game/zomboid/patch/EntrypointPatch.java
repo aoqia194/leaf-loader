@@ -32,6 +32,7 @@ import net.aoqia.loader.impl.util.log.Log;
 import net.aoqia.loader.impl.util.log.LogCategory;
 import net.aoqia.loader.impl.util.version.VersionPredicateParser;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 public class EntrypointPatch extends GamePatch {
@@ -61,7 +62,6 @@ public class EntrypointPatch extends GamePatch {
             return;
         }
 
-        String gameEntrypoint = null;
         ClassNode mainClass = classSource.apply(entrypoint);
 
         if (mainClass == null) {
@@ -70,7 +70,7 @@ public class EntrypointPatch extends GamePatch {
 
         // Main -> Game entrypoint search
         // -- CLIENT --
-        // 41.78.16 - MainScreenState#main() has a GameWindow.InitGameThread();
+        // 41.78.16 - MainScreenState#main() has a GameWindow.InitGameThread() or RenderThread.init() call.
         // -- SERVER --
         // TODO: Do it
 
@@ -83,32 +83,6 @@ public class EntrypointPatch extends GamePatch {
         if (mainMethod == null) {
             throw new RuntimeException("Could not find main method in " + entrypoint + "!");
         }
-
-        //        if (gameEntrypoint == null) {
-        //            throw new RuntimeException("Could not find game constructor in " + entrypoint + "!");
-        //        }
-
-        //        Log.debug(LogCategory.GAME_PATCH, "Found game constructor: %s -> %s", entrypoint, gameEntrypoint);
-
-        // Get desired class to patch.
-        //        ClassNode gameClass;
-        //        if (gameEntrypoint.equals(entrypoint)) {
-        //            gameClass = mainClass;
-        //        } else {
-        //            gameClass = classSource.apply(gameEntrypoint);
-        //            if (gameClass == null) {
-        //                throw new RuntimeException("Could not load game class " + gameEntrypoint + "!");
-        //            }
-        //        }
-
-        //        MethodNode gameMethod = findMethod(mainClass, (method) -> {
-        //            return method.name.equals("main") && method.desc.equals("([Ljava/lang/String;)V") &&
-        //                   isPublicStatic(method.access);
-        //        });
-        //
-        //        if (gameMethod == null) {
-        //            throw new RuntimeException("Could not find game constructor method in " + gameClass.name + "!");
-        //        }
 
         AbstractInsnNode gameWindowInitInsn = null;
         // Attempt to find the RenderThread.init() function call and store the instruction.
@@ -127,7 +101,7 @@ public class EntrypointPatch extends GamePatch {
         }
 
         boolean patched = false;
-        Log.debug(LogCategory.GAME_PATCH, "Patching game constructor %s%s", mainMethod.name, mainMethod.desc);
+        Log.debug(LogCategory.GAME_PATCH, "Patching main function %s%s", mainMethod.name, mainMethod.desc);
 
         // Iterate through main() instructions and find where cacheDir is.
         ListIterator<AbstractInsnNode> consIt = mainMethod.instructions.iterator();
@@ -135,13 +109,12 @@ public class EntrypointPatch extends GamePatch {
             AbstractInsnNode insn = consIt.next();
             if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals("getCacheDir")) {
                 MethodInsnNode insnNode = ((MethodInsnNode) insn);
-                Log.debug(LogCategory.GAME_PATCH, "cacheDir is found at %s/%s", insnNode.owner, insnNode.name);
+                Log.debug(LogCategory.GAME_PATCH, "getCacheDir is found at %s/%s", insnNode.owner, insnNode.name);
 
                 // Add the entrypoint hook just before the RenderThread.init() call.
                 moveBefore(consIt, gameWindowInitInsn);
-                
-                consIt.add(new VarInsnNode(Opcodes.ALOAD, 0));
-                consIt.add(new InsnNode(Opcodes.POP));
+
+                // Set up ZomboidFileSystem.instance.getCacheDir() as the first arg.
                 consIt.add(new FieldInsnNode(Opcodes.GETSTATIC,
                     insnNode.owner,
                     "instance",
@@ -151,7 +124,9 @@ public class EntrypointPatch extends GamePatch {
                     insnNode.name,
                     insnNode.desc,
                     false));
-                consIt.add(new VarInsnNode(Opcodes.ALOAD, 0));
+                // Set up the class itself as the second arg.
+                consIt.add(new LdcInsnNode(Type.getObjectType(entrypoint.replace(".", "/"))));
+                // Send to startClient/startServer
                 finishEntrypoint(type, consIt);
 
                 patched = true;
@@ -177,7 +152,7 @@ public class EntrypointPatch extends GamePatch {
     private void finishEntrypoint(EnvType type, ListIterator<AbstractInsnNode> it) {
         String methodName = String.format("start%s", type == EnvType.CLIENT ? "Client" : "Server");
         it.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, methodName,
-            "(Ljava/lang/String;Ljava/lang/Object;)V", false));
+            "(Ljava/lang/String;Ljava/lang/Class;)V", false));
     }
 
     private boolean hasSuperClass(String cls, String superCls, Function<String, ClassNode> classSource) {

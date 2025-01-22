@@ -21,6 +21,7 @@ import java.io.File;
 import net.aoqia.api.ClientModInitializer;
 import net.aoqia.api.DedicatedServerModInitializer;
 import net.aoqia.api.ModInitializer;
+import net.aoqia.loader.impl.LeafLoaderImpl;
 import net.aoqia.loader.impl.util.log.Log;
 import net.aoqia.loader.impl.util.log.LogCategory;
 
@@ -39,31 +40,31 @@ public final class Hooks {
 		return VANILLA.equals(brand) ? LEAF : brand + ',' + LEAF;
 	}
 
-	public static void startClient(String runDir, Object gameInstance) {
+	public static void startClient(String runDir, Class<?> gameInstance) {
         File runDirFile = new File(runDir);
         if (runDirFile.toString().equals(System.getProperty("user.home"))) {
             runDirFile = new File(".");
 		}
 
-		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
+		LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
 		loader.prepareModInit(runDirFile.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
 	}
 
-	public static void startServer(String runDir, Object gameInstance) {
+	public static void startServer(String runDir, Class<?> gameInstance) {
         File runDirFile = new File(runDir);
         if (runDirFile.toString().equals(System.getProperty("user.home"))) {
             runDirFile = new File(".");
 		}
 
-		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
+		LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
 		loader.prepareModInit(runDirFile.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("server", DedicatedServerModInitializer.class, DedicatedServerModInitializer::onInitializeServer);
 	}
 
 	public static void setGameInstance(Object gameInstance) {
-		net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.setGameInstance(gameInstance);
+		LeafLoaderImpl.INSTANCE.setGameInstance(gameInstance);
 	}
 }

@@ -82,9 +82,7 @@ public class ZomboidGameProvider implements GameProvider {
     private static void processArgumentMap(Arguments argMap, EnvType envType) {
         switch (envType) {
             case CLIENT:
-                if (!argMap.containsKey("cachedir")) {
-                    argMap.put("cachedir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
-                }
+                argMap.putIfNotExists("cachedir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
 
                 break;
             case SERVER:
@@ -97,7 +95,7 @@ public class ZomboidGameProvider implements GameProvider {
     }
 
     private static Path getLaunchDirectory(Arguments argMap) {
-        return Paths.get(argMap.getOrDefault("cachedir", "."));
+        return Paths.get(argMap.getOrDefault("cachedir", System.getProperty("leaf.runDir")));
     }
 
     public Path getGameJar() {
@@ -345,7 +343,6 @@ public class ZomboidGameProvider implements GameProvider {
     @Override
     public void launch(ClassLoader loader) {
         String targetClass = entrypoint;
-
         MethodHandle invoker;
 
         try {

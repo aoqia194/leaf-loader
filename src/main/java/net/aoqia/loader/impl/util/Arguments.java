@@ -63,6 +63,12 @@ public final class Arguments {
         valueArgs.put(key, value);
     }
 
+    public void putIfNotExists(String key, String value) {
+        if (!containsKey(key)) {
+            put(key, value);
+        }
+    }
+
     public void parse(String[] args) {
         parse(Arrays.asList(args));
     }

@@ -21,15 +21,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import zombie.core.Core;
-import zombie.core.GameVersion;
 
-@Mixin(value = Core.class, remap = false)
+@Mixin(Core.class)
 public class CoreMixin {
-    @Inject(method = "getGameVersion", at = @At("HEAD"))
-    private GameVersion getGameVersion(CallbackInfoReturnable<GameVersion> cir) {
-        System.out.println("getGameVersion() called. Hello from CoreMixin!");
-
-        GameVersion ver = cir.getReturnValue();
-        return new GameVersion(ver.getMajor(), ver.getMinor(), "leaf");
+    @Inject(method = "getDebug", at = @At("HEAD"), cancellable = true)
+    private void getDebug(CallbackInfoReturnable<Boolean> cir) {
+        System.out.println("CoreMixin -> Forcing getDebug() to FALSE.");
+        cir.setReturnValue(false);
     }
 }

@@ -1,6 +1,8 @@
 apply plugin: "leaf-loom"
 
 loom {
+    clientOnlyZomboidJar()
+
     runConfigs.configureEach {
         ideConfigGenerated = true
         property("leaf.debug.replaceVersion", "leafloader:$version")
@@ -16,7 +18,7 @@ repositories {
 
 dependencies {
     zomboid "com.theindiestone:zomboid:${zomboid_version}"
-    mappings "net.aoqia:yarn:${zomboid_version}+build.local:v2"
+    mappings "net.aoqia:leaf-yarn:${zomboid_version}+build.local:v2"
 
     implementation project(":zomboid")
     implementation project(":zomboid").sourceSets.main.output
@@ -29,10 +31,10 @@ dependencies {
     annotationProcessor "org.ow2.asm:asm-tree:${project.asm_version}"
     annotationProcessor "org.ow2.asm:asm-util:${project.asm_version}"
 
-    annotationProcessor("net.fabricmc:sponge-mixin:${project.mixin_version}") {
-        exclude module: 'guava'
-    }
-//     annotationProcessor "io.github.llamalad7:mixinextras-common:$mixin_extras_version"
+    //    annotationProcessor("net.fabricmc:sponge-mixin:${project.mixin_version}") {
+    //        exclude module: 'guava'
+    //    }
+    //    annotationProcessor "io.github.llamalad7:mixinextras-common:$mixin_extras_version"
 
     testImplementation project(":junit")
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
@@ -52,8 +54,9 @@ tasks.withType(JavaCompile).configureEach {
     it.options.release = 17
 }
 
-import net.aoqia.loom.util.Platform
+
 import groovy.json.JsonSlurper
+import net.aoqia.loom.util.Platform
 
 configurations {
     productionRuntime {
@@ -81,11 +84,14 @@ dependencies {
 def loaderJarTask = project(":").tasks.finalJar
 
 // This is very far beyond loom's API if you copy this, you're on your own.
-task runProductionAutoTestClient(type: JavaExec, dependsOn: [loaderJarTask, remapJar]) {
+//task runProductionAutoTestClient(type: JavaExec, dependsOn: [loaderJarTask, remapJar]) {
+task runProductionAutoTestClient(type: JavaExec, dependsOn: [loaderJarTask]) {
     classpath.from configurations.productionRuntime
     classpath.from loaderJarTask
     mainClass = "net.aoqia.loader.impl.launch.knot.KnotClient"
-    workingDir = file("run")
+
+    // Let loom set it instead.
+//    workingDir = file("run")
 
     afterEvaluate {
         //		dependsOn downloadAssets
@@ -94,10 +100,6 @@ task runProductionAutoTestClient(type: JavaExec, dependsOn: [loaderJarTask, rema
     doFirst {
         classpath.from loom.zomboidProvider.zomboidClientJar
         workingDir.mkdirs()
-
-        args(
-            "--gameDir", workingDir.absolutePath
-        )
 
         if (Platform.CURRENT.operatingSystem.isMacOS()) {
             jvmArgs(
