@@ -28,5 +28,6 @@ public class CoreMixin {
     private void getDebug(CallbackInfoReturnable<Boolean> cir) {
         System.out.println("CoreMixin -> Forcing getDebug() to FALSE.");
         cir.setReturnValue(false);
+        cir.cancel();
     }
 }

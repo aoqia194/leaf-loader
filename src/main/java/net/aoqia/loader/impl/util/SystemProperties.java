@@ -20,8 +20,8 @@ public final class SystemProperties {
 	// whether fabric loader is running in a development environment / mode, affects class path mod discovery, remapping, logging, ...
 	public static final String DEVELOPMENT = "leaf.development";
 	public static final String SIDE = "leaf.side";
-	// skips the embedded MC game provider, letting ServiceLoader-provided ones take over
-	public static final String SKIP_MC_PROVIDER = "leaf.skipMcProvider";
+	// skips the embedded Zbomoid game provider, letting ServiceLoader-provided ones take over
+	public static final String SKIP_ZOMBOID_PROVIDER = "leaf.skipZomboidProvider";
 	// game jar paths for common/client/server, replaces lookup from class path if present, env specific takes precedence
 	public static final String GAME_JAR_PATH = "leaf.gameJarPath";
 	public static final String GAME_JAR_PATH_CLIENT = "leaf.gameJarPath.client";
@@ -34,6 +34,8 @@ public final class SystemProperties {
 	public static final String LOG_LEVEL = "leaf.log.level";
 	// a path to a directory to replace the default mod search directory
 	public static final String MODS_FOLDER = "leaf.modsFolder";
+    // a path to a directory to replace the default Steam workshop search directory (relative to the game dir)
+	public static final String WORKSHOP_FOLDER = "leaf.workshopFolder";
 	// additional mods to load (path separator separated paths, @ prefix for meta-file with each line referencing an actual file)
 	public static final String ADD_MODS = "leaf.addMods";
 	// a comma-separated list of mod ids to disable, even if they're discovered. mostly useful for unit testing.

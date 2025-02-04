@@ -26,45 +26,45 @@ import net.aoqia.loader.impl.util.log.Log;
 import net.aoqia.loader.impl.util.log.LogCategory;
 
 public final class Hooks {
-	public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');
+    public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');
+    public static final String LEAF = "leaf";
 
-	public static final String LEAF = "leaf";
-	public static final String VANILLA = "vanilla";
+    public static String setWindowTitle(final String title) {
+        if (title == null || title.isEmpty()) {
+            Log.warn(LogCategory.GAME_PROVIDER, "Null or empty window title string found!", new IllegalStateException());
+            return LEAF;
+        }
 
-	public static String insertBranding(final String brand) {
-		if (brand == null || brand.isEmpty()) {
-			Log.warn(LogCategory.GAME_PROVIDER, "Null or empty branding found!", new IllegalStateException());
-			return LEAF;
-		}
+        return title + " (" + LEAF + ")";
+    }
 
-		return VANILLA.equals(brand) ? LEAF : brand + ',' + LEAF;
-	}
-
-	public static void startClient(String runDir, Class<?> gameInstance) {
+    public static void startClient(String runDir, Class<?> gameInstance) {
         File runDirFile = new File(runDir);
         if (runDirFile.toString().equals(System.getProperty("user.home"))) {
             runDirFile = new File(".");
-		}
+        }
 
-		LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
-		loader.prepareModInit(runDirFile.toPath(), gameInstance);
-		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
-		loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
-	}
+        LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
+        loader.prepareModInit(runDirFile.toPath(), gameInstance);
+        loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
+        loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
+    }
 
-	public static void startServer(String runDir, Class<?> gameInstance) {
+    public static void startServer(String runDir, Class<?> gameInstance) {
         File runDirFile = new File(runDir);
         if (runDirFile.toString().equals(System.getProperty("user.home"))) {
             runDirFile = new File(".");
-		}
+        }
 
-		LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
-		loader.prepareModInit(runDirFile.toPath(), gameInstance);
-		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
-		loader.invokeEntrypoints("server", DedicatedServerModInitializer.class, DedicatedServerModInitializer::onInitializeServer);
-	}
+        LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
+        loader.prepareModInit(runDirFile.toPath(), gameInstance);
+        loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
+        loader.invokeEntrypoints("server",
+            DedicatedServerModInitializer.class,
+            DedicatedServerModInitializer::onInitializeServer);
+    }
 
-	public static void setGameInstance(Object gameInstance) {
-		LeafLoaderImpl.INSTANCE.setGameInstance(gameInstance);
-	}
+    public static void setGameInstance(Object gameInstance) {
+        LeafLoaderImpl.INSTANCE.setGameInstance(gameInstance);
+    }
 }

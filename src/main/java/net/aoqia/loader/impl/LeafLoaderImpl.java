@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -149,6 +150,9 @@ public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
         discoverer.addCandidateFinder(new ClasspathModCandidateFinder());
         discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(), remapRegularMods));
         discoverer.addCandidateFinder(new ArgumentModCandidateFinder(remapRegularMods));
+
+        // Zomboid-specific directories to load mods from.
+        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getSteamWorkshopPath(), remapRegularMods));
 
         Map<String, Set<ModCandidateImpl>> envDisabledMods = new HashMap<>();
         modCandidates = discoverer.discoverMods(this, envDisabledMods);
@@ -336,6 +340,22 @@ public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
         String directory = System.getProperty(SystemProperties.MODS_FOLDER);
 
         return directory != null ? Paths.get(directory) : gameDir.resolve("mods");
+    }
+
+    private Path getSteamWorkshopPath() {
+        String directory = System.getProperty(SystemProperties.WORKSHOP_FOLDER);
+        if (directory != null) {
+            return Paths.get(directory);
+        }
+
+        try {
+            return gameDir.resolve("../../workshop/content/108600");
+        } catch (InvalidPathException e) {
+            throw new RuntimeException(
+                "Failed to find Steam workshop directory for Project Zomboid. This could happen if your workshop " +
+                "folder is separate from the Steam library folder. Please manually specify the workshop path " +
+                "(workshop/content/108600) via the 'leaf.workshopFolder' system property.");
+        }
     }
 
     @Override

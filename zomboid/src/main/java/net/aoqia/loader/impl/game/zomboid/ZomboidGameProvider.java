@@ -36,7 +36,6 @@ import net.aoqia.loader.impl.game.LibClassifier;
 import net.aoqia.loader.impl.game.patch.GameTransformer;
 import net.aoqia.loader.impl.game.zomboid.patch.BrandingPatch;
 import net.aoqia.loader.impl.game.zomboid.patch.EntrypointPatch;
-import net.aoqia.loader.impl.game.zomboid.patch.TinyFDPatch;
 import net.aoqia.loader.impl.launch.LeafLauncher;
 import net.aoqia.loader.impl.launch.MappingConfiguration;
 import net.aoqia.loader.impl.metadata.BuiltinModMetadata;
@@ -52,24 +51,13 @@ import net.aoqia.loader.impl.util.log.LogHandler;
 public class ZomboidGameProvider implements GameProvider {
     private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = { "org.apache.logging.log4j." };
 
-    private static final Set<String> SENSITIVE_ARGS = new HashSet<>(Arrays.asList(
-        // all lowercase without --
-        "accesstoken",
-        "clientid",
-        "profileproperties",
-        "proxypass",
-        "proxyuser",
-        "username",
-        "userproperties",
-        "uuid",
-        "xuid"));
+    private static final Set<String> SENSITIVE_ARGS = new HashSet<>(Collections.emptyList());
     private final List<Path> gameJars = new ArrayList<>(2); // env game jar and potentially common game jar
     private final Set<Path> logJars = new HashSet<>();
     private final List<Path> miscGameLibraries = new ArrayList<>(); // libraries not relevant for loader's uses
     private final GameTransformer transformer = new GameTransformer(
-        new EntrypointPatch(this),
-        new BrandingPatch(),
-        new TinyFDPatch());
+        new EntrypointPatch(),
+        new BrandingPatch());
     private EnvType envType;
     private String entrypoint;
     private Arguments arguments;
@@ -168,7 +156,7 @@ public class ZomboidGameProvider implements GameProvider {
 
     @Override
     public boolean isEnabled() {
-        return System.getProperty(SystemProperties.SKIP_MC_PROVIDER) == null;
+        return System.getProperty(SystemProperties.SKIP_ZOMBOID_PROVIDER) == null;
     }
 
     @Override
@@ -353,7 +341,7 @@ public class ZomboidGameProvider implements GameProvider {
         }
 
         try {
-            invoker.invokeExact(arguments.toArray());
+            invoker.invokeExact((Object) arguments.toArray());
         } catch (Throwable t) {
             throw FormattedException.ofLocalized("exception.zomboid.generic", t);
         }

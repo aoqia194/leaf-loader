@@ -20,56 +20,63 @@ import java.util.ListIterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import net.aoqia.loader.impl.game.patch.GamePatch;
+import net.aoqia.loader.impl.game.zomboid.Hooks;
+import net.aoqia.loader.impl.launch.LeafLauncher;
+import net.aoqia.loader.impl.util.log.Log;
+import net.aoqia.loader.impl.util.log.LogCategory;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.aoqia.loader.impl.game.zomboid.Hooks;
-import net.aoqia.loader.impl.game.patch.GamePatch;
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
-
 public final class BrandingPatch extends GamePatch {
-	@Override
-	public void process(LeafLauncher launcher, Function<String, ClassNode> classSource, Consumer<ClassNode> classEmitter) {
-		for (String brandClassName : new String[] {
-				"net.minecraft.client.ClientBrandRetriever",
-				"net.minecraft.server.MinecraftServer"
-		}) {
-			ClassNode brandClass = classSource.apply(brandClassName);
+    private static final String GAME_TITLE_FIELD = "GAME_TITLE";
 
-			if (brandClass != null) {
-				if (applyBrandingPatch(brandClass)) {
-					classEmitter.accept(brandClass);
-				}
-			}
-		}
-	}
+    @Override
+    public void process(LeafLauncher launcher,
+        Function<String, ClassNode> classSource,
+        Consumer<ClassNode> classEmitter) {
+        ClassNode brandClass = classSource.apply("zombie.GameWindow");
 
-	private boolean applyBrandingPatch(ClassNode classNode) {
-		boolean applied = false;
+        if (brandClass == null) {
+            return;
+        }
 
-		for (MethodNode node : classNode.methods) {
-			if (node.name.equals("getClientModName") || node.name.equals("getServerModName") && node.desc.endsWith(")Ljava/lang/String;")) {
-				Log.debug(LogCategory.GAME_PATCH, "Applying brand name hook to %s::%s", classNode.name, node.name);
+        if (applyBrandingPatch(brandClass)) {
+            classEmitter.accept(brandClass);
+        }
+    }
 
-				ListIterator<AbstractInsnNode> it = node.instructions.iterator();
+    private boolean applyBrandingPatch(ClassNode classNode) {
 
-				while (it.hasNext()) {
-					if (it.next().getOpcode() == Opcodes.ARETURN) {
-						it.previous();
-						it.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, "insertBranding", "(Ljava/lang/String;)Ljava/lang/String;", false));
-						it.next();
-					}
-				}
+        MethodNode methodNode = findMethod(classNode, (method) -> {
+            return method.name.equals("InitDisplay") && method.desc.equals("()V") &&
+                   isPublicStatic(method.access);
+        });
 
-				applied = true;
-			}
-		}
+        if (methodNode == null) {
+            throw new RuntimeException("Could not find InitDisplay method in " + classNode.name + "!");
+        }
 
-		return applied;
-	}
+        Log.debug(LogCategory.GAME_PATCH, "Applying brand name hook to %s::%s", classNode.name, methodNode.name);
+
+        // Change the LDC to use the static field GAME_TITLE so we can just change the field.
+        ListIterator<AbstractInsnNode> it = methodNode.instructions.iterator();
+        while (it.hasNext()) {
+            if (it.next().getOpcode() == Opcodes.LDC) {
+                it.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+                    Hooks.INTERNAL_NAME,
+                    "setWindowTitle",
+                    "(Ljava/lang/String;)Ljava/lang/String;",
+                    false));
+                it.next();
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

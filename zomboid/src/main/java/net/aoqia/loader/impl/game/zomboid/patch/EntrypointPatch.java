@@ -21,42 +21,22 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.version.VersionPredicate;
 import net.aoqia.loader.impl.game.patch.GamePatch;
 import net.aoqia.loader.impl.game.zomboid.Hooks;
-import net.aoqia.loader.impl.game.zomboid.ZomboidGameProvider;
 import net.aoqia.loader.impl.launch.LeafLauncher;
 import net.aoqia.loader.impl.util.log.Log;
 import net.aoqia.loader.impl.util.log.LogCategory;
-import net.aoqia.loader.impl.util.version.VersionPredicateParser;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 public class EntrypointPatch extends GamePatch {
-    private final ZomboidGameProvider gameProvider;
-
-    public EntrypointPatch(ZomboidGameProvider gameProvider) {
-        this.gameProvider = gameProvider;
-    }
-
-    private static VersionPredicate createVersionPredicate(String predicate) {
-        try {
-            return VersionPredicateParser.parse(predicate);
-        } catch (VersionParsingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public void process(LeafLauncher launcher,
         Function<String, ClassNode> classSource,
         Consumer<ClassNode> classEmitter) {
         EnvType type = launcher.getEnvironmentType();
         String entrypoint = launcher.getEntrypoint();
-        Version gameVersion = getGameVersion();
 
         if (!entrypoint.startsWith("zombie.")) {
             return;
@@ -141,59 +121,9 @@ public class EntrypointPatch extends GamePatch {
         classEmitter.accept(mainClass);
     }
 
-    private Version getGameVersion() {
-        try {
-            return Version.parse(gameProvider.getNormalizedGameVersion());
-        } catch (VersionParsingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private void finishEntrypoint(EnvType type, ListIterator<AbstractInsnNode> it) {
         String methodName = String.format("start%s", type == EnvType.CLIENT ? "Client" : "Server");
         it.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, methodName,
             "(Ljava/lang/String;Ljava/lang/Class;)V", false));
-    }
-
-    private boolean hasSuperClass(String cls, String superCls, Function<String, ClassNode> classSource) {
-        if (cls.contains("$") || (!cls.startsWith("zombie") && cls.contains("/"))) {
-            return false;
-        }
-
-        ClassNode classNode = classSource.apply(cls);
-
-        return classNode != null && classNode.superName.equals(superCls);
-    }
-
-    private boolean hasStrInMethod(String cls, String methodName, String methodDesc, String str,
-        Function<String, ClassNode> classSource) {
-        if (cls.contains("$") || (!cls.startsWith("zombie") && cls.contains("/"))) {
-            return false;
-        }
-
-        ClassNode node = classSource.apply(cls);
-        if (node == null) {
-            return false;
-        }
-
-        for (MethodNode method : node.methods) {
-            if (method.name.equals(methodName) && method.desc.equals(methodDesc)) {
-                for (AbstractInsnNode insn : method.instructions) {
-                    if (insn instanceof LdcInsnNode) {
-                        Object cst = ((LdcInsnNode) insn).cst;
-
-                        if (cst instanceof String) {
-                            if (cst.equals(str)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-                break;
-            }
-        }
-
-        return false;
     }
 }

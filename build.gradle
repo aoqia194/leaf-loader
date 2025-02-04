@@ -14,7 +14,7 @@ plugins {
 	id 'eclipse'
 	id 'maven-publish'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'leaf-loom' version '1.9.local' apply false
+	id 'leaf-loom' version '0.1.local' apply false
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
 	id 'me.modmuss50.remotesign' version "0.4.0"
 }

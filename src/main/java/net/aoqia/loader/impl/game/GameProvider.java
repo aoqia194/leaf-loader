@@ -27,50 +27,64 @@ import net.aoqia.loader.impl.launch.LeafLauncher;
 import net.aoqia.loader.impl.util.Arguments;
 import net.aoqia.loader.impl.util.LoaderUtil;
 
-public interface GameProvider { // name directly referenced in net.aoqia.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader records
-	String getGameId();
-	String getGameName();
-	String getRawGameVersion();
-	String getNormalizedGameVersion();
-	Collection<BuiltinMod> getBuiltinMods();
+// Name directly referenced in net.aoqia.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader
+// records.
+public interface GameProvider {
+    String getGameId();
 
-	String getEntrypoint();
-	Path getLaunchDirectory();
-	boolean isObfuscated();
-	boolean requiresUrlClassLoader();
+    String getGameName();
 
-	boolean isEnabled();
-	boolean locateGame(LeafLauncher launcher, String[] args);
-	void initialize(LeafLauncher launcher);
-	GameTransformer getEntrypointTransformer();
-	void unlockClassPath(LeafLauncher launcher);
-	void launch(ClassLoader loader);
+    String getRawGameVersion();
 
-	default boolean displayCrash(Throwable exception, String context) {
-		return false;
-	}
+    String getNormalizedGameVersion();
 
-	Arguments getArguments();
-	String[] getLaunchArguments(boolean sanitize);
+    Collection<BuiltinMod> getBuiltinMods();
 
-	default boolean canOpenErrorGui() {
-		return true;
-	}
+    String getEntrypoint();
 
-	default boolean hasAwtSupport() {
-		return LoaderUtil.hasAwtSupport();
-	}
+    Path getLaunchDirectory();
 
-	class BuiltinMod {
-		public BuiltinMod(List<Path> paths, ModMetadata metadata) {
-			Objects.requireNonNull(paths, "null paths");
-			Objects.requireNonNull(metadata, "null metadata");
+    boolean isObfuscated();
 
-			this.paths = paths;
-			this.metadata = metadata;
-		}
+    boolean requiresUrlClassLoader();
 
-		public final List<Path> paths;
-		public final ModMetadata metadata;
-	}
+    boolean isEnabled();
+
+    boolean locateGame(LeafLauncher launcher, String[] args);
+
+    void initialize(LeafLauncher launcher);
+
+    GameTransformer getEntrypointTransformer();
+
+    void unlockClassPath(LeafLauncher launcher);
+
+    void launch(ClassLoader loader);
+
+    default boolean displayCrash(Throwable exception, String context) {
+        return false;
+    }
+
+    Arguments getArguments();
+
+    String[] getLaunchArguments(boolean sanitize);
+
+    default boolean canOpenErrorGui() {
+        return true;
+    }
+
+    default boolean hasAwtSupport() {
+        return LoaderUtil.hasAwtSupport();
+    }
+
+    class BuiltinMod {
+        public final List<Path> paths;
+        public final ModMetadata metadata;
+        public BuiltinMod(List<Path> paths, ModMetadata metadata) {
+            Objects.requireNonNull(paths, "null paths");
+            Objects.requireNonNull(metadata, "null metadata");
+
+            this.paths = paths;
+            this.metadata = metadata;
+        }
+    }
 }
