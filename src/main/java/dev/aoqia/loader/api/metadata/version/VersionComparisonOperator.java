@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.metadata.version;
+package dev.aoqia.loader.api.metadata.version;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.impl.util.version.SemanticVersionImpl;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.impl.util.version.SemanticVersionImpl;
 
 public enum VersionComparisonOperator {
 	// order is important to match the longest substring (e.g. try >= before >)

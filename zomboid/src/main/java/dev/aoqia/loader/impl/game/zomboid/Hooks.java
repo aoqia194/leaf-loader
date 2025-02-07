@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.zomboid;
+package dev.aoqia.loader.impl.game.zomboid;
 
 import java.io.File;
 
-import net.aoqia.api.ClientModInitializer;
-import net.aoqia.api.DedicatedServerModInitializer;
-import net.aoqia.api.ModInitializer;
-import net.aoqia.loader.impl.LeafLoaderImpl;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.ClientModInitializer;
+import dev.aoqia.api.DedicatedServerModInitializer;
+import dev.aoqia.api.ModInitializer;
+import dev.aoqia.loader.impl.LeafLoaderImpl;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public final class Hooks {
     public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');

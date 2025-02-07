@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,17 +36,17 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.aoqia.loader.impl.FormattedException;
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.launch.LeafMixinBootstrap;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.UrlUtil;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.entrypoint.PreLaunchEntrypoint;
+import dev.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.launch.LeafMixinBootstrap;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.UrlUtil;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public final class Knot extends LeafLauncherBase {
 	private static final boolean IS_DEVELOPMENT = Boolean.parseBoolean(System.getProperty(SystemProperties.DEVELOPMENT, "false"));
@@ -128,7 +128,7 @@ public final class Knot extends LeafLauncherBase {
 
 		provider = createGameProvider(args);
 		Log.finishBuiltinConfig();
-		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Leaf Loader %s", provider.getGameName(), provider.getRawGameVersion(), net.aoqia.loader.impl.LeafLoaderImpl.VERSION);
+		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Leaf Loader %s", provider.getGameName(), provider.getRawGameVersion(), dev.aoqia.loader.impl.LeafLoaderImpl.VERSION);
 
 		// Setup classloader
 		// TODO: Provide KnotCompatibilityClassLoader in non-exclusive-Fabric pre-1.13 environments?
@@ -140,12 +140,12 @@ public final class Knot extends LeafLauncherBase {
 
 		Thread.currentThread().setContextClassLoader(cl);
 
-		net.aoqia.loader.impl.LeafLoaderImpl loader = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
+		dev.aoqia.loader.impl.LeafLoaderImpl loader = dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE;
 		loader.setGameProvider(provider);
 		loader.load();
 		loader.freeze();
 
-		net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.loadAccessWideners();
+		dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.loadAccessWideners();
 
 		LeafMixinBootstrap.init(getEnvironmentType(), loader);
 		LeafLauncherBase.finishMixinBootstrapping();
@@ -222,7 +222,7 @@ public final class Knot extends LeafLauncherBase {
 			if (flPath == null || !flPath.getFileName().toString().endsWith(".jar")) return null; // not a jar
 
 			try (ZipFile zf = new ZipFile(flPath.toFile())) {
-				ZipEntry entry = zf.getEntry("META-INF/services/net.aoqia.loader.impl.game.GameProvider"); // same file as used by service loader
+				ZipEntry entry = zf.getEntry("META-INF/services/dev.aoqia.loader.impl.game.GameProvider"); // same file as used by service loader
 				if (entry == null) return null;
 
 				try (InputStream is = zf.getInputStream(entry)) {

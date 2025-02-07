@@ -1,1 +1,1 @@
-net.aoqia.loader.impl.launch.knot.MixinServiceKnotBootstrap
+dev.aoqia.loader.impl.launch.knot.MixinServiceKnotBootstrap

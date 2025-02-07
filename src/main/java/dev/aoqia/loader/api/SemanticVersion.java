@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api;
+package dev.aoqia.loader.api;
 
 import java.util.Optional;
 
-import net.aoqia.loader.impl.util.version.VersionParser;
+import dev.aoqia.loader.impl.util.version.VersionParser;
 
 /**
  * Represents a <a href="https://semver.org/">Sematic Version</a>.

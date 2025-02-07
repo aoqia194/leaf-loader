@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,15 +24,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.metadata.ContactInformation;
-import net.aoqia.loader.api.metadata.CustomValue;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.ModEnvironment;
-import net.aoqia.loader.api.metadata.Person;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.CustomValue;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModEnvironment;
+import dev.aoqia.loader.api.metadata.Person;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
 	static final IconEntry NO_ICON = size -> Optional.empty();

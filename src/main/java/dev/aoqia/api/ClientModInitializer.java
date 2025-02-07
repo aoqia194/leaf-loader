@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.api;
+package dev.aoqia.api;
 
 /**
  * A mod initializer ran only on {@link EnvType#CLIENT}.
@@ -26,7 +26,7 @@ package net.aoqia.api;
  *
  * @see ModInitializer
  * @see DedicatedServerModInitializer
- * @see net.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
+ * @see dev.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
  */
 @FunctionalInterface
 public interface ClientModInitializer {

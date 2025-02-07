@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 @SuppressWarnings("serial")
 public class ModResolutionException extends Exception {

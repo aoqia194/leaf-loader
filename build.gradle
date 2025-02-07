@@ -1,4 +1,4 @@
-import net.aoqia.loom.build.nesting.JarNester
+import dev.aoqia.loom.build.nesting.JarNester
 import org.slf4j.LoggerFactory
 
 buildscript {
@@ -14,7 +14,7 @@ plugins {
 	id 'eclipse'
 	id 'maven-publish'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'leaf-loom' version '0.1.local' apply false
+	id 'leaf-loom' version '0.1.0.local' apply false
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
 	id 'me.modmuss50.remotesign' version "0.4.0"
 }
@@ -30,7 +30,7 @@ allprojects {
 	apply plugin: 'eclipse'
 	apply plugin: "com.diffplug.spotless"
 
-	def constantsSource = rootProject.file("src/main/java/net/aoqia/loader/impl/LeafLoaderImpl.java").text
+	def constantsSource = rootProject.file("src/main/java/dev/aoqia/loader/impl/LeafLoaderImpl.java").text
 	version = (constantsSource =~ /\s+VERSION\s*=\s*"(.*)";/)[0][1] + (ENV.GITHUB_ACTIONS ? "" : "+local")
 
 	repositories {
@@ -162,7 +162,7 @@ tasks.register('getSat4jAbout', Copy) {
 		}
 	}
 
-	rename 'about.html', 'net/aoqia/loader/impl/lib/sat4j/about-sat4j.html'
+	rename 'about.html', 'dev/aoqia/loader/impl/lib/sat4j/about-sat4j.html'
 
 	into layout.buildDirectory.dir("sat4j")
 }
@@ -178,9 +178,9 @@ tasks.register('fatJar', ShadowJar) {
 
 	manifest {
 		attributes(
-			'Main-Class': 'net.aoqia.loader.impl.launch.server.LeafServerLauncher',
+			'Main-Class': 'dev.aoqia.loader.impl.launch.server.LeafServerLauncher',
 			'Leaf-Loom-Remap': 'false',
-			'Automatic-Module-Name': 'net.aoqia.loader',
+			'Automatic-Module-Name': 'dev.aoqia.loader',
 			'Multi-Release': 'true'
 		)
 	}
@@ -188,10 +188,10 @@ tasks.register('fatJar', ShadowJar) {
 	archiveClassifier = "fat"
 	configurations = [project.configurations.include]
 
-	relocate 'org.sat4j', 'net.aoqia.loader.impl.lib.sat4j'
-	relocate 'net.fabricmc.accesswidener', 'net.aoqia.loader.impl.lib.accesswidener'
-	relocate 'net.fabricmc.tinyremapper', 'net.aoqia.loader.impl.lib.tinyremapper'
-	relocate 'net.fabricmc.mappingio', 'net.aoqia.loader.impl.lib.mappingio'
+	relocate 'org.sat4j', 'dev.aoqia.loader.impl.lib.sat4j'
+	relocate 'net.fabricmc.accesswidener', 'dev.aoqia.loader.impl.lib.accesswidener'
+	relocate 'net.fabricmc.tinyremapper', 'dev.aoqia.loader.impl.lib.tinyremapper'
+	relocate 'net.fabricmc.mappingio', 'dev.aoqia.loader.impl.lib.mappingio'
 
 	exclude 'about.html'
 	exclude 'sat4j.version'
@@ -412,7 +412,7 @@ task github(dependsOn: publish) {
 // A task to ensure that the version being released has not already been released.
 task checkVersion {
 	doFirst {
-		def xml = new URL("https://maven.fabricmc.net/net/aoqia/fabric-loader/maven-metadata.xml").text
+		def xml = new URL("https://maven.fabricmc.net/dev/aoqia/fabric-loader/maven-metadata.xml").text
 		def metadata = new XmlSlurper().parseText(xml)
 		def versions = metadata.versioning.versions.version*.text();
 		if (versions.contains(version)) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -25,9 +25,9 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
 
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public class DirectoryModCandidateFinder implements ModCandidateFinder {
 	private final Path path;

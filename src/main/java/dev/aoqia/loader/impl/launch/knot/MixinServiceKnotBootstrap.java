@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
 import org.spongepowered.asm.service.IMixinServiceBootstrap;
 
@@ -26,7 +26,7 @@ public class MixinServiceKnotBootstrap implements IMixinServiceBootstrap {
 
 	@Override
 	public String getServiceClassName() {
-		return "net.aoqia.loader.impl.launch.knot.MixinServiceKnot";
+		return "dev.aoqia.loader.impl.launch.knot.MixinServiceKnot";
 	}
 
 	@Override

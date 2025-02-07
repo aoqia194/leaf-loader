@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.zomboid;
+package dev.aoqia.loader.impl.game.zomboid;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.aoqia.loader.impl.LeafLoaderImpl;
-import net.aoqia.loader.impl.util.ExceptionUtil;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SimpleClassPath;
+import dev.aoqia.loader.impl.LeafLoaderImpl;
+import dev.aoqia.loader.impl.util.ExceptionUtil;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SimpleClassPath;
 import org.objectweb.asm.*;
 
 public final class ZomboidVersionLookup {

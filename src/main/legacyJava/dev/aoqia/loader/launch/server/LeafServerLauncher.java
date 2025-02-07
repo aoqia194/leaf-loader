@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.launch.server;
+package dev.aoqia.loader.launch.server;
 
 /**
- * @deprecated Use {@link net.aoqia.loader.impl.launch.server.LeafServerLauncher} instead
+ * @deprecated Use {@link dev.aoqia.loader.impl.launch.server.LeafServerLauncher} instead
  */
 @Deprecated
 public final class LeafServerLauncher {
 	public static void main(String[] args) {
-		net.aoqia.loader.impl.launch.server.LeafServerLauncher.main(args);
+		dev.aoqia.loader.impl.launch.server.LeafServerLauncher.main(args);
 	}
 }

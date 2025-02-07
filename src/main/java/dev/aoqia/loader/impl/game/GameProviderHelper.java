@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game;
+package dev.aoqia.loader.impl.game;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,16 +35,16 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.FormattedException;
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.launch.MappingConfiguration;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.UrlConversionException;
-import net.aoqia.loader.impl.util.UrlUtil;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.launch.MappingConfiguration;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.UrlConversionException;
+import dev.aoqia.loader.impl.util.UrlUtil;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.tinyremapper.InputTag;
 import net.fabricmc.tinyremapper.NonClassCopyMode;
@@ -251,7 +251,7 @@ public final class GameProviderHelper {
 	}
 
 	private static Path getDeobfJarDir(Path gameDir, String gameId, String gameVersion) {
-		Path ret = gameDir.resolve(net.aoqia.loader.impl.LeafLoaderImpl.CACHE_DIR_NAME).resolve(net.aoqia.loader.impl.LeafLoaderImpl.REMAPPED_JARS_DIR_NAME);
+		Path ret = gameDir.resolve(dev.aoqia.loader.impl.LeafLoaderImpl.CACHE_DIR_NAME).resolve(dev.aoqia.loader.impl.LeafLoaderImpl.REMAPPED_JARS_DIR_NAME);
 		StringBuilder versionDirName = new StringBuilder();
 
 		if (!gameId.isEmpty()) {
@@ -264,7 +264,7 @@ public final class GameProviderHelper {
 		}
 
 		if (versionDirName.length() > 0) versionDirName.append('-');
-		versionDirName.append(net.aoqia.loader.impl.LeafLoaderImpl.VERSION);
+		versionDirName.append(dev.aoqia.loader.impl.LeafLoaderImpl.VERSION);
 
 		return ret.resolve(versionDirName.toString().replaceAll("[^\\w\\-\\. ]+", "_"));
 	}

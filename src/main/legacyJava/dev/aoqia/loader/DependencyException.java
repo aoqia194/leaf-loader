@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader;
+package dev.aoqia.loader;
 
 /**
  * @deprecated Internal API, do not use

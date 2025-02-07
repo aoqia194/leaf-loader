@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.util;
+package dev.aoqia.loader.util;
 
 import java.net.URL;
 import java.nio.file.Path;
 
-import net.aoqia.loader.impl.util.ExceptionUtil.WrappedException;
+import dev.aoqia.loader.impl.util.ExceptionUtil.WrappedException;
 
 /**
  * @deprecated Internal API, do not use
@@ -30,7 +30,7 @@ public final class UrlUtil {
 
 	public static Path asPath(URL url) throws UrlConversionException {
 		try {
-			return net.aoqia.loader.impl.util.UrlUtil.asPath(url);
+			return dev.aoqia.loader.impl.util.UrlUtil.asPath(url);
 		} catch (WrappedException e) {
 			throw new UrlConversionException(e.getCause());
 		}

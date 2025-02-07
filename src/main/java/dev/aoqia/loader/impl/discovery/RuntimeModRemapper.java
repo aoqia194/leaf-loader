@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,14 +44,14 @@ import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
 import net.fabricmc.accesswidener.AccessWidenerReader;
 import net.fabricmc.accesswidener.AccessWidenerRemapper;
 import net.fabricmc.accesswidener.AccessWidenerWriter;
-import net.aoqia.loader.impl.FormattedException;
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.util.FileSystemUtil;
-import net.aoqia.loader.impl.util.ManifestUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.util.FileSystemUtil;
+import dev.aoqia.loader.impl.util.ManifestUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 import net.fabricmc.tinyremapper.InputTag;
 import net.fabricmc.tinyremapper.NonClassCopyMode;
 import net.fabricmc.tinyremapper.OutputConsumerPath;
@@ -124,7 +124,7 @@ public final class RuntimeModRemapper {
 					.renameInvalidLocals(false)
 					.extension(new MixinExtension(remapMixins::contains))
 					.extraAnalyzeVisitor((mrjVersion, className, next) ->
-					AccessWidenerClassVisitor.createClassVisitor(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, next, mergedAccessWidener))
+					AccessWidenerClassVisitor.createClassVisitor(dev.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, next, mergedAccessWidener))
 					.build();
 
 			try {

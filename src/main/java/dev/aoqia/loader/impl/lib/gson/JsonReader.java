@@ -17,7 +17,7 @@
  * This file has been modified by the Fabric project (repackage, minor changes).
  */
 
-package net.aoqia.loader.impl.lib.gson;
+package dev.aoqia.loader.impl.lib.gson;
 
 import java.io.Closeable;
 import java.io.EOFException;

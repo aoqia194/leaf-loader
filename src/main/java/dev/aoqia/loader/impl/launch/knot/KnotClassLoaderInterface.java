@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.jar.Manifest;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.game.GameProvider;
 
 interface KnotClassLoaderInterface {
 	@SuppressWarnings("resource")

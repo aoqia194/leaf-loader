@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util;
+package dev.aoqia.loader.impl.util;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public final class LoaderUtil {
 	private static final ConcurrentMap<Path, Path> pathNormalizationCache = new ConcurrentHashMap<>();
-	private static final String LEAF_LOADER_CLASS = "net/aoqia/loader/api/LeafLoader.class";
+	private static final String LEAF_LOADER_CLASS = "dev/aoqia/loader/api/LeafLoader.class";
 	private static final String ASM_CLASS = "org/objectweb/asm/ClassReader.class";
 
 	public static String getClassFileName(String className) {
@@ -58,7 +58,7 @@ public final class LoaderUtil {
 	}
 
 	public static void verifyNotInTargetCl(Class<?> cls) {
-		if (cls.getClassLoader().getClass().getName().equals("net.aoqia.loader.impl.launch.knot.KnotClassLoader")) {
+		if (cls.getClassLoader().getClass().getName().equals("dev.aoqia.loader.impl.launch.knot.KnotClassLoader")) {
 			// This usually happens when fabric loader has been added to the target class loader. This is a bad state.
 			// Such additions may be indirect, a JAR can use the Class-Path manifest attribute to drag additional
 			// libraries with it, likely recursively.

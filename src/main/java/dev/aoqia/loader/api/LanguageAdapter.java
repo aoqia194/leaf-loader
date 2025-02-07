@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api;
+package dev.aoqia.loader.api;
 
-import net.aoqia.loader.impl.util.DefaultLanguageAdapter;
+import dev.aoqia.loader.impl.util.DefaultLanguageAdapter;
 
 /**
  * Creates instances of objects from custom notations.
@@ -43,7 +43,7 @@ import net.aoqia.loader.impl.util.DefaultLanguageAdapter;
  *   <p>An example of an entrypoint class
  *   <pre><blockquote>
  *     package net.fabricmc.example;
- *     import net.aoqia.api.ModInitializer;
+ *     import dev.aoqia.api.ModInitializer;
  *     public class ExampleMod implements ModInitializer {
  *       public ExampleMod() {} // the constructor must be public no-argument
  *       {@literal @}Override
@@ -64,7 +64,7 @@ import net.aoqia.loader.impl.util.DefaultLanguageAdapter;
  *   <p>An example of an entrypoint field
  *   <pre><blockquote>
  *     package net.fabricmc.example;
- *     import net.aoqia.api.ModInitializer;
+ *     import dev.aoqia.api.ModInitializer;
  *     public final class ExampleMod implements ModInitializer {
  *       public static final ExampleMod INSTANCE = new ExampleMod();
  *

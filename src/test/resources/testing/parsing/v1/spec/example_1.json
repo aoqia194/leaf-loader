@@ -18,12 +18,12 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "net.aoqia.test.mod.ClientEntrypoint",
-      "net.aoqia.test.mod.ClientEntrypoint2"
+      "dev.aoqia.test.mod.ClientEntrypoint",
+      "dev.aoqia.test.mod.ClientEntrypoint2"
     ],
     "custom_entrypoint": [
       {
-        "value": "net.aoqia.test.mod.extension.CustomEntrypoint",
+        "value": "dev.aoqia.test.mod.extension.CustomEntrypoint",
         "adapter": "default"
       }
     ]

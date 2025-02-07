@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.zomboid.test;
+package dev.aoqia.zomboid.test;
 
-import net.aoqia.api.ModInitializer;
+import dev.aoqia.api.ModInitializer;
 
 public class TestEntrypoint implements ModInitializer {
 	@Override

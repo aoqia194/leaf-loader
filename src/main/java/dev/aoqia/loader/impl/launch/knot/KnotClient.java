@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
-import net.aoqia.api.EnvType;
+import dev.aoqia.api.EnvType;
 
 public class KnotClient {
 	public static void main(String[] args) {

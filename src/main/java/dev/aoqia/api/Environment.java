@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.api;
+package dev.aoqia.api;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

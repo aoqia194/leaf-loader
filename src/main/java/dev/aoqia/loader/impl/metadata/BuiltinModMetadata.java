@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,14 +25,14 @@ import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.ContactInformation;
-import net.aoqia.loader.api.metadata.CustomValue;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.ModEnvironment;
-import net.aoqia.loader.api.metadata.ModMetadata;
-import net.aoqia.loader.api.metadata.Person;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.CustomValue;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModEnvironment;
+import dev.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.loader.api.metadata.Person;
 
 public final class BuiltinModMetadata extends AbstractModMetadata {
 	private final String id;

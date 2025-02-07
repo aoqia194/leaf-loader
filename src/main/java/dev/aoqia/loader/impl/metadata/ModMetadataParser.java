@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,10 +24,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import net.aoqia.loader.impl.lib.gson.JsonReader;
-import net.aoqia.loader.impl.lib.gson.JsonToken;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.loader.impl.lib.gson.JsonToken;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public final class ModMetadataParser {
 	public static final int LATEST_VERSION = 1;

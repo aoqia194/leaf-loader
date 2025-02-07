@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.zomboid;
+package dev.aoqia.loader.impl.game.zomboid;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -24,29 +24,29 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.ObjectShare;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.impl.FormattedException;
-import net.aoqia.loader.impl.LeafLoaderImpl;
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.game.GameProviderHelper;
-import net.aoqia.loader.impl.game.LibClassifier;
-import net.aoqia.loader.impl.game.patch.GameTransformer;
-import net.aoqia.loader.impl.game.zomboid.patch.BrandingPatch;
-import net.aoqia.loader.impl.game.zomboid.patch.EntrypointPatch;
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.launch.MappingConfiguration;
-import net.aoqia.loader.impl.metadata.BuiltinModMetadata;
-import net.aoqia.loader.impl.metadata.ModDependencyImpl;
-import net.aoqia.loader.impl.util.Arguments;
-import net.aoqia.loader.impl.util.ExceptionUtil;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
-import net.aoqia.loader.impl.util.log.LogHandler;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.ObjectShare;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.LeafLoaderImpl;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.game.GameProviderHelper;
+import dev.aoqia.loader.impl.game.LibClassifier;
+import dev.aoqia.loader.impl.game.patch.GameTransformer;
+import dev.aoqia.loader.impl.game.zomboid.patch.BrandingPatch;
+import dev.aoqia.loader.impl.game.zomboid.patch.EntrypointPatch;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.launch.MappingConfiguration;
+import dev.aoqia.loader.impl.metadata.BuiltinModMetadata;
+import dev.aoqia.loader.impl.metadata.ModDependencyImpl;
+import dev.aoqia.loader.impl.util.Arguments;
+import dev.aoqia.loader.impl.util.ExceptionUtil;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.util.log.LogHandler;
 
 public class ZomboidGameProvider implements GameProvider {
     private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = { "org.apache.logging.log4j." };
@@ -407,9 +407,9 @@ public class ZomboidGameProvider implements GameProvider {
             final String logHandlerClsName;
 
             if (log4jAvailable) {
-                logHandlerClsName = "net.aoqia.loader.impl.game.zomboid.Log4jLogHandler";
+                logHandlerClsName = "dev.aoqia.loader.impl.game.zomboid.Log4jLogHandler";
             } else if (slf4jAvailable) {
-                logHandlerClsName = "net.aoqia.loader.impl.game.zomboid.Slf4jLogHandler";
+                logHandlerClsName = "dev.aoqia.loader.impl.game.zomboid.Slf4jLogHandler";
             } else {
                 return;
             }

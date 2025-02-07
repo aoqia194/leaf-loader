@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.zomboid;
+package dev.aoqia.loader.impl.game.zomboid;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.game.LibClassifier.LibraryType;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.game.LibClassifier.LibraryType;
 
 enum ZomboidLibrary implements LibraryType {
 	ZOMBOID_CLIENT(EnvType.CLIENT, "zombie/gameStates/MainScreenState.class"),

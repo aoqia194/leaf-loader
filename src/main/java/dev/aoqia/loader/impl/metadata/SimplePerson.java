@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
-import net.aoqia.loader.api.metadata.ContactInformation;
-import net.aoqia.loader.api.metadata.Person;
+import dev.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.Person;
 
 /**
  * Represents a simple implementation of person which is only identified by name.

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
-import net.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.ContactInformation;
 
 final class ContactInfoBackedPerson extends SimplePerson {
 	private final ContactInformation contact;

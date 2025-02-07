@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 @SuppressWarnings("deprecation")
-public interface EntrypointMetadata extends net.aoqia.loader.metadata.EntrypointMetadata {
+public interface EntrypointMetadata extends dev.aoqia.loader.metadata.EntrypointMetadata {
 	@Override
 	String getAdapter();
 	@Override

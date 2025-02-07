@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
-import net.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModDependency;
 
 class Explanation implements Comparable<Explanation> {
 	private static int nextCmpId;

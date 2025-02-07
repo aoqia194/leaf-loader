@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.zomboid.test.mixin;
+package dev.aoqia.zomboid.test.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

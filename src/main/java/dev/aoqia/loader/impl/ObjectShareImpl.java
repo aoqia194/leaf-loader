@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl;
+package dev.aoqia.loader.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import net.aoqia.loader.api.ObjectShare;
+import dev.aoqia.loader.api.ObjectShare;
 
 final class ObjectShareImpl implements ObjectShare {
 	private final Map<String, Object> values = new HashMap<>();

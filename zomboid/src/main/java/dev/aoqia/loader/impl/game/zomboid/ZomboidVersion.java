@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.zomboid;
+package dev.aoqia.loader.impl.game.zomboid;
 
 import java.util.OptionalInt;
 

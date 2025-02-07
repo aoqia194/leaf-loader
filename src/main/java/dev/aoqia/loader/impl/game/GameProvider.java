@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game;
+package dev.aoqia.loader.impl.game;
 
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import net.aoqia.loader.api.metadata.ModMetadata;
-import net.aoqia.loader.impl.game.patch.GameTransformer;
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.util.Arguments;
-import net.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.loader.impl.game.patch.GameTransformer;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.util.Arguments;
+import dev.aoqia.loader.impl.util.LoaderUtil;
 
-// Name directly referenced in net.aoqia.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader
+// Name directly referenced in dev.aoqia.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader
 // records.
 public interface GameProvider {
     String getGameId();

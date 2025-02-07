@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api;
+package dev.aoqia.loader.api;
 
 /**
  * An exception that occurs during a {@link LanguageAdapter}'s object creation.

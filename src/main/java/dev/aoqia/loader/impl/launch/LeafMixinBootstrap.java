@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch;
+package dev.aoqia.loader.impl.launch;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.aoqia.loader.impl.LeafLoaderImpl;
+import dev.aoqia.loader.impl.LeafLoaderImpl;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.FabricUtil;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -30,18 +30,18 @@ import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfig;
 import org.spongepowered.asm.mixin.transformer.Config;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.ModDependency.Kind;
-import net.aoqia.loader.api.metadata.version.VersionInterval;
-import net.aoqia.loader.impl.ModContainerImpl;
-import net.aoqia.loader.impl.launch.knot.MixinServiceKnot;
-import net.aoqia.loader.impl.launch.knot.MixinServiceKnotBootstrap;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModDependency.Kind;
+import dev.aoqia.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.loader.impl.ModContainerImpl;
+import dev.aoqia.loader.impl.launch.knot.MixinServiceKnot;
+import dev.aoqia.loader.impl.launch.knot.MixinServiceKnotBootstrap;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 import net.fabricmc.mappingio.tree.MappingTree;
 
 public final class LeafMixinBootstrap {

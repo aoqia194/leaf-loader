@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,31 +46,31 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.metadata.ModMetadata;
-import net.aoqia.loader.impl.FormattedException;
-import net.aoqia.loader.impl.discovery.ModCandidateFinder.ModCandidateConsumer;
-import net.aoqia.loader.impl.game.GameProvider.BuiltinMod;
-import net.aoqia.loader.impl.metadata.BuiltinModMetadata;
-import net.aoqia.loader.impl.metadata.DependencyOverrides;
-import net.aoqia.loader.impl.metadata.LoaderModMetadata;
-import net.aoqia.loader.impl.metadata.MetadataVerifier;
-import net.aoqia.loader.impl.metadata.ModMetadataParser;
-import net.aoqia.loader.impl.metadata.NestedJarEntry;
-import net.aoqia.loader.impl.metadata.ParseMetadataException;
-import net.aoqia.loader.impl.metadata.VersionOverrides;
-import net.aoqia.loader.impl.util.ExceptionUtil;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.discovery.ModCandidateFinder.ModCandidateConsumer;
+import dev.aoqia.loader.impl.game.GameProvider.BuiltinMod;
+import dev.aoqia.loader.impl.metadata.BuiltinModMetadata;
+import dev.aoqia.loader.impl.metadata.DependencyOverrides;
+import dev.aoqia.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.loader.impl.metadata.MetadataVerifier;
+import dev.aoqia.loader.impl.metadata.ModMetadataParser;
+import dev.aoqia.loader.impl.metadata.NestedJarEntry;
+import dev.aoqia.loader.impl.metadata.ParseMetadataException;
+import dev.aoqia.loader.impl.metadata.VersionOverrides;
+import dev.aoqia.loader.impl.util.ExceptionUtil;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public final class ModDiscoverer {
 	private final VersionOverrides versionOverrides;
 	private final DependencyOverrides depOverrides;
 	private final List<ModCandidateFinder> candidateFinders = new ArrayList<>();
-	private final EnvType envType = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getEnvironmentType();
+	private final EnvType envType = dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getEnvironmentType();
 	private final Map<Long, ModScanTask> jijDedupMap = new ConcurrentHashMap<>(); // avoids reading the same jar twice
 	private final List<NestedModInitData> nestedModInitDatas = Collections.synchronizedList(new ArrayList<>()); // breaks potential cycles from deduplication
 	private final List<Path> nonFabricMods = Collections.synchronizedList(new ArrayList<>());
@@ -84,7 +84,7 @@ public final class ModDiscoverer {
 		candidateFinders.add(f);
 	}
 
-	public List<ModCandidateImpl> discoverMods(net.aoqia.loader.impl.LeafLoaderImpl loader, Map<String, Set<ModCandidateImpl>> envDisabledModsOut) throws ModResolutionException {
+	public List<ModCandidateImpl> discoverMods(dev.aoqia.loader.impl.LeafLoaderImpl loader, Map<String, Set<ModCandidateImpl>> envDisabledModsOut) throws ModResolutionException {
 		long startTime = System.nanoTime();
 		ForkJoinPool pool = new ForkJoinPool();
 		Set<Path> processedPaths = new HashSet<>(); // suppresses duplicate paths
@@ -371,7 +371,7 @@ public final class ModDiscoverer {
 						private ZipEntry currentEntry;
 					});
 
-					if (!nestedJarPaths.isEmpty() && net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+					if (!nestedJarPaths.isEmpty() && dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
 						Log.warn(LogCategory.METADATA, "Mod %s %s references missing nested jars: %s", metadata.getId(), metadata.getVersion(), nestedJarPaths);
 					}
 				}
@@ -449,7 +449,7 @@ public final class ModDiscoverer {
 					});
 				}
 
-				if (!nestedJarPaths.isEmpty() && net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+				if (!nestedJarPaths.isEmpty() && dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
 					Log.warn(LogCategory.METADATA, "Mod %s %s references missing nested jars: %s", metadata.getId(), metadata.getVersion(), nestedJarPaths);
 				}
 			}
@@ -506,7 +506,7 @@ public final class ModDiscoverer {
 		}
 
 		private LoaderModMetadata parseMetadata(InputStream is, String localPath) throws ParseMetadataException {
-			return ModMetadataParser.parseMetadata(is, localPath, parentPaths, versionOverrides, depOverrides, net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment());
+			return ModMetadataParser.parseMetadata(is, localPath, parentPaths, versionOverrides, depOverrides, dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment());
 		}
 	}
 

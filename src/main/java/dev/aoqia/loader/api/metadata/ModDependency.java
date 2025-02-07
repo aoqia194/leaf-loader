@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.metadata;
+package dev.aoqia.loader.api.metadata;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.metadata.version.VersionInterval;
-import net.aoqia.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.loader.api.metadata.version.VersionPredicate;
 
 /**
  * Represents a dependency.

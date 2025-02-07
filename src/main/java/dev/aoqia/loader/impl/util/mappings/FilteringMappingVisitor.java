@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.mappings;
+package dev.aoqia.loader.impl.util.mappings;
 
 import java.io.IOException;
 

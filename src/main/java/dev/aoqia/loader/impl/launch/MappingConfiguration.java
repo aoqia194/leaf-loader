@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch;
+package dev.aoqia.loader.impl.launch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,11 +29,11 @@ import java.util.zip.ZipError;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.aoqia.loader.impl.util.ManifestUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
-import net.aoqia.loader.impl.util.mappings.FilteringMappingVisitor;
+import dev.aoqia.loader.impl.util.ManifestUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.util.mappings.FilteringMappingVisitor;
 import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.format.MappingFormat;
 import net.fabricmc.mappingio.format.tiny.Tiny1FileReader;

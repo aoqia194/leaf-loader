@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
-import net.aoqia.loader.api.metadata.CustomValue;
-import net.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.loader.api.metadata.CustomValue;
+import dev.aoqia.loader.api.metadata.ModMetadata;
 
 public abstract class AbstractModMetadata implements ModMetadata {
 	public static final String TYPE_BUILTIN = "builtin";

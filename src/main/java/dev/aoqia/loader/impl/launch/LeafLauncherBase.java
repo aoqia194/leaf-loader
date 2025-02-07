@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch;
+package dev.aoqia.loader.impl.launch;
 
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -25,11 +25,11 @@ import java.util.Map;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.aoqia.loader.impl.FormattedException;
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.gui.LeafGuiEntry;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.gui.LeafGuiEntry;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public abstract class LeafLauncherBase implements LeafLauncher {
 	private static boolean mixinReady;
@@ -79,7 +79,7 @@ public abstract class LeafLauncherBase implements LeafLauncher {
 		Throwable actualExc = exc.getMessage() != null ? exc : exc.getCause();
 		Log.error(LogCategory.GENERAL, exc.getMainText(), actualExc);
 
-		GameProvider gameProvider = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
+		GameProvider gameProvider = dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (gameProvider == null || !gameProvider.displayCrash(actualExc, exc.getDisplayedText())) {
 			LeafGuiEntry.displayError(exc.getDisplayedText(), actualExc, true);
@@ -102,7 +102,7 @@ public abstract class LeafLauncherBase implements LeafLauncher {
 						String mainText = String.format("Uncaught exception in thread \"%s\"", t.getName());
 						Log.error(LogCategory.GENERAL, mainText, e);
 
-						GameProvider gameProvider = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
+						GameProvider gameProvider = dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 						if (Thread.currentThread() == mainThread
 								&& (gameProvider == null || !gameProvider.displayCrash(e, mainText))) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.log;
+package dev.aoqia.loader.impl.util.log;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -25,8 +25,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
 
 /**
  * Default LogHandler until Log is initialized.

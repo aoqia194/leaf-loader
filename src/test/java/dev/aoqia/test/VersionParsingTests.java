@@ -20,10 +20,10 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.impl.util.version.SemanticVersionImpl;
-import net.aoqia.loader.impl.util.version.VersionPredicateParser;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.impl.util.version.SemanticVersionImpl;
+import dev.aoqia.loader.impl.util.version.VersionPredicateParser;
 
 public class VersionParsingTests {
 	private static Exception tryParseSemantic(String s, boolean storeX) {

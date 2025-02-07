@@ -19,7 +19,7 @@ package net.fabricmc.test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import net.aoqia.loader.impl.util.Localization;
+import dev.aoqia.loader.impl.util.Localization;
 
 public class LocalizationTests {
 	@Test

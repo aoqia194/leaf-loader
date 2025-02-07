@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
 
 class KnotCompatibilityClassLoader extends URLClassLoader implements ClassLoaderAccess {
 	private final KnotClassDelegate<KnotCompatibilityClassLoader> delegate;

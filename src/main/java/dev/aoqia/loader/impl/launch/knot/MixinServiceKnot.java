@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,8 +40,8 @@ import org.spongepowered.asm.service.ITransformer;
 import org.spongepowered.asm.service.ITransformerProvider;
 import org.spongepowered.asm.util.ReEntranceLock;
 
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.util.UrlUtil;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.util.UrlUtil;
 
 public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBytecodeProvider, ITransformerProvider, IClassTracker {
 	static IMixinTransformer transformer;

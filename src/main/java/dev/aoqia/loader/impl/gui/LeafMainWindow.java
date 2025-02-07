@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.gui;
+package dev.aoqia.loader.impl.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -65,12 +65,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
-import net.aoqia.loader.impl.gui.LeafStatusTree.FabricBasicButtonType;
-import net.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusButton;
-import net.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusNode;
-import net.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusTab;
-import net.aoqia.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
-import net.aoqia.loader.impl.util.StringUtil;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.FabricBasicButtonType;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusButton;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusNode;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusTab;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
+import dev.aoqia.loader.impl.util.StringUtil;
 
 class FabricMainWindow {
 	static Icon missingIcon = null;

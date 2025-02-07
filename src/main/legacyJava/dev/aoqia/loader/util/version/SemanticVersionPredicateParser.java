@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.util.version;
+package dev.aoqia.loader.util.version;
 
 import java.util.function.Predicate;
 
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.version.VersionPredicate;
 
 /**
  * @deprecated Internal API, do not use

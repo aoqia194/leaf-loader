@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util;
+package dev.aoqia.loader.impl.util;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandleProxies;
@@ -25,10 +25,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.aoqia.loader.api.LanguageAdapter;
-import net.aoqia.loader.api.LanguageAdapterException;
-import net.aoqia.loader.api.ModContainer;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.api.LanguageAdapter;
+import dev.aoqia.loader.api.LanguageAdapterException;
+import dev.aoqia.loader.api.ModContainer;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
 
 public final class DefaultLanguageAdapter implements LanguageAdapter {
 	public static final DefaultLanguageAdapter INSTANCE = new DefaultLanguageAdapter();

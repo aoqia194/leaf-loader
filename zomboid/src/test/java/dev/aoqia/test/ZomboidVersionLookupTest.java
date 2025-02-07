@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.test;
+package dev.aoqia.test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,9 +31,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.aoqia.loader.impl.game.zomboid.ZomboidVersion;
-import net.aoqia.loader.impl.game.zomboid.ZomboidVersionLookup;
-import net.aoqia.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.loader.impl.game.zomboid.ZomboidVersion;
+import dev.aoqia.loader.impl.game.zomboid.ZomboidVersionLookup;
+import dev.aoqia.loader.impl.lib.gson.JsonReader;
 
 public final class ZomboidVersionLookupTest {
     public static void main(String[] args) throws IOException {

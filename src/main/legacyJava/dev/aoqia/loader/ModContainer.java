@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader;
+package dev.aoqia.loader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
-import net.aoqia.loader.impl.util.UrlUtil;
-import net.aoqia.loader.metadata.LoaderModMetadata;
+import dev.aoqia.loader.impl.util.UrlUtil;
+import dev.aoqia.loader.metadata.LoaderModMetadata;
 
 /**
- * @deprecated Use {@link net.aoqia.loader.api.ModContainer} instead
+ * @deprecated Use {@link dev.aoqia.loader.api.ModContainer} instead
  */
 @Deprecated
-public abstract class ModContainer implements net.aoqia.loader.api.ModContainer {
+public abstract class ModContainer implements dev.aoqia.loader.api.ModContainer {
 	public abstract LoaderModMetadata getInfo();
 	protected abstract List<Path> getCodeSourcePaths();
 

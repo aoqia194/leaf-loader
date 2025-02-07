@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.version.VersionParser;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.version.VersionParser;
 
 public final class VersionOverrides {
 	private final Map<String, Version> replacements = new HashMap<>();

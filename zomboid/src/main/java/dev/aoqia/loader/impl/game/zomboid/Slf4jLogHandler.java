@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.zomboid;
+package dev.aoqia.loader.impl.game.zomboid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.aoqia.loader.impl.util.log.LogCategory;
-import net.aoqia.loader.impl.util.log.LogHandler;
-import net.aoqia.loader.impl.util.log.LogLevel;
+import dev.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.util.log.LogHandler;
+import dev.aoqia.loader.impl.util.log.LogLevel;
 
 public final class Slf4jLogHandler implements LogHandler {
 	@Override

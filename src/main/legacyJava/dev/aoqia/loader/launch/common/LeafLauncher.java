@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.launch.common;
+package dev.aoqia.loader.launch.common;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 
-import net.aoqia.api.EnvType;
+import dev.aoqia.api.EnvType;
 
 /**
  * @deprecated Internal API, do not use

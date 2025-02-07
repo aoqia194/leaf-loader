@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api;
+package dev.aoqia.loader.api;
 
 @SuppressWarnings({ "deprecation", "serial" }) //Extending the deprecated one for backwards compatibility
-public class VersionParsingException extends net.aoqia.loader.util.version.VersionParsingException {
+public class VersionParsingException extends dev.aoqia.loader.util.version.VersionParsingException {
 	public VersionParsingException() {
 		super();
 	}

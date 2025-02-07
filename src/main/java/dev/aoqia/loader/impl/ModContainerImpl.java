@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl;
+package dev.aoqia.loader.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,17 +28,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import net.aoqia.loader.api.ModContainer;
-import net.aoqia.loader.api.metadata.ModOrigin;
-import net.aoqia.loader.impl.discovery.ModCandidateImpl;
-import net.aoqia.loader.impl.metadata.LoaderModMetadata;
-import net.aoqia.loader.impl.metadata.ModOriginImpl;
-import net.aoqia.loader.impl.util.FileSystemUtil;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.api.ModContainer;
+import dev.aoqia.loader.api.metadata.ModOrigin;
+import dev.aoqia.loader.impl.discovery.ModCandidateImpl;
+import dev.aoqia.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.loader.impl.metadata.ModOriginImpl;
+import dev.aoqia.loader.impl.util.FileSystemUtil;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 @SuppressWarnings("deprecation")
-public class ModContainerImpl extends net.aoqia.loader.ModContainer {
+public class ModContainerImpl extends dev.aoqia.loader.ModContainer {
 	private final LoaderModMetadata info;
 	private final ModOrigin origin;
 	private final List<Path> codeSourcePaths;

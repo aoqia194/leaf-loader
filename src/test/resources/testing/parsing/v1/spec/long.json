@@ -57,19 +57,19 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "net.aoqia.test.mod.ClientEntrypoint"
+      "dev.aoqia.test.mod.ClientEntrypoint"
     ],
     "main": [
-      "net.aoqia.test.mod.MainEntrypoint"
+      "dev.aoqia.test.mod.MainEntrypoint"
     ],
     "custom_entrypoint": [
       {
-        "value": "net.aoqia.test.mod.extension.CustomEntrypoint",
+        "value": "dev.aoqia.test.mod.extension.CustomEntrypoint",
         "adapter": "default"
       }
     ],
     "another_entrypoint": [
-      "net.aoqia.test.mod.extension.AnotherEntrypoint"
+      "dev.aoqia.test.mod.extension.AnotherEntrypoint"
     ]
   },
   "icon": "assets/test/mod/icon.png",

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.aoqia.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.loader.impl.lib.gson.JsonReader;
 
 @SuppressWarnings("serial")
 public class ParseMetadataException extends Exception {

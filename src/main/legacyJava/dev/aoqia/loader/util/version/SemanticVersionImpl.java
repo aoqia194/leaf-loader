@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.util.version;
+package dev.aoqia.loader.util.version;
 
 import java.util.Optional;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
 
 /**
  * @deprecated Internal API, do not use

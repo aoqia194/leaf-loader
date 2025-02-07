@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.log;
+package dev.aoqia.loader.impl.util.log;
 
 public final class LogCategory {
 	public static final LogCategory DISCOVERY = create("Discovery");

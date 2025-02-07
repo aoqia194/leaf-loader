@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.version;
+package dev.aoqia.loader.impl.util.version;
 
-import net.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.Version;
 
 public class StringVersion implements Version {
 	private final String version;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.patch;
+package dev.aoqia.loader.impl.game.patch;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -29,7 +29,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
 
 public abstract class GamePatch {
 	protected FieldNode findField(ClassNode node, Predicate<FieldNode> predicate) {

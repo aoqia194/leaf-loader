@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,12 +24,12 @@ import java.security.CodeSource;
 import java.util.Enumeration;
 import java.util.Objects;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
-import net.aoqia.loader.impl.mrj.AbstractSecureClassLoader;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
+import dev.aoqia.loader.impl.mrj.AbstractSecureClassLoader;
 
-// class name referenced by string constant in net.aoqia.loader.impl.util.LoaderUtil.verifyNotInTargetCl
+// class name referenced by string constant in dev.aoqia.loader.impl.util.LoaderUtil.verifyNotInTargetCl
 final class KnotClassLoader extends AbstractSecureClassLoader implements ClassLoaderAccess {
 	private static final class DynamicURLClassLoader extends URLClassLoader {
 		private DynamicURLClassLoader(URL[] urls) {

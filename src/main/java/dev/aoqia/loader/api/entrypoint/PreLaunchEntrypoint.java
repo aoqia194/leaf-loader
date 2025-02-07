@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.entrypoint;
+package dev.aoqia.loader.api.entrypoint;
 
 /**
  * Entrypoint getting invoked just before launching the game.
@@ -27,7 +27,7 @@ package net.aoqia.loader.api.entrypoint;
  * <p>The entrypoint is exposed with {@code preLaunch} key in the mod json and runs for any environment. It usually
  * executes several seconds before the {@code main}/{@code client}/{@code server} entrypoints.
  *
- * @see net.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
+ * @see dev.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
  */
 @FunctionalInterface
 public interface PreLaunchEntrypoint {

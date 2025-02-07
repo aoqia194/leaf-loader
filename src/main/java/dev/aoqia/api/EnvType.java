@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.api;
+package dev.aoqia.api;
 
 /**
  * Represents a type of environment.

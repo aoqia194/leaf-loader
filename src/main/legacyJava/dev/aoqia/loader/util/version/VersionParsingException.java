@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.util.version;
+package dev.aoqia.loader.util.version;
 
-/** @deprecated Replaced by {@link net.aoqia.loader.api.VersionParsingException} */
+/** @deprecated Replaced by {@link dev.aoqia.loader.api.VersionParsingException} */
 @SuppressWarnings("serial")
 @Deprecated
 public class VersionParsingException extends Exception {

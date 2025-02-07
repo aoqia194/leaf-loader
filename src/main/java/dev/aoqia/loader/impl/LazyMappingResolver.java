@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl;
+package dev.aoqia.loader.impl;
 
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import net.aoqia.loader.api.MappingResolver;
+import dev.aoqia.loader.api.MappingResolver;
 
 public class LazyMappingResolver implements MappingResolver {
 	private final Supplier<MappingResolver> delegateSupplier;

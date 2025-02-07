@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.transformer;
+package dev.aoqia.loader.impl.transformer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
 
 public final class LeafTransformer {
 	public static byte[] transform(boolean isDevelopment, EnvType envType, String name, byte[] bytes) {
 		boolean isZomboidClass = name.startsWith("zomboid.") || name.indexOf('.') < 0;
 		boolean transformAccess = isZomboidClass && LeafLauncherBase.getLauncher().getMappingConfiguration().requiresPackageAccessHack();
 		boolean environmentStrip = !isZomboidClass || isDevelopment;
-		boolean applyAccessWidener = isZomboidClass && net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getAccessWidener().getTargets().contains(name);
+		boolean applyAccessWidener = isZomboidClass && dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getAccessWidener().getTargets().contains(name);
 
 		if (!transformAccess && !environmentStrip && !applyAccessWidener) {
 			return bytes;
@@ -41,17 +41,17 @@ public final class LeafTransformer {
 		int visitorCount = 0;
 
 		if (applyAccessWidener) {
-			visitor = AccessWidenerClassVisitor.createClassVisitor(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor, net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getAccessWidener());
+			visitor = AccessWidenerClassVisitor.createClassVisitor(dev.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor, dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getAccessWidener());
 			visitorCount++;
 		}
 
 		if (transformAccess) {
-			visitor = new PackageAccessFixer(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor);
+			visitor = new PackageAccessFixer(dev.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor);
 			visitorCount++;
 		}
 
 		if (environmentStrip) {
-			EnvironmentStrippingData stripData = new EnvironmentStrippingData(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, envType.toString());
+			EnvironmentStrippingData stripData = new EnvironmentStrippingData(dev.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, envType.toString());
 			classReader.accept(stripData, ClassReader.SKIP_CODE | ClassReader.SKIP_FRAMES);
 
 			if (stripData.stripEntireClass()) {
@@ -59,7 +59,7 @@ public final class LeafTransformer {
 			}
 
 			if (!stripData.isEmpty()) {
-				visitor = new ClassStripper(net.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor, stripData.getStripInterfaces(), stripData.getStripFields(), stripData.getStripMethods());
+				visitor = new ClassStripper(dev.aoqia.loader.impl.LeafLoaderImpl.ASM_VERSION, visitor, stripData.getStripInterfaces(), stripData.getStripFields(), stripData.getStripMethods());
 				visitorCount++;
 			}
 		}

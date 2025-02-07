@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,11 +28,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.aoqia.loader.impl.util.Arguments;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.util.Arguments;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public class ArgumentModCandidateFinder implements ModCandidateFinder {
 	private final boolean requiresRemap;
@@ -46,7 +46,7 @@ public class ArgumentModCandidateFinder implements ModCandidateFinder {
 		String list = System.getProperty(SystemProperties.ADD_MODS);
 		if (list != null) addMods(list, "system property", out);
 
-		list = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getGameProvider().getArguments().remove(Arguments.ADD_MODS);
+		list = dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getGameProvider().getArguments().remove(Arguments.ADD_MODS);
 		if (list != null) addMods(list, "argument", out);
 	}
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api;
+package dev.aoqia.loader.api;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import net.aoqia.loader.api.metadata.ModMetadata;
-import net.aoqia.loader.api.metadata.ModOrigin;
+import dev.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.loader.api.metadata.ModOrigin;
 
 /**
  * Represents a mod.

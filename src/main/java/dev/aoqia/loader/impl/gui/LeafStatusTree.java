@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.gui;
+package dev.aoqia.loader.impl.gui;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.UnaryOperator;
 
-import net.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.FormattedException;
 
 public final class LeafStatusTree {
 	public enum LeafTreeWarningLevel {

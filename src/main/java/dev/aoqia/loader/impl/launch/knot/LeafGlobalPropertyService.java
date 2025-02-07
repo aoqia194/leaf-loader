@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.knot;
+package dev.aoqia.loader.impl.launch.knot;
 
 import org.spongepowered.asm.service.IGlobalPropertyService;
 import org.spongepowered.asm.service.IPropertyKey;
 
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
 
 public class LeafGlobalPropertyService implements IGlobalPropertyService {
 	@Override

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.entrypoint;
+package dev.aoqia.loader.impl.entrypoint;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,15 +23,15 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.aoqia.loader.api.EntrypointException;
-import net.aoqia.loader.api.LanguageAdapter;
-import net.aoqia.loader.api.LanguageAdapterException;
-import net.aoqia.loader.api.entrypoint.EntrypointContainer;
-import net.aoqia.loader.impl.ModContainerImpl;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.metadata.EntrypointMetadata;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.api.EntrypointException;
+import dev.aoqia.loader.api.LanguageAdapter;
+import dev.aoqia.loader.api.LanguageAdapterException;
+import dev.aoqia.loader.api.entrypoint.EntrypointContainer;
+import dev.aoqia.loader.impl.ModContainerImpl;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.metadata.EntrypointMetadata;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public final class EntrypointStorage {
 	interface Entry {
@@ -45,8 +45,8 @@ public final class EntrypointStorage {
 
 	@SuppressWarnings("deprecation")
 	private static class OldEntry implements Entry {
-		private static final net.aoqia.loader.language.LanguageAdapter.Options options = net.aoqia.loader.language.LanguageAdapter.Options.Builder.create()
-				.missingSuperclassBehaviour(net.aoqia.loader.language.LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
+		private static final dev.aoqia.loader.language.LanguageAdapter.Options options = dev.aoqia.loader.language.LanguageAdapter.Options.Builder.create()
+				.missingSuperclassBehaviour(dev.aoqia.loader.language.LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
 				.build();
 
 		private final ModContainerImpl mod;
@@ -69,7 +69,7 @@ public final class EntrypointStorage {
 		@Override
 		public synchronized <T> T getOrCreate(Class<T> type) throws Exception {
 			if (object == null) {
-				net.aoqia.loader.language.LanguageAdapter adapter = (net.aoqia.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, LeafLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
+				dev.aoqia.loader.language.LanguageAdapter adapter = (dev.aoqia.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, LeafLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
 				object = adapter.createInstance(value, options);
 			}
 

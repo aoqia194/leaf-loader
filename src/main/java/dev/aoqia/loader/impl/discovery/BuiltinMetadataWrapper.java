@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,18 +22,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.metadata.ContactInformation;
-import net.aoqia.loader.api.metadata.CustomValue;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.ModEnvironment;
-import net.aoqia.loader.api.metadata.ModMetadata;
-import net.aoqia.loader.api.metadata.Person;
-import net.aoqia.loader.impl.metadata.AbstractModMetadata;
-import net.aoqia.loader.impl.metadata.EntrypointMetadata;
-import net.aoqia.loader.impl.metadata.LoaderModMetadata;
-import net.aoqia.loader.impl.metadata.NestedJarEntry;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.CustomValue;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModEnvironment;
+import dev.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.loader.api.metadata.Person;
+import dev.aoqia.loader.impl.metadata.AbstractModMetadata;
+import dev.aoqia.loader.impl.metadata.EntrypointMetadata;
+import dev.aoqia.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.loader.impl.metadata.NestedJarEntry;
 
 class BuiltinMetadataWrapper extends AbstractModMetadata implements LoaderModMetadata {
 	private final ModMetadata parent;

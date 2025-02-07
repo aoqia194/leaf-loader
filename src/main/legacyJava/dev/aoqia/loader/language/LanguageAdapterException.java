@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.language;
+package dev.aoqia.loader.language;
 
 @SuppressWarnings("serial")
 @Deprecated

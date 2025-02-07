@@ -11,7 +11,7 @@
   ],
   "entrypoints": {
     "main": [
-      "net.aoqia.zomboid.test.TestEntrypoint"
+      "dev.aoqia.zomboid.test.TestEntrypoint"
     ]
   }
 }

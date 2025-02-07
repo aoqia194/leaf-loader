@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch;
+package dev.aoqia.loader.impl.launch;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.jar.Manifest;
 
-import net.aoqia.api.EnvType;
+import dev.aoqia.api.EnvType;
 
 public interface LeafLauncher {
 	MappingConfiguration getMappingConfiguration();

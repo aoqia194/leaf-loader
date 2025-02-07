@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.util;
+package dev.aoqia.loader.util;
 
-import net.aoqia.loader.api.LanguageAdapter;
-import net.aoqia.loader.api.LanguageAdapterException;
-import net.aoqia.loader.api.ModContainer;
+import dev.aoqia.loader.api.LanguageAdapter;
+import dev.aoqia.loader.api.LanguageAdapterException;
+import dev.aoqia.loader.api.ModContainer;
 
 /**
  * @deprecated Use {@link LanguageAdapter} instead.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.transformer;
+package dev.aoqia.loader.impl.transformer;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,9 +25,9 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import net.aoqia.api.Environment;
-import net.aoqia.api.EnvironmentInterface;
-import net.aoqia.api.EnvironmentInterfaces;
+import dev.aoqia.api.Environment;
+import dev.aoqia.api.EnvironmentInterface;
+import dev.aoqia.api.EnvironmentInterfaces;
 
 /**
  * Scans a class for Environment and EnvironmentInterface annotations to figure out what needs to be stripped.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.launch.common;
+package dev.aoqia.loader.launch.common;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,15 +25,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.util.UrlUtil;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.util.UrlUtil;
 
 /**
  * @deprecated Internal API, do not use
  */
 @Deprecated
 public class LeafLauncherBase implements LeafLauncher {
-	private final net.aoqia.loader.impl.launch.LeafLauncher parent = net.aoqia.loader.impl.launch.LeafLauncherBase.getLauncher();
+	private final dev.aoqia.loader.impl.launch.LeafLauncher parent = dev.aoqia.loader.impl.launch.LeafLauncherBase.getLauncher();
 
 	public static Class<?> getClass(String className) throws ClassNotFoundException {
 		return Class.forName(className, true, getLauncher().getTargetClassLoader());
@@ -50,7 +50,7 @@ public class LeafLauncherBase implements LeafLauncher {
 
 	@Override
 	public EnvType getEnvironmentType() {
-		return net.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType();
+		return dev.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class LeafLauncherBase implements LeafLauncher {
 
 	@Override
 	public boolean isDevelopment() {
-		return net.aoqia.loader.api.LeafLoader.getInstance().isDevelopmentEnvironment();
+		return dev.aoqia.loader.api.LeafLoader.getInstance().isDevelopmentEnvironment();
 	}
 
 	@Override

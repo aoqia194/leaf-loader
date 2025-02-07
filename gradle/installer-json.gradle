@@ -5,8 +5,8 @@ tasks.register("generateInstallerJson", GenerateInstallerJsonTask) {
 	outputFile = file("src/main/resources/leaf-installer.json")
 	options = [
 		mainClass: [
-			client: "net.aoqia.loader.impl.launch.knot.KnotClient",
-			server: "net.aoqia.loader.impl.launch.knot.KnotServer"
+			client: "dev.aoqia.loader.impl.launch.knot.KnotClient",
+			server: "dev.aoqia.loader.impl.launch.knot.KnotServer"
 		]
 	]
 }

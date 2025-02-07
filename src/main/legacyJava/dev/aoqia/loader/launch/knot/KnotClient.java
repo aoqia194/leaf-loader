@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.launch.knot;
+package dev.aoqia.loader.launch.knot;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.launch.knot.Knot;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.launch.knot.Knot;
 
 /**
- * @deprecated Use {@link net.aoqia.loader.impl.launch.knot.KnotClient} instead
+ * @deprecated Use {@link dev.aoqia.loader.impl.launch.knot.KnotClient} instead
  */
 @Deprecated
 public final class KnotClient {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,15 +26,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.ContactInformation;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.ModEnvironment;
-import net.aoqia.loader.api.metadata.Person;
-import net.aoqia.loader.impl.lib.gson.JsonReader;
-import net.aoqia.loader.impl.lib.gson.JsonToken;
-import net.aoqia.loader.impl.util.version.VersionParser;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModEnvironment;
+import dev.aoqia.loader.api.metadata.Person;
+import dev.aoqia.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.loader.impl.lib.gson.JsonToken;
+import dev.aoqia.loader.impl.util.version.VersionParser;
 
 final class V0ModMetadataParser {
 	private static final Pattern WEBSITE_PATTERN = Pattern.compile("\\((.+)\\)");

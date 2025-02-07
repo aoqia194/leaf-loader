@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl;
+package dev.aoqia.loader.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,35 +27,35 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.LanguageAdapter;
-import net.aoqia.loader.api.MappingResolver;
-import net.aoqia.loader.api.ModContainer;
-import net.aoqia.loader.api.ObjectShare;
-import net.aoqia.loader.api.entrypoint.EntrypointContainer;
-import net.aoqia.loader.impl.discovery.*;
-import net.aoqia.loader.impl.entrypoint.EntrypointStorage;
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.launch.knot.Knot;
-import net.aoqia.loader.impl.metadata.DependencyOverrides;
-import net.aoqia.loader.impl.metadata.EntrypointMetadata;
-import net.aoqia.loader.impl.metadata.LoaderModMetadata;
-import net.aoqia.loader.impl.metadata.VersionOverrides;
-import net.aoqia.loader.impl.util.DefaultLanguageAdapter;
-import net.aoqia.loader.impl.util.ExceptionUtil;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.LanguageAdapter;
+import dev.aoqia.loader.api.MappingResolver;
+import dev.aoqia.loader.api.ModContainer;
+import dev.aoqia.loader.api.ObjectShare;
+import dev.aoqia.loader.api.entrypoint.EntrypointContainer;
+import dev.aoqia.loader.impl.discovery.*;
+import dev.aoqia.loader.impl.entrypoint.EntrypointStorage;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.launch.knot.Knot;
+import dev.aoqia.loader.impl.metadata.DependencyOverrides;
+import dev.aoqia.loader.impl.metadata.EntrypointMetadata;
+import dev.aoqia.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.loader.impl.metadata.VersionOverrides;
+import dev.aoqia.loader.impl.util.DefaultLanguageAdapter;
+import dev.aoqia.loader.impl.util.ExceptionUtil;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 import net.fabricmc.accesswidener.AccessWidener;
 import net.fabricmc.accesswidener.AccessWidenerReader;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
 
 @SuppressWarnings("deprecation")
-public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
-    public static final net.aoqia.loader.impl.LeafLoaderImpl INSTANCE = InitHelper.get();
+public final class LeafLoaderImpl extends dev.aoqia.loader.LeafLoader {
+    public static final dev.aoqia.loader.impl.LeafLoaderImpl INSTANCE = InitHelper.get();
 
     public static final int ASM_VERSION = Opcodes.ASM9;
 
@@ -68,7 +68,7 @@ public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
     private static final String TMP_DIR_NAME = "tmp"; // relative to cache dir
 
     static {
-        LoaderUtil.verifyNotInTargetCl(net.aoqia.loader.impl.LeafLoaderImpl.class);
+        LoaderUtil.verifyNotInTargetCl(dev.aoqia.loader.impl.LeafLoaderImpl.class);
     }
 
     private final Map<String, ModContainerImpl> modMap = new HashMap<>();
@@ -372,7 +372,7 @@ public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
 
         RuntimeException exception = null;
         Collection<EntrypointContainer<T>> entrypoints =
-            net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getEntrypointContainers(
+            dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.getEntrypointContainers(
                 key,
                 type);
 
@@ -418,7 +418,7 @@ public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
     }
 
     @Override
-    public Optional<net.aoqia.loader.api.ModContainer> getModContainer(String id) {
+    public Optional<dev.aoqia.loader.api.ModContainer> getModContainer(String id) {
         return Optional.ofNullable(modMap.get(id));
     }
 
@@ -591,7 +591,7 @@ public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
     public void loadAccessWideners() {
         AccessWidenerReader accessWidenerReader = new AccessWidenerReader(accessWidener);
 
-        for (net.aoqia.loader.api.ModContainer modContainer : getAllMods()) {
+        for (dev.aoqia.loader.api.ModContainer modContainer : getAllMods()) {
             LoaderModMetadata modMetadata = (LoaderModMetadata) modContainer.getMetadata();
             String accessWidener = modMetadata.getAccessWidener();
             if (accessWidener == null) {
@@ -681,11 +681,11 @@ public final class LeafLoaderImpl extends net.aoqia.loader.LeafLoader {
      * Provides singleton for static init assignment regardless of load order.
      */
     public static class InitHelper {
-        private static net.aoqia.loader.impl.LeafLoaderImpl instance;
+        private static dev.aoqia.loader.impl.LeafLoaderImpl instance;
 
-        public static net.aoqia.loader.impl.LeafLoaderImpl get() {
+        public static dev.aoqia.loader.impl.LeafLoaderImpl get() {
             if (instance == null) {
-                instance = new net.aoqia.loader.impl.LeafLoaderImpl();
+                instance = new dev.aoqia.loader.impl.LeafLoaderImpl();
             }
 
             return instance;

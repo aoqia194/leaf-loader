@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.metadata.version;
+package dev.aoqia.loader.api.metadata.version;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.impl.util.version.VersionPredicateParser;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.impl.util.version.VersionPredicateParser;
 
 public interface VersionPredicate extends Predicate<Version> {
 	/**

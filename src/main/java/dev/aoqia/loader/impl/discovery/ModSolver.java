@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.math.BigInteger;
 import java.util.AbstractMap;
@@ -39,17 +39,17 @@ import org.sat4j.pb.tools.WeightedObject;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.TimeoutException;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.version.VersionInterval;
-import net.aoqia.loader.api.metadata.version.VersionPredicate;
-import net.aoqia.loader.impl.discovery.Explanation.ErrorKind;
-import net.aoqia.loader.impl.util.SystemProperties;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
-import net.aoqia.loader.impl.util.version.SemanticVersionImpl;
-import net.aoqia.loader.impl.util.version.VersionPredicateParser;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.loader.impl.discovery.Explanation.ErrorKind;
+import dev.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.util.version.SemanticVersionImpl;
+import dev.aoqia.loader.impl.util.version.VersionPredicateParser;
 
 final class ModSolver {
 	static Result solve(List<ModCandidateImpl> allModsSorted, Map<String, List<ModCandidateImpl>> modsById,

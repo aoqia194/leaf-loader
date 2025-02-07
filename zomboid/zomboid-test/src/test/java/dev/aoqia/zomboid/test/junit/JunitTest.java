@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.zomboid.test.junit;
+package dev.aoqia.zomboid.test.junit;
 
-import net.aoqia.loader.api.LeafLoader;
+import dev.aoqia.loader.api.LeafLoader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import zombie.core.Core;

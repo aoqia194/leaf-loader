@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.zomboid.patch;
+package dev.aoqia.loader.impl.game.zomboid.patch;
 
 import java.util.ListIterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import net.aoqia.loader.impl.game.patch.GamePatch;
-import net.aoqia.loader.impl.game.zomboid.Hooks;
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.game.patch.GamePatch;
+import dev.aoqia.loader.impl.game.zomboid.Hooks;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;

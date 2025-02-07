@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.language;
+package dev.aoqia.loader.language;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.objectweb.asm.ClassReader;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.util.LoaderUtil;
 
 @Deprecated
 public class JavaLanguageAdapter implements LanguageAdapter {
@@ -33,13 +33,13 @@ public class JavaLanguageAdapter implements LanguageAdapter {
 		// TODO: Be a bit more involved
 		switch (itfString) {
 		case "net/fabricmc/api/ClientModInitializer":
-			if (net.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+			if (dev.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 				return false;
 			}
 
 			break;
 		case "net/fabricmc/api/DedicatedServerModInitializer":
-			if (net.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			if (dev.aoqia.loader.api.LeafLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 				return false;
 			}
 		}

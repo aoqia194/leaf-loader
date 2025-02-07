@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.game.patch;
+package dev.aoqia.loader.impl.game.patch;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +30,13 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.util.ExceptionUtil;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SimpleClassPath;
-import net.aoqia.loader.impl.util.SimpleClassPath.CpEntry;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.util.ExceptionUtil;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SimpleClassPath;
+import dev.aoqia.loader.impl.util.SimpleClassPath.CpEntry;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public class GameTransformer {
 	private final List<GamePatch> patches;

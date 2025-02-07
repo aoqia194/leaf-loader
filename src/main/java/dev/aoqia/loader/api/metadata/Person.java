@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.metadata;
+package dev.aoqia.loader.api.metadata;
 
 /**
  * Represents a person.

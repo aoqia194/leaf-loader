@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.metadata;
+package dev.aoqia.loader.metadata;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import net.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.ContactInformation;
 
 /**
  * @deprecated Use {@link ContactInformation} instead

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.version;
+package dev.aoqia.loader.impl.util.version;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
 
 public final class VersionParser {
 	public static Version parse(String s, boolean storeX) throws VersionParsingException {

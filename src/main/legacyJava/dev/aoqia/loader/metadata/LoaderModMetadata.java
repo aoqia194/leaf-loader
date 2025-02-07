@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.metadata;
+package dev.aoqia.loader.metadata;
 
 import java.util.Collection;
 import java.util.List;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.metadata.ModMetadata;
 
 /**
  * @deprecated Use {@link ModMetadata} instead

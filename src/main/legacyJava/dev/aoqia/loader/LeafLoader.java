@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader;
+package dev.aoqia.loader;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,16 +24,16 @@ import java.util.List;
 /**
  * The main class for mod loading operations.
  *
- * @deprecated Use {@link net.aoqia.loader.api.LeafLoader}
+ * @deprecated Use {@link dev.aoqia.loader.api.LeafLoader}
  */
 @Deprecated
-public abstract class LeafLoader implements net.aoqia.loader.api.LeafLoader {
+public abstract class LeafLoader implements dev.aoqia.loader.api.LeafLoader {
 	/**
-	 * @deprecated Use {@link net.aoqia.loader.api.LeafLoader#getInstance()} where possible,
+	 * @deprecated Use {@link dev.aoqia.loader.api.LeafLoader#getInstance()} where possible,
 	 * report missing areas as an issue.
 	 */
 	@Deprecated
-	public static final net.aoqia.loader.LeafLoader INSTANCE = net.aoqia.loader.impl.LeafLoaderImpl.InitHelper.get();
+	public static final dev.aoqia.loader.LeafLoader INSTANCE = dev.aoqia.loader.impl.LeafLoaderImpl.InitHelper.get();
 
 	public File getModsDirectory() {
 		return getModsDirectory0().toFile();

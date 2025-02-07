@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.entrypoint;
+package dev.aoqia.loader.impl.entrypoint;
 
-import net.aoqia.loader.api.EntrypointException;
-import net.aoqia.loader.api.ModContainer;
-import net.aoqia.loader.api.entrypoint.EntrypointContainer;
+import dev.aoqia.loader.api.EntrypointException;
+import dev.aoqia.loader.api.ModContainer;
+import dev.aoqia.loader.api.entrypoint.EntrypointContainer;
 
 public final class EntrypointContainerImpl<T> implements EntrypointContainer<T> {
 	private final String key;

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.metadata;
+package dev.aoqia.loader.api.metadata;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import net.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.Version;
 
 /**
  * The metadata of a mod.

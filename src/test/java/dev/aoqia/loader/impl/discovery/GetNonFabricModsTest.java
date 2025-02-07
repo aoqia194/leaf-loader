@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,16 +33,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.launch.LeafLauncher;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.launch.LeafLauncher;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.util.LoaderUtil;
 
 public class GetNonFabricModsTest {
-	private net.aoqia.loader.impl.LeafLoaderImpl loader;
+	private dev.aoqia.loader.impl.LeafLoaderImpl loader;
 	private ModDiscoverer discoverer;
-	private MockedConstruction<net.aoqia.loader.impl.LeafLoaderImpl> loaderConstruction;
+	private MockedConstruction<dev.aoqia.loader.impl.LeafLoaderImpl> loaderConstruction;
 
 	/*
 	 * Set up the mock loader and discoverer
@@ -60,7 +60,7 @@ public class GetNonFabricModsTest {
 		when(loader.getGameProvider()).thenReturn(provider);
 		when(loader.isDevelopmentEnvironment()).thenReturn(false);
 
-		loaderConstruction = Mockito.mockConstructionWithAnswer(net.aoqia.loader.impl.LeafLoaderImpl.class, invocation -> loader);
+		loaderConstruction = Mockito.mockConstructionWithAnswer(dev.aoqia.loader.impl.LeafLoaderImpl.class, invocation -> loader);
 
 		discoverer = new ModDiscoverer(mock(), mock());
 		discoverer.addCandidateFinder(new MockCandidateFinder());

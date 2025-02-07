@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl;
+package dev.aoqia.loader.impl;
 
-import net.aoqia.loader.impl.util.Localization;
+import dev.aoqia.loader.impl.util.Localization;
 
 @SuppressWarnings("serial")
 public final class FormattedException extends RuntimeException {

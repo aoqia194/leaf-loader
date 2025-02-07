@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "test",
+  "name": "Test Mod",
+  "version": "1.0.0",
+  "side": "client",
+  "entrypoints": {
+    "preLaunch": [
+      "dev.aoqia.test.TestMod"
+    ],
+    "main": [
+      "dev.aoqia.test.TestMod"
+    ],
+    "test:testing": [
+      "dev.aoqia.test.EntrypointTest::instanceEntry",
+      "dev.aoqia.test.EntrypointTest::staticEntry",
+      "dev.aoqia.test.EntrypointTest::FIELD_ENTRY"
+    ]
+  }
+}

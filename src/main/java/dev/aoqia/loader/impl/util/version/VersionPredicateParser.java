@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.version;
+package dev.aoqia.loader.impl.util.version;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.version.VersionComparisonOperator;
-import net.aoqia.loader.api.metadata.version.VersionInterval;
-import net.aoqia.loader.api.metadata.version.VersionPredicate;
-import net.aoqia.loader.api.metadata.version.VersionPredicate.PredicateTerm;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.version.VersionComparisonOperator;
+import dev.aoqia.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.loader.api.metadata.version.VersionPredicate.PredicateTerm;
 
 public final class VersionPredicateParser {
 	private static final VersionComparisonOperator[] OPERATORS = VersionComparisonOperator.values();

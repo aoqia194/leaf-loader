@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.entrypoint;
+package dev.aoqia.loader.api.entrypoint;
 
-import net.aoqia.loader.api.ModContainer;
+import dev.aoqia.loader.api.ModContainer;
 
 /**
  * A container holding both an entrypoint instance and the {@link ModContainer} which has provided the entrypoint.
  *
  * @param <T> The type of the entrypoint
- * @see net.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
+ * @see dev.aoqia.loader.api.LeafLoader#getEntrypointContainers(String, Class)
  */
 public interface EntrypointContainer<T> {
 	/**

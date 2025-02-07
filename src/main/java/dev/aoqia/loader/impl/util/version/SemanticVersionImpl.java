@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.version;
+package dev.aoqia.loader.impl.util.version;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -22,9 +22,9 @@ import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
 
 /**
  * Parser for a superset of the semantic version format described at <a href="https://semver.org">semver.org</a>.
@@ -36,7 +36,7 @@ import net.aoqia.loader.api.VersionParsingException;
  * </ul>
  */
 @SuppressWarnings("deprecation")
-public class SemanticVersionImpl extends net.aoqia.loader.util.version.SemanticVersionImpl implements SemanticVersion {
+public class SemanticVersionImpl extends dev.aoqia.loader.util.version.SemanticVersionImpl implements SemanticVersion {
 	private static final Pattern DOT_SEPARATED_ID = Pattern.compile("|[-0-9A-Za-z]+(\\.[-0-9A-Za-z]+)*");
 	private static final Pattern UNSIGNED_INTEGER = Pattern.compile("0|[1-9][0-9]*");
 	private final int[] components;

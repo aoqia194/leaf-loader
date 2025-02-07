@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.metadata.ContactInformation;
-import net.aoqia.loader.api.metadata.CustomValue;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.ModEnvironment;
-import net.aoqia.loader.api.metadata.Person;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.CustomValue;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModEnvironment;
+import dev.aoqia.loader.api.metadata.Person;
 
 final class V0ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
 	private static final Mixins EMPTY_MIXINS = new Mixins(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -39,7 +39,7 @@ final class V0ModMetadata extends AbstractModMetadata implements LoaderModMetada
 
 	// Optional (Environment)
 	private Collection<ModDependency> dependencies;
-	private final String languageAdapter = "net.aoqia.loader.language.JavaLanguageAdapter"; // TODO: Constants class?
+	private final String languageAdapter = "dev.aoqia.loader.language.JavaLanguageAdapter"; // TODO: Constants class?
 	private final Mixins mixins;
 	private final ModEnvironment environment; // REMOVEME: Replacing Side in old metadata with this
 	private final String initializer;

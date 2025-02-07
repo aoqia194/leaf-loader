@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.launch.server;
+package dev.aoqia.loader.impl.launch.server;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,9 +29,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import net.aoqia.loader.impl.launch.knot.KnotServer;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.launch.knot.KnotServer;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.SystemProperties;
 
 public class LeafServerLauncher {
 	private static final ClassLoader parentLoader = LeafServerLauncher.class.getClassLoader();

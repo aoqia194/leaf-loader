@@ -20,11 +20,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.aoqia.api.ModInitializer;
-import net.aoqia.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.aoqia.loader.impl.launch.LeafLauncherBase;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.ModInitializer;
+import dev.aoqia.loader.api.entrypoint.PreLaunchEntrypoint;
+import dev.aoqia.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 	/**
@@ -52,7 +52,7 @@ public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 		Log.info(LogCategory.TEST, "Hello from Fabric");
 		Log.info(LogCategory.TEST, "**************************");
 
-		Set<CustomEntry> testingInits = new LinkedHashSet<>(net.aoqia.loader.api.LeafLoader.getInstance().getEntrypoints("test:testing", CustomEntry.class));
+		Set<CustomEntry> testingInits = new LinkedHashSet<>(dev.aoqia.loader.api.LeafLoader.getInstance().getEntrypoints("test:testing", CustomEntry.class));
 		Log.info(LogCategory.TEST, "Found %d testing inits", testingInits.size());
 		Log.info(LogCategory.TEST, testingInits.stream().map(CustomEntry::describe).collect(Collectors.joining(", ")));
 	}

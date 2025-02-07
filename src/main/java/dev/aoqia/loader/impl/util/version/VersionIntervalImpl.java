@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.version;
+package dev.aoqia.loader.impl.util.version;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.metadata.version.VersionInterval;
 
 public final class VersionIntervalImpl implements VersionInterval {
 	private final Version min;

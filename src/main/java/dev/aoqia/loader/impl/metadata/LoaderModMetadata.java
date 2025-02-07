@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.metadata.ModDependency;
 
 /**
  * Internal variant of the ModMetadata interface.
  */
 @SuppressWarnings("deprecation")
-public interface LoaderModMetadata extends net.aoqia.loader.metadata.LoaderModMetadata {
+public interface LoaderModMetadata extends dev.aoqia.loader.metadata.LoaderModMetadata {
 	int getSchemaVersion();
 
 	default String getOldStyleLanguageAdapter() {
-		return "net.aoqia.loader.language.JavaLanguageAdapter";
+		return "dev.aoqia.loader.language.JavaLanguageAdapter";
 	}
 
 	Map<String, String> getLanguageAdapterDefinitions();

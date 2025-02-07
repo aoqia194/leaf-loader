@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,16 +31,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.version.VersionInterval;
-import net.aoqia.loader.impl.discovery.ModSolver.AddModVar;
-import net.aoqia.loader.impl.discovery.ModSolver.InactiveReason;
-import net.aoqia.loader.impl.metadata.AbstractModMetadata;
-import net.aoqia.loader.impl.util.Localization;
-import net.aoqia.loader.impl.util.StringUtil;
-import net.aoqia.loader.impl.util.version.VersionIntervalImpl;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.loader.impl.discovery.ModSolver.AddModVar;
+import dev.aoqia.loader.impl.discovery.ModSolver.InactiveReason;
+import dev.aoqia.loader.impl.metadata.AbstractModMetadata;
+import dev.aoqia.loader.impl.util.Localization;
+import dev.aoqia.loader.impl.util.StringUtil;
+import dev.aoqia.loader.impl.util.version.VersionIntervalImpl;
 
 final class ResultAnalyzer {
 	private static final boolean SHOW_PATH_INFO = false;

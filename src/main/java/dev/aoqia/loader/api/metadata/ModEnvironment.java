@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.metadata;
+package dev.aoqia.loader.api.metadata;
 
-import net.aoqia.api.EnvType;
+import dev.aoqia.api.EnvType;
 
 public enum ModEnvironment {
 	CLIENT,

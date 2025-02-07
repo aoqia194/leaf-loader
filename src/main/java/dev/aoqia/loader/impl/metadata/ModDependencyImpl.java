@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.version.VersionInterval;
-import net.aoqia.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.loader.api.metadata.version.VersionPredicate;
 
 public final class ModDependencyImpl implements ModDependency {
 	private Kind kind;

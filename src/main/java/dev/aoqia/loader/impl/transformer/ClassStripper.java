@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.transformer;
+package dev.aoqia.loader.impl.transformer;
 
 import java.util.ArrayList;
 import java.util.Collection;

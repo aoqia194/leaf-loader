@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.mrj;
+package dev.aoqia.loader.impl.mrj;
 
 import java.security.SecureClassLoader;
 

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.util.log;
+package dev.aoqia.loader.impl.util.log;
 
 import java.util.Locale;
 
-import net.aoqia.loader.impl.util.SystemProperties;
+import dev.aoqia.loader.impl.util.SystemProperties;
 
 public enum LogLevel {
 	ERROR, WARN, INFO, DEBUG, TRACE;

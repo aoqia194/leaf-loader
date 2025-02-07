@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api;
+package dev.aoqia.loader.api;
 
-import net.aoqia.loader.api.metadata.ModMetadata;
-import net.aoqia.loader.impl.util.version.VersionParser;
+import dev.aoqia.loader.api.metadata.ModMetadata;
+import dev.aoqia.loader.impl.util.version.VersionParser;
 
 /**
  * Represents a version of a mod.

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.api.metadata.version;
+package dev.aoqia.loader.api.metadata.version;
 
 import java.util.Collection;
 import java.util.List;
 
-import net.aoqia.loader.api.SemanticVersion;
-import net.aoqia.loader.api.Version;
-import net.aoqia.loader.impl.util.version.VersionIntervalImpl;
+import dev.aoqia.loader.api.SemanticVersion;
+import dev.aoqia.loader.api.Version;
+import dev.aoqia.loader.impl.util.version.VersionIntervalImpl;
 
 /**
  * Representation of a version interval, closed or open.

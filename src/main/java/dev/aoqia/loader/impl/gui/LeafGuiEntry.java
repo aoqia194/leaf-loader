@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.gui;
+package dev.aoqia.loader.impl.gui;
 
 import java.awt.GraphicsEnvironment;
 import java.io.DataInputStream;
@@ -27,15 +27,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
-import net.aoqia.loader.impl.game.GameProvider;
-import net.aoqia.loader.impl.gui.LeafStatusTree.FabricBasicButtonType;
-import net.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusTab;
-import net.aoqia.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
-import net.aoqia.loader.impl.util.LoaderUtil;
-import net.aoqia.loader.impl.util.Localization;
-import net.aoqia.loader.impl.util.UrlUtil;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.loader.impl.game.GameProvider;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.FabricBasicButtonType;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.FabricStatusTab;
+import dev.aoqia.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
+import dev.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.impl.util.Localization;
+import dev.aoqia.loader.impl.util.UrlUtil;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 /** The main entry point for all fabric-based stuff. */
 public final class LeafGuiEntry {
@@ -43,7 +43,7 @@ public final class LeafGuiEntry {
 	 *
 	 * @throws Exception if something went wrong while opening the window. */
 	public static void open(LeafStatusTree tree) throws Exception {
-		GameProvider provider = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
+		GameProvider provider = dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (provider == null && LoaderUtil.hasAwtSupport()
 				|| provider != null && provider.hasAwtSupport()) {
@@ -118,10 +118,10 @@ public final class LeafGuiEntry {
 	}
 
 	public static void displayError(String mainText, Throwable exception, Consumer<LeafStatusTree> treeCustomiser, boolean exitAfter) {
-		GameProvider provider = net.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
+		GameProvider provider = dev.aoqia.loader.impl.LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (!GraphicsEnvironment.isHeadless() && (provider == null || provider.canOpenErrorGui())) {
-			String title = "Fabric Loader " + net.aoqia.loader.impl.LeafLoaderImpl.VERSION;
+			String title = "Fabric Loader " + dev.aoqia.loader.impl.LeafLoaderImpl.VERSION;
 			LeafStatusTree tree = new LeafStatusTree(title, mainText);
 			FabricStatusTab crashTab = tree.addTab(Localization.format("gui.tab.crash"));
 

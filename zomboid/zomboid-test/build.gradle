@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     zomboid "com.theindiestone:zomboid:${zomboid_version}"
-    mappings "net.aoqia:leaf-yarn:${zomboid_version}+build.local:v2"
+    mappings "dev.aoqia:leaf-yarn:${zomboid_version}+build.local:v2"
 
     implementation project(":zomboid")
     implementation project(":zomboid").sourceSets.main.output
@@ -56,7 +56,7 @@ tasks.withType(JavaCompile).configureEach {
 
 
 import groovy.json.JsonSlurper
-import net.aoqia.loom.util.Platform
+import dev.aoqia.loom.util.Platform
 
 configurations {
     productionRuntime {
@@ -77,8 +77,8 @@ dependencies {
     }
 
     // Use Fabric's auto client test
-    //	productionRuntimeMods "net.aoqia.fabric-api:fabric-api:0.89.3+1.20.2"
-    //	productionRuntimeMods "net.aoqia.fabric-api:fabric-api:0.89.3+1.20.2:testmod"
+    //	productionRuntimeMods "dev.aoqia.fabric-api:fabric-api:0.89.3+1.20.2"
+    //	productionRuntimeMods "dev.aoqia.fabric-api:fabric-api:0.89.3+1.20.2:testmod"
 }
 
 def loaderJarTask = project(":").tasks.finalJar
@@ -88,7 +88,7 @@ def loaderJarTask = project(":").tasks.finalJar
 task runProductionAutoTestClient(type: JavaExec, dependsOn: [loaderJarTask]) {
     classpath.from configurations.productionRuntime
     classpath.from loaderJarTask
-    mainClass = "net.aoqia.loader.impl.launch.knot.KnotClient"
+    mainClass = "dev.aoqia.loader.impl.launch.knot.KnotClient"
 
     // Let loom set it instead.
 //    workingDir = file("run")

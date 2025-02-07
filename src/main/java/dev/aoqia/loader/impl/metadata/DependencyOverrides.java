@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.aoqia.loader.api.VersionParsingException;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.impl.FormattedException;
-import net.aoqia.loader.impl.lib.gson.JsonReader;
-import net.aoqia.loader.impl.lib.gson.JsonToken;
-import net.aoqia.loader.impl.util.LoaderUtil;
+import dev.aoqia.loader.api.VersionParsingException;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.impl.FormattedException;
+import dev.aoqia.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.loader.impl.lib.gson.JsonToken;
+import dev.aoqia.loader.impl.util.LoaderUtil;
 
 public final class DependencyOverrides {
 	private final Map<String, List<Entry>> dependencyOverrides;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.discovery;
+package dev.aoqia.loader.impl.discovery;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.TimeoutException;
 
-import net.aoqia.api.EnvType;
-import net.aoqia.loader.api.metadata.ModDependency;
-import net.aoqia.loader.api.metadata.ModDependency.Kind;
-import net.aoqia.loader.impl.discovery.ModSolver.InactiveReason;
-import net.aoqia.loader.impl.metadata.ModDependencyImpl;
-import net.aoqia.loader.impl.util.log.Log;
-import net.aoqia.loader.impl.util.log.LogCategory;
+import dev.aoqia.api.EnvType;
+import dev.aoqia.loader.api.metadata.ModDependency;
+import dev.aoqia.loader.api.metadata.ModDependency.Kind;
+import dev.aoqia.loader.impl.discovery.ModSolver.InactiveReason;
+import dev.aoqia.loader.impl.metadata.ModDependencyImpl;
+import dev.aoqia.loader.impl.util.log.Log;
+import dev.aoqia.loader.impl.util.log.LogCategory;
 
 public class ModResolver {
 	public static List<ModCandidateImpl> resolve(Collection<ModCandidateImpl> candidates, EnvType envType, Map<String, Set<ModCandidateImpl>> envDisabledMods) throws ModResolutionException {

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.aoqia.loader.impl.metadata;
+package dev.aoqia.loader.impl.metadata;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import net.aoqia.loader.api.metadata.ContactInformation;
+import dev.aoqia.loader.api.metadata.ContactInformation;
 
 public class ContactInformationImpl implements ContactInformation {
 	private final Map<String, String> map;
