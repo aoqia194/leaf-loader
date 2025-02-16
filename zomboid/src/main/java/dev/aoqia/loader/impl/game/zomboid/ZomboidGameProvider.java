@@ -71,7 +71,6 @@ public class ZomboidGameProvider implements GameProvider {
         switch (envType) {
             case CLIENT:
                 argMap.putIfNotExists("cachedir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
-
                 break;
             case SERVER:
                 // TODO: Handle server args
@@ -83,7 +82,8 @@ public class ZomboidGameProvider implements GameProvider {
     }
 
     private static Path getLaunchDirectory(Arguments argMap) {
-        return Paths.get(argMap.getOrDefault("cachedir", System.getProperty("leaf.runDir")));
+        return Paths.get(argMap.getOrDefault("cachedir", System.getProperty("leaf.runDir",
+            Paths.get(System.getProperty("user.dir")).resolve("/Zomboid").toString())));
     }
 
     public Path getGameJar() {
@@ -341,7 +341,8 @@ public class ZomboidGameProvider implements GameProvider {
         }
 
         try {
-            invoker.invokeExact((Object) arguments.toArray());
+            //noinspection ConfusingArgumentToVarargsMethod
+            invoker.invokeExact(arguments.toArray());
         } catch (Throwable t) {
             throw FormattedException.ofLocalized("exception.zomboid.generic", t);
         }

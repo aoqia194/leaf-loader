@@ -32,157 +32,191 @@ import dev.aoqia.loader.impl.util.SystemProperties;
  * Default LogHandler until Log is initialized.
  *
  * <p>The log handler has the following properties:
- * - log to stdout for anything but LogLevel.ERROR
- * - log to stderr for LogLevel.ERROR
- * - option to relay previous log output to another log handler if requested through Log.init
- * - dumps previous log output to a log file if not closed/relayed yet
+ * - log to stdout for anything but LogLevel.ERROR - log to stderr for LogLevel.ERROR - option to
+ * relay previous log output to another log handler if requested through Log.init - dumps previous
+ * log output to a log file if not closed/relayed yet
  */
 final class BuiltinLogHandler extends ConsoleLogHandler {
-	private static final String DEFAULT_LOG_FILE = "leafloader.log";
+    private static final String DEFAULT_LOG_FILE = "leafloader.log";
+    private final Thread shutdownHook;
+    private boolean configured;
+    private boolean enableOutput;
+    private List<ReplayEntry> buffer = new ArrayList<>();
 
-	private boolean configured;
-	private boolean enableOutput;
-	private List<ReplayEntry> buffer = new ArrayList<>();
-	private final Thread shutdownHook;
+    BuiltinLogHandler() {
+        shutdownHook = new ShutdownHook();
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+    }
 
-	BuiltinLogHandler() {
-		shutdownHook = new ShutdownHook();
-		Runtime.getRuntime().addShutdownHook(shutdownHook);
-	}
+    @Override
+    public void log(long time, LogLevel level, LogCategory category, String msg,
+        Throwable exc, boolean fromReplay, boolean wasSuppressed) {
+        boolean output;
 
-	@Override
-	public void log(long time, LogLevel level, LogCategory category, String msg, Throwable exc, boolean fromReplay, boolean wasSuppressed) {
-		boolean output;
+        synchronized (this) {
+            if (enableOutput) {
+                output = true;
+            } else if (level.isLessThan(LogLevel.ERROR)) {
+                output = false;
+            } else {
+                startOutput();
+                output = true;
+            }
 
-		synchronized (this) {
-			if (enableOutput) {
-				output = true;
-			} else if (level.isLessThan(LogLevel.ERROR)) {
-				output = false;
-			} else {
-				startOutput();
-				output = true;
-			}
+            if (buffer != null) {
+                buffer.add(new ReplayEntry(time, level, category, msg, exc));
+            }
+        }
 
-			if (buffer != null) {
-				buffer.add(new ReplayEntry(time, level, category, msg, exc));
-			}
-		}
+        if (output) {
+            super.log(time, level, category, msg, exc, fromReplay, wasSuppressed);
+        }
+    }
 
-		if (output) super.log(time, level, category, msg, exc, fromReplay, wasSuppressed);
-	}
+    @Override
+    public void close() {
+        Thread shutdownHook = this.shutdownHook;
 
-	private void startOutput() {
-		if (enableOutput) return;
+        if (shutdownHook != null) {
+            try {
+                Runtime.getRuntime().removeShutdownHook(shutdownHook);
+            } catch (IllegalStateException e) {
+                // ignore
+            }
+        }
+    }
 
-		if (buffer != null) {
-			for (int i = 0; i < buffer.size(); i++) { // index based loop to tolerate replay producing log output by itself
-				ReplayEntry entry = buffer.get(i);
-				super.log(entry.time, entry.level, entry.category, entry.msg, entry.exc, true, true);
-			}
-		}
+    private void startOutput() {
+        if (enableOutput) {
+            return;
+        }
 
-		enableOutput = true;
-	}
+        if (buffer != null) {
+            for (int i = 0; i <
+                            buffer.size(); i++) { // index based loop to tolerate
+                // replay producing log output by itself
+                ReplayEntry entry = buffer.get(i);
+                super.log(entry.time, entry.level, entry.category, entry.msg, entry.exc,
+                    true, true);
+            }
+        }
 
-	@Override
-	public void close() {
-		Thread shutdownHook = this.shutdownHook;
+        enableOutput = true;
+    }
 
-		if (shutdownHook != null) {
-			try {
-				Runtime.getRuntime().removeShutdownHook(shutdownHook);
-			} catch (IllegalStateException e) {
-				// ignore
-			}
-		}
-	}
+    synchronized void configure(boolean buffer, boolean output) {
+        if (!buffer && !output) {
+            throw new IllegalArgumentException(
+                "can't both disable buffering and the output");
+        }
 
-	synchronized void configure(boolean buffer, boolean output) {
-		if (!buffer && !output) throw new IllegalArgumentException("can't both disable buffering and the output");
+        if (output) {
+            startOutput();
+        } else {
+            enableOutput = false;
+        }
 
-		if (output) {
-			startOutput();
-		} else {
-			enableOutput = false;
-		}
+        if (buffer) {
+            if (this.buffer == null) {
+                this.buffer = new ArrayList<>();
+            }
+        } else {
+            this.buffer = null;
+        }
 
-		if (buffer) {
-			if (this.buffer == null) this.buffer = new ArrayList<>();
-		} else {
-			this.buffer = null;
-		}
+        configured = true;
+    }
 
-		configured = true;
-	}
+    synchronized void finishConfig() {
+        if (!configured) {
+            configure(false, true);
+        }
+    }
 
-	synchronized void finishConfig() {
-		if (!configured) configure(false, true);
-	}
+    synchronized boolean replay(LogHandler target) {
+        if (buffer == null || buffer.isEmpty()) {
+            return false;
+        }
 
-	synchronized boolean replay(LogHandler target) {
-		if (buffer == null || buffer.isEmpty()) return false;
+        for (int i = 0; i <
+                        buffer.size(); i++) { // index based loop to tolerate replay
+            // producing log output by itself
+            ReplayEntry entry = buffer.get(i);
+            target.log(entry.time, entry.level, entry.category, entry.msg, entry.exc,
+                true, !enableOutput);
+        }
 
-		for (int i = 0; i < buffer.size(); i++) { // index based loop to tolerate replay producing log output by itself
-			ReplayEntry entry = buffer.get(i);
-			target.log(entry.time, entry.level, entry.category, entry.msg, entry.exc, true, !enableOutput);
-		}
+        return true;
+    }
 
-		return true;
-	}
+    private static final class ReplayEntry {
+        final long time;
+        final LogLevel level;
+        final LogCategory category;
+        final String msg;
+        final Throwable exc;
 
-	private static final class ReplayEntry {
-		ReplayEntry(long time, LogLevel level, LogCategory category, String msg, Throwable exc) {
-			this.time = time;
-			this.level = level;
-			this.category = category;
-			this.msg = msg;
-			this.exc = exc;
-		}
+        ReplayEntry(long time, LogLevel level, LogCategory category, String msg, Throwable exc) {
+            this.time = time;
+            this.level = level;
+            this.category = category;
+            this.msg = msg;
+            this.exc = exc;
+        }
+    }
 
-		final long time;
-		final LogLevel level;
-		final LogCategory category;
-		final String msg;
-		final Throwable exc;
-	}
+    private final class ShutdownHook extends Thread {
+        ShutdownHook() {
+            super("BuiltinLogHandler shutdown hook");
+        }
 
-	private final class ShutdownHook extends Thread {
-		ShutdownHook() {
-			super("BuiltinLogHandler shutdown hook");
-		}
+        @Override
+        public void run() {
+            synchronized (BuiltinLogHandler.this) {
+                if (buffer == null || buffer.isEmpty()) {
+                    return;
+                }
 
-		@Override
-		public void run() {
-			synchronized (BuiltinLogHandler.this) {
-				if (buffer == null || buffer.isEmpty()) return;
+                if (!enableOutput) {
+                    enableOutput = true;
 
-				if (!enableOutput) {
-					enableOutput = true;
+                    for (int i = 0; i <
+                                    buffer.size(); i++) { // index based loop to
+                        // tolerate replay producing log output by itself
+                        ReplayEntry entry = buffer.get(i);
+                        BuiltinLogHandler.super.log(entry.time, entry.level,
+                            entry.category, entry.msg, entry.exc, true, true);
+                    }
+                }
 
-					for (int i = 0; i < buffer.size(); i++) { // index based loop to tolerate replay producing log output by itself
-						ReplayEntry entry = buffer.get(i);
-						BuiltinLogHandler.super.log(entry.time, entry.level, entry.category, entry.msg, entry.exc, true, true);
-					}
-				}
+                String fileName = System.getProperty(SystemProperties.LOG_FILE,
+                    Paths.get(System.getProperty("leaf.runDir", ""))
+                        .resolve(DEFAULT_LOG_FILE)
+                        .toString());
+                if (fileName.isEmpty()) {
+                    return;
+                }
 
-				String fileName = System.getProperty(SystemProperties.LOG_FILE, DEFAULT_LOG_FILE);
-				if (fileName.isEmpty()) return;
+                try {
+                    Path file = LoaderUtil.normalizePath(Paths.get(fileName));
+                    Files.createDirectories(file.getParent());
 
-				try {
-					Path file = LoaderUtil.normalizePath(Paths.get(fileName));
-					Files.createDirectories(file.getParent());
-
-					try (Writer writer = Files.newBufferedWriter(file, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)) {
-						for (int i = 0; i < buffer.size(); i++) { // index based loop to tolerate replay producing log output by itself
-							ReplayEntry entry = buffer.get(i);
-							writer.write(formatLog(entry.time, entry.level, entry.category, entry.msg, entry.exc));
-						}
-					}
-				} catch (IOException e) {
-					System.err.printf("Error saving log: %s", e);
-				}
-			}
-		}
-	}
+                    try (Writer writer = Files.newBufferedWriter(file,
+                        StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
+                        StandardOpenOption.CREATE)) {
+                        for (int i = 0; i <
+                                        buffer.size(); i++) { // index based loop to
+                            // tolerate replay producing log output by itself
+                            ReplayEntry entry = buffer.get(i);
+                            writer.write(
+                                formatLog(entry.time, entry.level, entry.category,
+                                    entry.msg, entry.exc));
+                        }
+                    }
+                } catch (IOException e) {
+                    System.err.printf("Error saving log: %s", e);
+                }
+            }
+        }
+    }
 }

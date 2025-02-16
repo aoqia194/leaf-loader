@@ -152,7 +152,7 @@ public final class LeafLoaderImpl extends dev.aoqia.loader.LeafLoader {
         discoverer.addCandidateFinder(new ArgumentModCandidateFinder(remapRegularMods));
 
         // Zomboid-specific directories to load mods from.
-        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getSteamWorkshopPath(), remapRegularMods));
+        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getZomboidWorkshopPath(), remapRegularMods));
 
         Map<String, Set<ModCandidateImpl>> envDisabledMods = new HashMap<>();
         modCandidates = discoverer.discoverMods(this, envDisabledMods);
@@ -342,14 +342,30 @@ public final class LeafLoaderImpl extends dev.aoqia.loader.LeafLoader {
         return directory != null ? Paths.get(directory) : gameDir.resolve("mods");
     }
 
-    private Path getSteamWorkshopPath() {
-        String directory = System.getProperty(SystemProperties.WORKSHOP_FOLDER);
-        if (directory != null) {
-            return Paths.get(directory);
+    private Path getZomboidGamePath() {
+        String dir = System.getProperty(SystemProperties.GAME_INSTALL_PATH);
+        if (dir != null) {
+            return Paths.get(dir);
         }
 
         try {
-            return gameDir.resolve("../../workshop/content/108600");
+            return Paths.get("C:\\Program Files (x86)\\Steam\\steamapps\\common\\ProjectZomboid");
+        } catch (InvalidPathException e) {
+            throw new RuntimeException(
+                "Failed to find the game directory for Project Zomboid. This could happen if Steam is not installed " +
+                "at the default location, or if the game is in a different Steam library from the default library. " +
+                "Please manually set it via the launch option 'leaf.gameInstallPath'.");
+        }
+    }
+
+    private Path getZomboidWorkshopPath() {
+        String dir = System.getProperty(SystemProperties.GAME_WORKSHOP_PATH);
+        if (dir != null) {
+            return Paths.get(dir);
+        }
+
+        try {
+            return getZomboidGamePath().getParent().getParent().resolve("workshop/content/108600");
         } catch (InvalidPathException e) {
             throw new RuntimeException(
                 "Failed to find Steam workshop directory for Project Zomboid. This could happen if your workshop " +

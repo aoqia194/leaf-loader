@@ -31,7 +31,8 @@ public final class Hooks {
 
     public static String setWindowTitle(final String title) {
         if (title == null || title.isEmpty()) {
-            Log.warn(LogCategory.GAME_PROVIDER, "Null or empty window title string found!", new IllegalStateException());
+            Log.warn(LogCategory.GAME_PROVIDER,
+                "Null or empty window title string found!", new IllegalStateException());
             return LEAF;
         }
 
@@ -46,8 +47,10 @@ public final class Hooks {
 
         LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
         loader.prepareModInit(runDirFile.toPath(), gameInstance);
-        loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
-        loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
+        loader.invokeEntrypoints("main", ModInitializer.class,
+            ModInitializer::onInitialize);
+        loader.invokeEntrypoints("client", ClientModInitializer.class,
+            ClientModInitializer::onInitializeClient);
     }
 
     public static void startServer(String runDir, Class<?> gameInstance) {
@@ -58,7 +61,8 @@ public final class Hooks {
 
         LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
         loader.prepareModInit(runDirFile.toPath(), gameInstance);
-        loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
+        loader.invokeEntrypoints("main", ModInitializer.class,
+            ModInitializer::onInitialize);
         loader.invokeEntrypoints("server",
             DedicatedServerModInitializer.class,
             DedicatedServerModInitializer::onInitializeServer);

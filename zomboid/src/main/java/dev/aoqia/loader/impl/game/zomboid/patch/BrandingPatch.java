@@ -32,37 +32,35 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public final class BrandingPatch extends GamePatch {
-    private static final String GAME_TITLE_FIELD = "GAME_TITLE";
-
     @Override
     public void process(LeafLauncher launcher,
         Function<String, ClassNode> classSource,
         Consumer<ClassNode> classEmitter) {
-        ClassNode brandClass = classSource.apply("zombie.GameWindow");
+        ClassNode gameWindowClass = classSource.apply("zombie.GameWindow");
 
-        if (brandClass == null) {
+        if (gameWindowClass == null) {
             return;
         }
 
-        if (applyBrandingPatch(brandClass)) {
-            classEmitter.accept(brandClass);
+        if (applyBrandingPatch(gameWindowClass)) {
+            classEmitter.accept(gameWindowClass);
         }
     }
 
     private boolean applyBrandingPatch(ClassNode classNode) {
-
-        MethodNode methodNode = findMethod(classNode, (method) -> {
+        MethodNode methodNode = findMethod(classNode, method -> {
             return method.name.equals("InitDisplay") && method.desc.equals("()V") &&
                    isPublicStatic(method.access);
         });
 
         if (methodNode == null) {
-            throw new RuntimeException("Could not find InitDisplay method in " + classNode.name + "!");
+            throw new RuntimeException(
+                "Could not find InitDisplay method in " + classNode.name + "!");
         }
 
-        Log.debug(LogCategory.GAME_PATCH, "Applying brand name hook to %s::%s", classNode.name, methodNode.name);
+        Log.debug(LogCategory.GAME_PATCH, "Applying brand name hook to %s::%s",
+            classNode.name, methodNode.name);
 
-        // Change the LDC to use the static field GAME_TITLE so we can just change the field.
         ListIterator<AbstractInsnNode> it = methodNode.instructions.iterator();
         while (it.hasNext()) {
             if (it.next().getOpcode() == Opcodes.LDC) {
