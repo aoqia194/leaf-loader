@@ -31,7 +31,7 @@ java {
 
 jar {
 	manifest {
-		attributes 'Automatic-Module-Name': 'dev.aoqia.loader.junit'
+		attributes 'Automatic-Module-Name': 'dev.aoqia.leaf.loader.junit'
 	}
 }
 

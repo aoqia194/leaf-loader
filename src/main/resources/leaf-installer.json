@@ -69,7 +69,7 @@
         ]
     },
     "mainClass": {
-        "client": "dev.aoqia.loader.impl.launch.knot.KnotClient",
-        "server": "dev.aoqia.loader.impl.launch.knot.KnotServer"
+        "client": "dev.aoqia.leaf.loader.impl.launch.knot.KnotClient",
+        "server": "dev.aoqia.leaf.loader.impl.launch.knot.KnotServer"
     }
 }

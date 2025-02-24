@@ -88,7 +88,7 @@ def loaderJarTask = project(":").tasks.finalJar
 task runProductionAutoTestClient(type: JavaExec, dependsOn: [loaderJarTask]) {
     classpath.from configurations.productionRuntime
     classpath.from loaderJarTask
-    mainClass = "dev.aoqia.loader.impl.launch.knot.KnotClient"
+    mainClass = "dev.aoqia.leaf.loader.impl.launch.knot.KnotClient"
 
     // Let loom set it instead.
 //    workingDir = file("run")
