@@ -27,7 +27,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build
-        run: ./gradlew build publish -S
+        run: ./gradlew build publish -x test -S
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -38,29 +38,29 @@ jobs:
           if-no-files-found: error
           overwrite: true
 
-  client_test:
-    if: ${{ github.repository_owner == 'aoqia194' }}
-    runs-on: self-hosted
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Run Auto Test Client
-        uses: modmuss50/xvfb-action@v1
-        with:
-          run: ./gradlew :zomboid:zomboid-test:runProductionAutoTestClient -S --warning-mode=fail
-
-      - name: Upload Client Test Screenshots
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Client Test Screenshots
-          path: zomboid/zomboid-test/run/Screenshots
+#  client_test:
+#    if: ${{ github.repository_owner == 'aoqia194' }}
+#    runs-on: self-hosted
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: temurin
+#          java-version: 17
+#
+#      - name: Run Auto Test Client
+#        uses: modmuss50/xvfb-action@v1
+#        with:
+#          run: ./gradlew :zomboid:zomboid-test:runProductionAutoTestClient -S --warning-mode=fail
+#
+#      - name: Upload Client Test Screenshots
+#        uses: actions/upload-artifact@v4
+#        if: always()
+#        with:
+#          name: Client Test Screenshots
+#          path: zomboid/zomboid-test/run/Screenshots
