@@ -3,9 +3,13 @@ name: Release
 on: workflow_dispatch
 
 jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+
   release:
-    if: ${{ github.repository_owner == 'aoqia194' }}
     name: Release
+    needs: build
     runs-on: self-hosted
 
     steps:
@@ -14,13 +18,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      #      - name: Fetch Build Output
-      #        uses: actions/download-artifact@v4
-      #        with:
-      #          name: build-output
-      #          path: build/
+      - name: Fetch Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: build/
 
-      - name: Build and Release
+      - name: Release
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
@@ -28,5 +32,4 @@ jobs:
           GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
           MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-          BRANCH_NAME: ${{ github.ref }}
-        run: ./gradlew build checkVersion publish jreleaserFullRelease -S
+        run: ./gradlew jreleaserFullRelease -S
