@@ -8,7 +8,9 @@ on:
   - workflow_dispatch
 
 jobs:
+  if: ${{ github.repository_owner == 'aoqia194' }}
   build:
+    if: ${{ github.repository_owner == 'aoqia194' }}
     name: Build
     runs-on: self-hosted
     steps:
@@ -35,6 +37,7 @@ jobs:
           path: build/libs/
 
   client_test:
+    if: ${{ github.repository_owner == 'aoqia194' }}
     runs-on: self-hosted
     steps:
       - name: Checkout

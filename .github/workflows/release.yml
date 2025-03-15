@@ -3,11 +3,13 @@ name: Release
 on: workflow_dispatch
 
 jobs:
+  if: ${{ github.repository_owner == 'aoqia194' }}
   build:
     name: Build
     uses: ./.github/workflows/build.yml
 
   release:
+    if: ${{ github.repository_owner == 'aoqia194' }}
     name: Release
     needs: build
     runs-on: self-hosted
