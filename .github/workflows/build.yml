@@ -8,7 +8,6 @@ on:
   - workflow_dispatch
 
 jobs:
-  if: ${{ github.repository_owner == 'aoqia194' }}
   build:
     if: ${{ github.repository_owner == 'aoqia194' }}
     name: Build
@@ -33,8 +32,11 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Artifacts
-          path: build/libs/
+          name: build-output
+          path: build/
+          retention-days: 7
+          if-no-files-found: error
+          overwrite: true
 
   client_test:
     if: ${{ github.repository_owner == 'aoqia194' }}
