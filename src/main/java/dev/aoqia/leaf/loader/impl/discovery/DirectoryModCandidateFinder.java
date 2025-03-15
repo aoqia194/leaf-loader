@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl.discovery;
 
 import java.io.IOException;
@@ -24,6 +23,7 @@ import java.util.EnumSet;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+import org.jetbrains.annotations.NotNull;
 
 public class DirectoryModCandidateFinder implements ModCandidateFinder {
     private final Path path;
@@ -41,7 +41,8 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
          *
          * Some OSes Generate metadata so consider the following because of OSes:
          * UNIX: Exclude if file is hidden; this occurs when starting a file name with `.`
-         * MacOS: Exclude hidden + startsWith "." since Mac OS names their metadata files in the form of `.mod.jar`
+         * MacOS: Exclude hidden + startsWith "." since Mac OS names their metadata files in the
+         * form of `.mod.jar`
          */
 
         if (!Files.isRegularFile(path)) {
@@ -78,16 +79,18 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
         }
 
         try {
-            Files.walkFileTree(this.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (isValidFile(file)) {
-                        out.accept(file, requiresRemap);
-                    }
+            Files.walkFileTree(this.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1,
+                new SimpleFileVisitor<Path>() {
+                    @Override
+                    public @NotNull FileVisitResult visitFile(Path file,
+                        @NotNull BasicFileAttributes attrs) {
+                        if (isValidFile(file)) {
+                            out.accept(file, requiresRemap);
+                        }
 
-                    return FileVisitResult.CONTINUE;
-                }
-            });
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
         } catch (IOException e) {
             throw new RuntimeException("Exception while searching for mods in '" + path + "'!", e);
         }

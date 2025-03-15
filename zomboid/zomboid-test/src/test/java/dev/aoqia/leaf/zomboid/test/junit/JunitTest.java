@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.zomboid.test.junit;
 
 import dev.aoqia.leaf.loader.api.LeafLoader;
@@ -31,8 +30,8 @@ public class JunitTest {
 
     @Test
     public void testMixin() {
-        GameVersion gameVersion = Core.getInstance().getGameVersion();
-        assertEquals("41.78.16", gameVersion.toString());
+        final String gameVersion = Core.getInstance().getVersion();
+        assertEquals("41.78.16", gameVersion);
     }
 
     @Test

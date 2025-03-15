@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl.util;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 
 public final class LoaderUtil {
 	private static final ConcurrentMap<Path, Path> pathNormalizationCache = new ConcurrentHashMap<>();
-	private static final String LEAF_LOADER_CLASS = "dev/aoqia/loader/api/LeafLoader.class";
+	private static final String LEAF_LOADER_CLASS = "dev/aoqia/leaf/loader/api/LeafLoader.class";
 	private static final String ASM_CLASS = "org/objectweb/asm/ClassReader.class";
 
 	public static String getClassFileName(String className) {

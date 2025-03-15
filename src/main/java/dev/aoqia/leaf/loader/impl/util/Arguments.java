@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl.util;
 
 import java.util.*;
 
+import org.jetbrains.annotations.Nullable;
+
 public final class Arguments {
     // set the game version for the builtin game mod/dependencies, bypassing auto-detection
     public static final String GAME_VERSION = SystemProperties.GAME_VERSION;
-    // additional mods to load (path separator separated paths, @ prefix for meta-file with each line referencing an
+    // additional mods to load (path separator separated paths, @ prefix for meta-file with each
+    // line referencing an
     // actual file)
     public static final String ADD_MODS = SystemProperties.ADD_MODS;
-
+    // Arguments that present like solo args but are actually value args. Special handling required.
+    private final static List<String> valueArgNames = Collections.unmodifiableList(
+        Arrays.asList("-pzexeconfig", "-pzexelog"));
     // Solo args are like -arg1 -arg2 -arg3
     private final List<String> soloArgs;
     // Value args are like -arg1=somevalue -arg2=C:\folder\file.png
@@ -43,6 +47,7 @@ public final class Arguments {
         return valueArgs.containsKey(key);
     }
 
+    @Nullable
     public String get(String key) {
         return valueArgs.get(key);
     }
@@ -75,19 +80,32 @@ public final class Arguments {
 
     public void parse(List<String> args) {
         for (int i = 0; i < args.size(); i++) {
-            String arg = args.get(i);
+            final String arg = args.get(i);
 
-            if (arg.startsWith("-") && i < args.size() - 1) {
-                String[] value = arg.split("=", 2);
-
-                if (value[1] == null) {
-                    // Give arguments that have no value an empty string.
-                    value[1] = "";
-                } else {
-                    i += 1;
+            // Value arg if = is present, otherwise solo arg.
+            if (arg.contains("=")) {
+                final String[] pair = arg.split("=", 1);
+                if (pair.length <= 1) {
+                    throw new RuntimeException("Argument contains '=' but couldn't split.");
                 }
 
-                valueArgs.put(arg.substring(2), value[1]);
+                // Set it to nothing if the value is nothing.
+                if (pair[1] == null) {
+                    pair[1] = "";
+                }
+
+                valueArgs.put(pair[0].substring(1), pair[1]);
+            } else if (valueArgNames.contains(arg)) {
+                // Special handling for value args that look like solo args where i+1 is the value.
+                final String value = i + 1 > args.size() ? null : args.get(i + 1);
+                if (value == null || value.startsWith("-")) {
+                    // Silently ignore? I don't know if this is the best choice but ok!
+                    // throw new RuntimeException(
+                    //     "Invalid game arguments provided. Found vararg with no value.");
+                    continue;
+                }
+
+                valueArgs.put(arg.substring(1), value);
             } else {
                 soloArgs.add(arg);
             }

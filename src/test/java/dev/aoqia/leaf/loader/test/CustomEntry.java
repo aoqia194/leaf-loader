@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package dev.aoqia.leaf.loader.test;
 
-package dev.aoqia.leaf.test;
+/**
+ * A custom entry point that allows testing functionalities of default methods.
+ */
+@FunctionalInterface
+public interface CustomEntry {
+	String name();
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import dev.aoqia.leaf.loader.impl.util.Localization;
-
-public class LocalizationTests {
-	@Test
-	public void formatRoot() {
-		Assertions.assertEquals("client", Localization.formatRoot("environment.client"));
-		Assertions.assertEquals("Install A, B.", Localization.formatRoot("resolution.solution.addMod", "A", "B"));
+	default String describe() {
+		return "Custom entry point \"" + name() + "\"";
 	}
 }

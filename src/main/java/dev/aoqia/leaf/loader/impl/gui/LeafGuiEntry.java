@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl.gui;
 
 import java.awt.GraphicsEnvironment;
@@ -122,7 +121,7 @@ public final class LeafGuiEntry {
 		GameProvider provider = LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (!GraphicsEnvironment.isHeadless() && (provider == null || provider.canOpenErrorGui())) {
-			String title = "Fabric Loader " + LeafLoaderImpl.VERSION;
+			String title = "Leaf Loader " + LeafLoaderImpl.VERSION;
 			LeafStatusTree tree = new LeafStatusTree(title, mainText);
 			FabricStatusTab crashTab = tree.addTab(Localization.format("gui.tab.crash"));
 

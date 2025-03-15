@@ -1,9 +1,8 @@
-import dev.aoqia.loom.build.nesting.JarNester
+import dev.aoqia.leaf.loom.build.nesting.JarNester
 import org.slf4j.LoggerFactory
 
 buildscript {
 	dependencies {
-		classpath 'org.kohsuke:github-api:1.135'
 		classpath 'com.guardsquare:proguard-gradle:7.5.0'
 	}
 }
@@ -14,13 +13,14 @@ plugins {
 	id 'eclipse'
 	id 'maven-publish'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'leaf-loom' version '0.1.0.local' apply false
+	id 'dev.aoqia.leaf.loom' version '0.1.6' apply false
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
-	id 'me.modmuss50.remotesign' version "0.4.0"
+    // Releasing to maven central via sonatype
+    id 'org.jreleaser' version '1.17.0'
 }
 
 base {
-	archivesName = "leaf-loader"
+	archivesName = project.name
 }
 
 def ENV = System.getenv()
@@ -28,10 +28,10 @@ def ENV = System.getenv()
 allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'eclipse'
-	apply plugin: "com.diffplug.spotless"
+	apply plugin: 'com.diffplug.spotless'
 
-	def constantsSource = rootProject.file("src/main/java/dev/aoqia/loader/impl/LeafLoaderImpl.java").text
-	version = (constantsSource =~ /\s+VERSION\s*=\s*"(.*)";/)[0][1] + (ENV.GITHUB_ACTIONS ? "" : "+local")
+	def constantsSource = rootProject.file("src/main/java/dev/aoqia/leaf/loader/impl/LeafLoaderImpl.java").text
+	version = (constantsSource =~ /\s+VERSION\s*=\s*"(.*)";/)[0][1] + (ENV.GITHUB_ACTIONS ? "" : ".local")
 
 	repositories {
 		maven {
@@ -128,6 +128,8 @@ processResources {
 
 java {
 	withSourcesJar()
+    // Added separately for some reason..
+//    withJavadocJar()
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -162,7 +164,7 @@ tasks.register('getSat4jAbout', Copy) {
 		}
 	}
 
-	rename 'about.html', 'dev/aoqia/loader/impl/lib/sat4j/about-sat4j.html'
+	rename 'about.html', 'dev/aoqia/leaf/loader/impl/lib/sat4j/about-sat4j.html'
 
 	into layout.buildDirectory.dir("sat4j")
 }
@@ -206,7 +208,7 @@ tasks.register('fatJar', ShadowJar) {
 	outputs.upToDateWhen { false }
 }
 
-File proguardTmpFile = file("build/tmp/leaf-loader-${version}.jar")
+File proguardTmpFile = file("build/tmp/loader-${version}.jar")
 
 import proguard.gradle.ProGuardTask
 
@@ -329,33 +331,44 @@ tasks.withType(GenerateModuleMetadata) {
 	enabled = false
 }
 
-File signedJar = file("build/libs/leaf-loader-${version}-signed.jar")
-
-remoteSign {
-	requestUrl = ENV.SIGNING_SERVER
-	pgpAuthKey = ENV.SIGNING_PGP_KEY
-	jarAuthKey = ENV.SIGNING_JAR_KEY
-
-	useDummyForTesting = ENV.SIGNING_SERVER == null
-
-	sign(finalJar.archiveFile.get().getAsFile(), signedJar, "final").configure {
-		dependsOn finalJar
-	}
-
-	afterEvaluate {
-		sign publishing.publications.mavenJava
-	}
-}
-
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(signedJar) {
-				builtBy(tasks.signFinal)
-				classifier = null
-			}
-			artifact(sourcesJar)
+		register("maven", MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version project.version
+
+            pom {
+                name = rootProject.name
+                group = rootProject.group
+                description = rootProject.description
+                url = rootProject.url
+                inceptionYear = '2025'
+                developers {
+                    developer {
+                        id = 'aoqia'
+                        name = 'aoqia'
+                    }
+                }
+                issueManagement {
+                    system = 'GitHub'
+                    url = "${rootProject.url}/issues"
+                }
+                licenses {
+                    license {
+                        name = 'Apache-2.0'
+                        url = 'https://spdx.org/licenses/Apache-2.0.html'
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/aoqia194/leaf-" + project.name + "/.git"
+                    developerConnection = "scm:git:ssh://github.com/aoqia194/leaf-" + project.name + "/.git"
+                    url = rootProject.url
+                }
+            }
+
+            artifact finalJar
+			artifact sourcesJar
 			artifact javadocJar
 			artifact(file('src/main/resources/leaf-installer.json')) {
 				builtBy copyJson
@@ -363,17 +376,10 @@ publishing {
 		}
 	}
 
-	// select the repositories you want to publish to
 	repositories {
-		if (ENV.MAVEN_URL) {
-			maven {
-				url ENV.MAVEN_URL
-				credentials {
-					username ENV.MAVEN_USERNAME
-					password ENV.MAVEN_PASSWORD
-				}
-			}
-		}
+		maven {
+            url = layout.buildDirectory.dir('staging-deploy')
+        }
 	}
 }
 
@@ -387,39 +393,83 @@ def getBranch() {
 	return "unknown"
 }
 
-import org.kohsuke.github.GHReleaseBuilder
-import org.kohsuke.github.GitHub
-
-task github(dependsOn: publish) {
-	onlyIf {
-		ENV.GITHUB_TOKEN
-	}
-
-	doLast {
-		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
-		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
-
-		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
-		releaseBuilder.name("Leaf Loader $version")
-		releaseBuilder.body(ENV.CHANGELOG ?: "No changelog provided")
-		releaseBuilder.commitish(getBranch())
-		releaseBuilder.prerelease(false)
-
-		releaseBuilder.create()
-	}
-}
-
 // A task to ensure that the version being released has not already been released.
-task checkVersion {
-	doFirst {
-		def xml = new URL("https://maven.fabricmc.net/dev/aoqia/fabric-loader/maven-metadata.xml").text
-		def metadata = new XmlSlurper().parseText(xml)
-		def versions = metadata.versioning.versions.version*.text();
-		if (versions.contains(version)) {
-			throw new RuntimeException("${version} has already been released!")
-		}
-	}
+tasks.register('checkVersion') {
+    doFirst {
+        def xml = new URL(
+            "https://repo.maven.apache.org/maven2/dev/aoqia/leaf/loader/maven-metadata.xml").text
+        def metadata = new XmlSlurper().parseText(xml)
+        def versions = metadata.versioning.versions.version*.text();
+        if (versions.contains(version)) {
+            throw new RuntimeException("${version} has already been released!")
+        }
+    }
 }
-
 publish.mustRunAfter checkVersion
-github.mustRunAfter checkVersion
+
+jreleaser {
+    project {
+        name = rootProject.name
+        version = rootProject.version
+        versionPattern = 'SEMVER'
+        authors = ['aoqia194', 'FabricMC']
+        maintainers = ['aoqia194']
+        license = 'Apache-2.0'
+        inceptionYear = '2025'
+        links {
+            homepage = rootProject.url
+            license = 'https://spdx.org/licenses/Apache-2.0.html'
+        }
+    }
+    signing {
+        active = 'ALWAYS'
+        armored = true
+        passphrase = ENV.GPG_PASSPHRASE_KEY
+        publicKey = ENV.GPG_PUBLIC_KEY
+        secretKey = ENV.GPG_PRIVATE_KEY
+    }
+    deploy {
+        maven {
+            pomchecker {
+                version = "1.14.0"
+                failOnWarning = false // annoying
+                failOnError = true
+                strict = true
+            }
+            mavenCentral {
+                sonatype {
+                    applyMavenCentralRules = true
+                    active = "ALWAYS"
+                    snapshotSupported = true
+                    authorization = 'BEARER'
+                    username = ENV.MAVEN_USERNAME
+                    password = ENV.MAVEN_PASSWORD
+                    url = "https://central.sonatype.com/api/v1/publisher"
+                    stagingRepository("build/staging-deploy")
+                    verifyUrl = "https://repo1.maven.org/maven2/{{path}}/{{filename}}"
+                    namespace = rootProject.group
+                    retryDelay = 60
+                    maxRetries = 30
+                }
+            }
+        }
+    }
+
+    release {
+        github {
+            enabled = true
+            repoOwner = 'aoqia194'
+            name = 'leaf-yarn'
+            host = 'github.com'
+            releaseName = '{{tagName}}'
+            sign = true
+            overwrite = true
+
+            changelog {
+                formatted = 'ALWAYS'
+                preset = 'conventional-commits'
+                extraProperties.put('categorizeScopes', 'true')
+            }
+        }
+    }
+}

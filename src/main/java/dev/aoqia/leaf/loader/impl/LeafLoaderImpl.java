@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl;
 
 import java.io.BufferedReader;
@@ -111,7 +110,6 @@ public final class LeafLoaderImpl extends LeafLoader {
 
     public void setGameProvider(GameProvider provider) {
         this.provider = provider;
-
         setGameDir(provider.getLaunchDirectory());
     }
 
@@ -240,8 +238,8 @@ public final class LeafLoaderImpl extends LeafLoader {
         }
         StringBuilder outputText = new StringBuilder();
 
-        for (Path nonFabricMod : nonLeafMods) {
-            outputText.append("\n\t- ").append(nonFabricMod.getFileName());
+        for (Path mod : nonLeafMods) {
+            outputText.append("\n\t- ").append(mod.getFileName());
         }
 
         int modsCount = nonLeafMods.size();
@@ -339,7 +337,6 @@ public final class LeafLoaderImpl extends LeafLoader {
     @Override
     protected Path getModsDirectory0() {
         String directory = System.getProperty(SystemProperties.MODS_FOLDER);
-
         return directory != null ? Paths.get(directory) : gameDir.resolve("mods");
     }
 

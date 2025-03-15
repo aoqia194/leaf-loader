@@ -1,30 +1,27 @@
 apply plugin: 'maven-publish'
-apply plugin: 'me.modmuss50.remotesign'
 
 base {
-	archivesName = "leaf-loader-junit"
+	archivesName = "${rootProject.name}-junit"
 }
 
 version = rootProject.version
 group = rootProject.group
-
-def ENV = System.getenv()
-def signingEnabled = ENV.SIGNING_SERVER
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	api project(":")
+	api project(':')
 
-	api platform("org.junit:junit-bom:5.10.0")
-	api "org.junit.jupiter:junit-jupiter-engine"
-	implementation "org.junit.platform:junit-platform-launcher"
+	api platform('org.junit:junit-bom:5.10.0')
+	api 'org.junit.jupiter:junit-jupiter-engine'
+	implementation 'org.junit.platform:junit-platform-launcher'
 }
 
 java {
 	withSourcesJar()
+    withJavadocJar()
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -35,35 +32,51 @@ jar {
 	}
 }
 
-if (signingEnabled) {
-	remoteSign {
-		requestUrl = ENV.SIGNING_SERVER
-		pgpAuthKey = ENV.SIGNING_PGP_KEY
-		jarAuthKey = ENV.SIGNING_JAR_KEY
-
-		afterEvaluate {
-			sign publishing.publications.maven
-		}
-	}
-}
-
 publishing {
 	publications {
 		maven(MavenPublication) {
-			artifactId project.base.archivesName.get()
-			from components.java
+            groupId project.group
+            artifactId project.base.archivesName.get()
+            version project.version
+
+            pom {
+                name = rootProject.name
+                group = rootProject.group
+                description = rootProject.description
+                url = rootProject.url
+                inceptionYear = '2025'
+                developers {
+                    developer {
+                        id = 'aoqia'
+                        name = 'aoqia'
+                    }
+                }
+                issueManagement {
+                    system = 'GitHub'
+                    url = "${rootProject.url}/issues"
+                }
+                licenses {
+                    license {
+                        name = 'Apache-2.0'
+                        url = 'https://spdx.org/licenses/Apache-2.0.html'
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/aoqia194/leaf-" + rootProject.name + "/.git"
+                    developerConnection = "scm:git:ssh://github.com/aoqia194/leaf-" + rootProject.name + "/.git"
+                    url = rootProject.url
+                }
+            }
+
+            artifact jar
+            artifact sourcesJar
+            artifact javadocJar
 		}
 	}
 
-	repositories {
-		if (ENV.MAVEN_URL) {
-			maven {
-				url ENV.MAVEN_URL
-				credentials {
-					username ENV.MAVEN_USERNAME
-					password ENV.MAVEN_PASSWORD
-				}
-			}
-		}
-	}
+    repositories {
+        maven {
+            url = rootProject.layout.buildDirectory.dir('staging-deploy')
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.language;
 
 import java.io.IOException;
@@ -33,13 +32,13 @@ public class JavaLanguageAdapter implements LanguageAdapter {
 	private static boolean canApplyInterface(String itfString) throws IOException {
 		// TODO: Be a bit more involved
 		switch (itfString) {
-		case "net/fabricmc/api/ClientModInitializer":
+		case "dev/aoqia/leaf/api/ClientModInitializer":
 			if (LeafLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 				return false;
 			}
 
 			break;
-		case "net/fabricmc/api/DedicatedServerModInitializer":
+		case "dev/aoqia/leaf/api/DedicatedServerModInitializer":
 			if (LeafLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 				return false;
 			}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl.game.zomboid;
 
 import java.io.DataInputStream;
@@ -142,11 +141,12 @@ public final class ZomboidVersionLookup {
         if (RELEASE_PATTERN.matcher(version).matches() || UNSTABLE_RELEASE_PATTERN.matcher(version).matches()) {
             return version;
         }
-        assert isProbableVersion(version);
 
-        int pos = version.indexOf("-unstable");
-        if (pos >= 0) {
-            return version.substring(0, pos);
+        if (isProbableVersion(version)) {
+            int pos = version.indexOf("-unstable");
+            if (pos >= 0) {
+                return version.substring(0, pos);
+            }
         }
 
         // Try to get version info from jar name as last resort.

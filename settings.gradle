@@ -5,6 +5,7 @@ pluginManagement {
 			name = "FabricMC"
 		}
 		gradlePluginPortal()
+        mavenCentral()
         mavenLocal()
 	}
 }
@@ -13,7 +14,7 @@ plugins {
 	id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-rootProject.name='leaf-loader'
+rootProject.name='loader'
 
 if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
 	throw new UnsupportedOperationException("Leaf Loader requires Java 17+ to build.")

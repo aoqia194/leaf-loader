@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl.game.zomboid;
 
 import java.io.IOException;
@@ -52,9 +51,11 @@ public class ZomboidGameProvider implements GameProvider {
     private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = { "org.apache.logging.log4j." };
 
     private static final Set<String> SENSITIVE_ARGS = new HashSet<>(Collections.emptyList());
-    private final List<Path> gameJars = new ArrayList<>(2); // env game jar and potentially common game jar
+    private final List<Path> gameJars = new ArrayList<>(
+        2); // env game jar and potentially common game jar
     private final Set<Path> logJars = new HashSet<>();
-    private final List<Path> miscGameLibraries = new ArrayList<>(); // libraries not relevant for loader's uses
+    private final List<Path> miscGameLibraries = new ArrayList<>(); // libraries not relevant for
+    // loader's uses
     private final GameTransformer transformer = new GameTransformer(
         new EntrypointPatch(),
         new BrandingPatch());
@@ -63,14 +64,16 @@ public class ZomboidGameProvider implements GameProvider {
     private Arguments arguments;
     private boolean log4jAvailable;
     private boolean slf4jAvailable;
-    private Collection<Path> validParentClassPath; // computed parent class path restriction (loader+deps)
+    private Collection<Path> validParentClassPath; // computed parent class path restriction
+    // (loader+deps)
     private ZomboidVersion versionData;
     private boolean hasModLoader = false;
 
     private static void processArgumentMap(Arguments argMap, EnvType envType) {
         switch (envType) {
             case CLIENT:
-                argMap.putIfNotExists("cachedir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
+                argMap.putIfNotExists("cachedir",
+                    getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
                 break;
             case SERVER:
                 // TODO: Handle server args
@@ -83,7 +86,7 @@ public class ZomboidGameProvider implements GameProvider {
 
     private static Path getLaunchDirectory(Arguments argMap) {
         return Paths.get(argMap.getOrDefault("cachedir", System.getProperty("leaf.runDir",
-            Paths.get(System.getProperty("user.dir")).resolve("/Zomboid").toString())));
+            Paths.get(System.getProperty("user.home")).resolve("Zomboid").toString())));
     }
 
     public Path getGameJar() {
@@ -112,7 +115,8 @@ public class ZomboidGameProvider implements GameProvider {
 
     @Override
     public Collection<BuiltinMod> getBuiltinMods() {
-        BuiltinModMetadata.Builder metadata = new BuiltinModMetadata.Builder(getGameId(), getNormalizedGameVersion())
+        BuiltinModMetadata.Builder metadata = new BuiltinModMetadata.Builder(getGameId(),
+            getNormalizedGameVersion())
             .setName(getGameName());
 
         if (versionData.getClassVersion().isPresent()) {
@@ -166,7 +170,8 @@ public class ZomboidGameProvider implements GameProvider {
         arguments.parse(args);
 
         try {
-            LibClassifier<ZomboidLibrary> classifier = new LibClassifier<>(ZomboidLibrary.class, envType, this);
+            LibClassifier<ZomboidLibrary> classifier = new LibClassifier<>(ZomboidLibrary.class,
+                envType, this);
             ZomboidLibrary envGameLib = envType == EnvType.CLIENT
                 ? ZomboidLibrary.ZOMBOID_CLIENT : ZomboidLibrary.ZOMBOID_SERVER;
             Path commonGameJar = GameProviderHelper.getCommonGameJar();
@@ -205,8 +210,10 @@ public class ZomboidGameProvider implements GameProvider {
 
             entrypoint = classifier.getClassName(envGameLib);
             hasModLoader = classifier.has(ZomboidLibrary.MODLOADER);
-            log4jAvailable = classifier.has(ZomboidLibrary.LOG4J_API) && classifier.has(ZomboidLibrary.LOG4J_CORE);
-            slf4jAvailable = classifier.has(ZomboidLibrary.SLF4J_API) && classifier.has(ZomboidLibrary.SLF4J_CORE);
+            log4jAvailable = classifier.has(ZomboidLibrary.LOG4J_API) &&
+                             classifier.has(ZomboidLibrary.LOG4J_CORE);
+            slf4jAvailable = classifier.has(ZomboidLibrary.SLF4J_API) &&
+                             classifier.has(ZomboidLibrary.SLF4J_CORE);
             boolean hasLogLib = log4jAvailable || slf4jAvailable;
 
             Log.configureBuiltin(hasLogLib, !hasLogLib);
@@ -229,11 +236,13 @@ public class ZomboidGameProvider implements GameProvider {
             throw ExceptionUtil.wrap(e);
         }
 
-        // expose obfuscated jar locations for mods to more easily remap code from obfuscated to intermediary
+        // expose obfuscated jar locations for mods to more easily remap code from obfuscated to
+        // intermediary
         ObjectShare share = LeafLoaderImpl.INSTANCE.getObjectShare();
         share.put("leaf-loader:inputGameJar", gameJars.get(0)); // deprecated
         share.put("leaf-loader:inputGameJars",
-            Collections.unmodifiableList(new ArrayList<>(gameJars))); // need to make copy as gameJars is later
+            Collections.unmodifiableList(
+                new ArrayList<>(gameJars))); // need to make copy as gameJars is later
 
         String version = arguments.remove(Arguments.GAME_VERSION);
         if (version == null) {
@@ -335,13 +344,14 @@ public class ZomboidGameProvider implements GameProvider {
 
         try {
             Class<?> c = loader.loadClass(targetClass);
-            invoker = MethodHandles.lookup().findStatic(c, "main", MethodType.methodType(void.class, String[].class));
+            invoker = MethodHandles.lookup()
+                .findStatic(c, "main", MethodType.methodType(void.class, String[].class));
         } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             throw FormattedException.ofLocalized("exception.zomboid.invokeFailure", e);
         }
 
         try {
-            //noinspection ConfusingArgumentToVarargsMethod
+            // noinspection ConfusingArgumentToVarargsMethod
             invoker.invokeExact(arguments.toArray());
         } catch (Throwable t) {
             throw FormattedException.ofLocalized("exception.zomboid.generic", t);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 FabricMC
+ * Copyright 2025 aoqia, FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package dev.aoqia.leaf.loader.impl.game;
 
 import java.net.URL;
@@ -49,12 +48,12 @@ enum LoaderLibrary {
 	SAT4J_CORE(ContradictionException.class),
 	SAT4J_PB(SolverFactory.class),
 	SERVER_LAUNCH("leaf-server-launch.properties", EnvType.SERVER), // installer generated jar to run setup loader's class path
-	SERVER_LAUNCHER("dev/aoqia/installer/ServerLauncher.class", EnvType.SERVER), // installer based launch-through method
+	SERVER_LAUNCHER("dev/aoqia/leaf/installer/ServerLauncher.class", EnvType.SERVER), // installer based launch-through method
 	JUNIT_API("org/junit/jupiter/api/Test.class", null),
 	JUNIT_PLATFORM_ENGINE("org/junit/platform/engine/TestEngine.class", null),
 	JUNIT_PLATFORM_LAUNCHER("org/junit/platform/launcher/core/LauncherFactory.class", null),
 	JUNIT_JUPITER("org/junit/jupiter/engine/JupiterTestEngine.class", null),
-	LEAF_LOADER_JUNIT("dev/aoqia/loader/impl/junit/LeafLoaderLauncherSessionListener.class", null),
+	LEAF_LOADER_JUNIT("dev/aoqia/leaf/loader/impl/junit/LeafLoaderLauncherSessionListener.class", null),
 
 	// Logging libraries are only loaded from the platform CL when running as a unit test.
 	LOG4J_API("org/apache/logging/log4j/LogManager.class", true),

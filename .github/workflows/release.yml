@@ -1,33 +1,32 @@
 name: Release
-on: [workflow_dispatch] # Manual trigger
 
-permissions:
-  contents: write
+on: workflow_dispatch
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
-    container:
-      image: eclipse-temurin:17-jdk
-      options: --user root
+  release:
+    if: ${{ github.repository_owner == 'aoqia194' }}
+    name: Release
+    runs-on: self-hosted
+
     steps:
-      - run: apt update && apt install git -y && git --version
-      - run: git config --global --add safe.directory /__w/fabric-loader/fabric-loader
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: FabricMC/fabric-action-scripts@v2
-        id: changelog
-        with:
-          context: changelog
-          workflow_id: release.yml
-      - run: ./gradlew checkVersion build publish github --stacktrace
+
+      #      - name: Fetch Build Output
+      #        uses: actions/download-artifact@v4
+      #        with:
+      #          name: build-output
+      #          path: build/
+
+      - name: Build and Release
         env:
-          MAVEN_URL: ${{ secrets.MAVEN_URL }}
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SIGNING_SERVER: ${{ secrets.SIGNING_SERVER }}
-          SIGNING_PGP_KEY: ${{ secrets.SIGNING_PGP_KEY }}
-          SIGNING_JAR_KEY: ${{ secrets.SIGNING_JAR_KEY }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+          BRANCH_NAME: ${{ github.ref }}
+        run: ./gradlew build checkVersion publish jreleaserFullRelease -S
