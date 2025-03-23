@@ -1,4 +1,4 @@
-name: Release
+name: Installer Json Copy Test
 
 on: workflow_dispatch
 
@@ -8,9 +8,9 @@ jobs:
     name: Build
     uses: ./.github/workflows/build.yml
 
-  release:
+  installercopytest:
     if: ${{ github.repository_owner == 'aoqia194' }}
-    name: Release
+    name: Installer Copy Test
     needs: build
     runs-on: self-hosted
 
@@ -25,16 +25,6 @@ jobs:
         with:
           name: build-output
           path: build/
-
-      - name: Release
-        env:
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
-          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-        run: ./gradlew generateInstallerJson jreleaserFullRelease -S
 
       - name: Upload Installer Json to Leaf
         uses: dmnemec/copy_file_to_another_repo_action@main
