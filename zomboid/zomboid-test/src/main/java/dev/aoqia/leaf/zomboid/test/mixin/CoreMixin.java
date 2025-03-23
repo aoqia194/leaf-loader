@@ -21,12 +21,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import zombie.core.Core;
 
+import static dev.aoqia.leaf.zomboid.test.TestEntrypoint.LOGGER;
+
 @Mixin(Core.class)
 public class CoreMixin {
-    @Inject(method = "getDebug", at = @At("HEAD"), cancellable = true)
-    private void getDebug(CallbackInfoReturnable<Boolean> cir) {
-        System.out.println("CoreMixin -> Forcing getDebug() to FALSE.");
-        cir.setReturnValue(false);
-        cir.cancel();
+    @Inject(method = "getVersion", at = @At("HEAD"))
+    private void getVersion(CallbackInfoReturnable<String> ci) {
+        LOGGER.info("WAAAAAAA {}", ci.getReturnValue());
     }
 }

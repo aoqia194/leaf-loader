@@ -13,7 +13,6 @@ def zomboid_version = '41.78.16'
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
 dependencies {
