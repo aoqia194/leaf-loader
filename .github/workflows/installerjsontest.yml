@@ -27,7 +27,7 @@ jobs:
           path: build/
 
       - name: Upload Installer Json to Leaf
-        uses: dmnemec/copy_file_to_another_repo_action@main
+        uses: supsm/copy_file_to_another_repo@master
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
