@@ -116,8 +116,7 @@ public class ZomboidGameProvider implements GameProvider {
     @Override
     public Collection<BuiltinMod> getBuiltinMods() {
         BuiltinModMetadata.Builder metadata = new BuiltinModMetadata.Builder(getGameId(),
-            getNormalizedGameVersion())
-            .setName(getGameName());
+            getNormalizedGameVersion()).setName(getGameName());
 
         if (versionData.getClassVersion().isPresent()) {
             int version = versionData.getClassVersion().getAsInt() - 44;
@@ -215,7 +214,6 @@ public class ZomboidGameProvider implements GameProvider {
             slf4jAvailable = classifier.has(ZomboidLibrary.SLF4J_API) &&
                              classifier.has(ZomboidLibrary.SLF4J_CORE);
             boolean hasLogLib = log4jAvailable || slf4jAvailable;
-
             Log.configureBuiltin(hasLogLib, !hasLogLib);
 
             for (ZomboidLibrary lib : ZomboidLibrary.LOGGING) {
