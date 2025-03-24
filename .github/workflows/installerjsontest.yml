@@ -31,7 +31,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: 'build/libs/leaf-installer.json'
+          source_file: 'src/main/resources/leaf-installer.json'
           destination_repo: 'aoqia194/leaf'
           destination_folder: 'loader'
           user_email: '30682549+aoqia194@users.noreply.github.com'
