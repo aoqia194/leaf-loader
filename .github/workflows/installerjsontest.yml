@@ -33,6 +33,6 @@ jobs:
         with:
           source_file: 'src/main/resources/leaf-installer.json'
           destination_repo: 'aoqia194/leaf'
-          destination_folder: 'loader'
+          destination_folder: 'loader/'
           user_email: '30682549+aoqia194@users.noreply.github.com'
           user_name: 'aoqia194'
