@@ -26,6 +26,9 @@ jobs:
           name: build-output
           path: build/
 
+      - name: Get Loader Version
+        run: echo "LOADER_VERSION=$(./gradlew -q getLoaderVersion)" >> $GITHUB_ENV
+
       - name: Upload Installer Json to Leaf
         uses: supsm/copy_file_to_another_repo@master
         env:
@@ -33,6 +36,6 @@ jobs:
         with:
           source_file: 'src/main/resources/leaf-installer.json'
           destination_repo: 'aoqia194/leaf'
-          destination_folder: 'loader/'
+          destination_folder: 'loader/${{ env.LOADER_VERSION }}.json'
           user_email: '30682549+aoqia194@users.noreply.github.com'
           user_name: 'aoqia194'
