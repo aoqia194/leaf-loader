@@ -150,6 +150,13 @@ shadowJar {
 	enabled = false
 }
 
+/**
+ * A task to get the raw loader version, used for GitHub workflows.
+ */
+tasks.register('getLoaderVersion') {
+    println version
+}
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 // Renaming in the shadow jar task doesnt seem to work, so do it here
