@@ -154,7 +154,7 @@ shadowJar {
  * A task to get the raw loader version, used for GitHub workflows.
  */
 tasks.register('getLoaderVersion') {
-    println version
+    print version
 }
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
