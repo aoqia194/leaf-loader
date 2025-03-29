@@ -89,9 +89,9 @@ dependencies {
 	installer "org.ow2.asm:asm-tree:${asm_version}"
 	installer "org.ow2.asm:asm-util:${asm_version}"
 	installer "net.fabricmc:sponge-mixin:${mixin_version}"
-    // Logging because zomboid doesn't provide it.
-    installer "org.apache.logging.log4j:log4j-core:${log4j_version}"
+    // Logging because zomboid doesn't provide it. SLF4J is a dependency of log4j-slf4j2-impl.
     installer "org.apache.logging.log4j:log4j-api:${log4j_version}"
+    installer "org.apache.logging.log4j:log4j-core:${log4j_version}"
     installer "org.apache.logging.log4j:log4j-slf4j2-impl:${log4j_version}"
     installer "org.slf4j:slf4j-api:${slf4j_version}"
 

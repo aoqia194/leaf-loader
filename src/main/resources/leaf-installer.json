@@ -61,15 +61,6 @@
                 "size": 1499194
             },
             {
-                "name": "org.apache.logging.log4j:log4j-core:2.24.3",
-                "url": "https://repo.maven.apache.org/maven2/",
-                "md5": "3f52ab7782fdd1349bd872b5dcf48bed",
-                "sha1": "7f6a261243ca767c7f38fd4b542bcde626c8894e",
-                "sha256": null,
-                "sha512": null,
-                "size": 1914666
-            },
-            {
                 "name": "org.apache.logging.log4j:log4j-api:2.24.3",
                 "url": "https://repo.maven.apache.org/maven2/",
                 "md5": "d89516699543c5c21be87ee1760695f3",
@@ -77,6 +68,15 @@
                 "sha256": null,
                 "sha512": null,
                 "size": 348513
+            },
+            {
+                "name": "org.apache.logging.log4j:log4j-core:2.24.3",
+                "url": "https://repo.maven.apache.org/maven2/",
+                "md5": "3f52ab7782fdd1349bd872b5dcf48bed",
+                "sha1": "7f6a261243ca767c7f38fd4b542bcde626c8894e",
+                "sha256": null,
+                "sha512": null,
+                "size": 1914666
             },
             {
                 "name": "org.apache.logging.log4j:log4j-slf4j2-impl:2.24.3",
