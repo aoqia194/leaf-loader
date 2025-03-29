@@ -1,4 +1,4 @@
-name: Installer Json Copy Test
+name: Copy Installer Json
 
 on: workflow_dispatch
 
@@ -8,9 +8,9 @@ jobs:
     name: Build
     uses: ./.github/workflows/build.yml
 
-  installercopytest:
+  copyinstallerjson:
     if: ${{ github.repository_owner == 'aoqia194' }}
-    name: Installer Copy Test
+    name: Copy Installer Json
     needs: build
     runs-on: self-hosted
 
