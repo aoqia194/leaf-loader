@@ -34,7 +34,7 @@ jobs:
           GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
           MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-        run: ./gradlew generateInstallerJson jreleaserFullRelease -S
+        run: ./gradlew checkVersion generateInstallerJson jreleaserFullRelease -S
 
       - name: Upload Installer Json to Leaf
         uses: supsm/copy_file_to_another_repo@master
