@@ -13,7 +13,7 @@ plugins {
 	id 'eclipse'
 	id 'maven-publish'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'dev.aoqia.leaf.loom' version '0.1.6' apply false
+	id 'dev.aoqia.leaf.loom' version '0.1.7' apply false
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
     // Releasing to maven central via sonatype
     id 'org.jreleaser' version '1.17.0'
@@ -89,11 +89,6 @@ dependencies {
 	installer "org.ow2.asm:asm-tree:${asm_version}"
 	installer "org.ow2.asm:asm-util:${asm_version}"
 	installer "net.fabricmc:sponge-mixin:${mixin_version}"
-    // Logging because zomboid doesn't provide it. SLF4J is a dependency of log4j-slf4j2-impl.
-    installer "org.apache.logging.log4j:log4j-api:${log4j_version}"
-    installer "org.apache.logging.log4j:log4j-core:${log4j_version}"
-    installer "org.apache.logging.log4j:log4j-slf4j2-impl:${log4j_version}"
-    installer "org.slf4j:slf4j-api:${slf4j_version}"
 
 	// impl dependencies
 	include 'org.ow2.sat4j:org.ow2.sat4j.core:2.3.6'
