@@ -35,6 +35,7 @@ import dev.aoqia.leaf.loader.impl.game.LibClassifier;
 import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
 import dev.aoqia.leaf.loader.impl.game.zomboid.patch.BrandingPatch;
 import dev.aoqia.leaf.loader.impl.game.zomboid.patch.EntrypointPatch;
+import dev.aoqia.leaf.loader.impl.game.zomboid.patch.LoggerPatch;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.metadata.BuiltinModMetadata;
@@ -45,10 +46,9 @@ import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
-import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
 
 public class ZomboidGameProvider implements GameProvider {
-    private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = { "org.apache.logging.log4j." };
+    private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = {};
 
     private static final Set<String> SENSITIVE_ARGS = new HashSet<>(Collections.emptyList());
     private final List<Path> gameJars = new ArrayList<>(
@@ -57,13 +57,12 @@ public class ZomboidGameProvider implements GameProvider {
     private final List<Path> miscGameLibraries = new ArrayList<>(); // libraries not relevant for
     // loader's uses
     private final GameTransformer transformer = new GameTransformer(
+        new LoggerPatch(),
         new EntrypointPatch(),
         new BrandingPatch());
     private EnvType envType;
     private String entrypoint;
     private Arguments arguments;
-    private boolean log4jAvailable;
-    private boolean slf4jAvailable;
     private Collection<Path> validParentClassPath; // computed parent class path restriction
     // (loader+deps)
     private ZomboidVersion versionData;
@@ -72,14 +71,9 @@ public class ZomboidGameProvider implements GameProvider {
     private static void processArgumentMap(Arguments argMap, EnvType envType) {
         switch (envType) {
             case CLIENT:
+            case SERVER:
                 argMap.putIfNotExists("cachedir",
                     getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
-                break;
-            case SERVER:
-                // TODO: Handle server args
-                argMap.remove("version");
-                argMap.remove("gameDir");
-                argMap.remove("assetsDir");
                 break;
         }
     }
@@ -209,24 +203,7 @@ public class ZomboidGameProvider implements GameProvider {
 
             entrypoint = classifier.getClassName(envGameLib);
             hasModLoader = classifier.has(ZomboidLibrary.MODLOADER);
-            log4jAvailable = classifier.has(ZomboidLibrary.LOG4J_API) &&
-                             classifier.has(ZomboidLibrary.LOG4J_CORE);
-            slf4jAvailable = classifier.has(ZomboidLibrary.SLF4J_API) &&
-                             classifier.has(ZomboidLibrary.SLF4J_CORE);
-            boolean hasLogLib = log4jAvailable || slf4jAvailable;
-            Log.configureBuiltin(hasLogLib, !hasLogLib);
-
-            for (ZomboidLibrary lib : ZomboidLibrary.LOGGING) {
-                Path path = classifier.getOrigin(lib);
-
-                if (path != null) {
-                    if (hasLogLib) {
-                        logJars.add(path);
-                    } else if (!gameJars.contains(path)) {
-                        miscGameLibraries.add(path);
-                    }
-                }
-            }
+            Log.configureBuiltin(true, false);
 
             miscGameLibraries.addAll(classifier.getUnmatchedOrigins());
             validParentClassPath = classifier.getSystemLibraries();
@@ -310,8 +287,8 @@ public class ZomboidGameProvider implements GameProvider {
             }
         }
 
-        setupLogHandler(launcher, true);
-
+        // Setup the log handler later because game logging isn't ready yet.
+        // setupLogHandler(launcher, true);
         transformer.locateEntrypoints(launcher, gameJars);
     }
 
@@ -405,38 +382,7 @@ public class ZomboidGameProvider implements GameProvider {
     @Override
     public boolean hasAwtSupport() {
         // MC always sets -XstartOnFirstThread for LWJGL
+        // TODO: Is this true also for Zomboid?
         return !LoaderUtil.hasMacOs();
-    }
-
-    private void setupLogHandler(LeafLauncher launcher, boolean useTargetCl) {
-        System.setProperty("log4j2.formatMsgNoLookups",
-            "true"); // lookups are not used by mc and cause issues with older log4j2 versions
-
-        try {
-            final String logHandlerClsName;
-
-            if (log4jAvailable) {
-                logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.Log4jLogHandler";
-            } else if (slf4jAvailable) {
-                logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.Slf4jLogHandler";
-            } else {
-                return;
-            }
-
-            ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
-            Class<?> logHandlerCls;
-
-            if (useTargetCl) {
-                Thread.currentThread().setContextClassLoader(launcher.getTargetClassLoader());
-                logHandlerCls = launcher.loadIntoTarget(logHandlerClsName);
-            } else {
-                logHandlerCls = Class.forName(logHandlerClsName);
-            }
-
-            Log.init((LogHandler) logHandlerCls.getConstructor().newInstance());
-            Thread.currentThread().setContextClassLoader(prevCl);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
