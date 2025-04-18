@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "mixins": [
     {
-      "config": "aoqia.test.mixins.client.json",
+      "config": "zomboid-test.mixins.json",
       "environment": "client"
     }
   ],
