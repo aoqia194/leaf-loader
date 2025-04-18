@@ -16,13 +16,15 @@
 package dev.aoqia.leaf.zomboid.test;
 
 import dev.aoqia.leaf.api.ModInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import zombie.debug.DebugLog;
+import zombie.debug.DebugLogStream;
 
 public class TestEntrypoint implements ModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger(TestEntrypoint.class);
-	@Override
-	public void onInitialize() {
-		LOGGER.info("Hello Leaf World!!! >w<");
-	}
+    public static final DebugLogStream LOGGER = DebugLog.General;
+
+    @Override
+    public void onInitialize() {
+        LOGGER.println("Hello Leaf World!!! >w<");
+    }
 }
