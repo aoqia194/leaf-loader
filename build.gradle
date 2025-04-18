@@ -461,7 +461,7 @@ jreleaser {
         github {
             enabled = true
             repoOwner = 'aoqia194'
-            name = 'leaf-yarn'
+            name = 'leaf-loader'
             host = 'github.com'
             releaseName = '{{tagName}}'
             sign = true
