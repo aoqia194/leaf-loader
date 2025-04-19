@@ -23,15 +23,27 @@ import java.util.EnumSet;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+
 import org.jetbrains.annotations.NotNull;
 
 public class DirectoryModCandidateFinder implements ModCandidateFinder {
     private final Path path;
     private final boolean requiresRemap;
+    private final int depth;
+    private final Path subpath;
 
-    public DirectoryModCandidateFinder(Path path, boolean requiresRemap) {
+    public DirectoryModCandidateFinder(Path path, boolean requiresRemap, int depth) {
         this.path = LoaderUtil.normalizePath(path);
         this.requiresRemap = requiresRemap;
+        this.depth = depth;
+        this.subpath = null;
+    }
+
+    public DirectoryModCandidateFinder(Path path, boolean requiresRemap, int depth, Path subpath) {
+        this.path = LoaderUtil.normalizePath(path);
+        this.requiresRemap = requiresRemap;
+        this.depth = depth;
+        this.subpath = subpath;
     }
 
     static boolean isValidFile(Path path) {
@@ -79,12 +91,13 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
         }
 
         try {
-            Files.walkFileTree(this.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1,
+            Files.walkFileTree(this.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS),
+                depth,
                 new SimpleFileVisitor<Path>() {
                     @Override
-                    public @NotNull FileVisitResult visitFile(Path file,
+                    public @NotNull FileVisitResult visitFile(@NotNull Path file,
                         @NotNull BasicFileAttributes attrs) {
-                        if (isValidFile(file)) {
+                        if (isValidFile(file) && file.getParent().endsWith(subpath)) {
                             out.accept(file, requiresRemap);
                         }
 

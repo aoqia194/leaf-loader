@@ -79,8 +79,7 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
         if (shutdownHook != null) {
             try {
                 Runtime.getRuntime().removeShutdownHook(shutdownHook);
-            } catch (IllegalStateException e) {
-                // ignore
+            } catch (IllegalStateException ignored) {
             }
         }
     }
@@ -91,9 +90,8 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
         }
 
         if (buffer != null) {
-            for (int i = 0; i <
-                            buffer.size(); i++) { // index based loop to tolerate
-                // replay producing log output by itself
+            for (int i = 0; i < buffer.size(); i++) {
+                // index based loop to tolerate replay producing log output by itself
                 ReplayEntry entry = buffer.get(i);
                 super.log(entry.time, entry.level, entry.category, entry.msg, entry.exc,
                     true, true);
@@ -137,9 +135,8 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
             return false;
         }
 
-        for (int i = 0; i <
-                        buffer.size(); i++) { // index based loop to tolerate replay
-            // producing log output by itself
+        for (int i = 0; i < buffer.size(); i++) {
+            // index based loop to tolerate replay producing log output by itself
             ReplayEntry entry = buffer.get(i);
             target.log(entry.time, entry.level, entry.category, entry.msg, entry.exc,
                 true, !enableOutput);
@@ -189,7 +186,7 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
                 }
 
                 String fileName = System.getProperty(SystemProperties.LOG_FILE,
-                    Paths.get(System.getProperty("leaf.runDir", ""))
+                    Paths.get(System.getProperty("leaf.runDir", "."))
                         .resolve(DEFAULT_LOG_FILE)
                         .toString());
                 if (fileName.isEmpty()) {
@@ -203,13 +200,12 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
                     try (Writer writer = Files.newBufferedWriter(file,
                         StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING,
                         StandardOpenOption.CREATE)) {
-                        for (int i = 0; i <
-                                        buffer.size(); i++) { // index based loop to
-                            // tolerate replay producing log output by itself
+                        for (int i = 0; i < buffer.size(); i++) {
+                            // index based loop to tolerate replay producing log output by itself
                             ReplayEntry entry = buffer.get(i);
                             writer.write(
-                                formatLog(entry.time, entry.level, entry.category,
-                                    entry.msg, entry.exc));
+                                formatLog(entry.time, entry.level, entry.category, entry.msg,
+                                    entry.exc));
                         }
                     }
                 } catch (IOException e) {

@@ -48,6 +48,7 @@ import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+
 import net.fabricmc.accesswidener.AccessWidener;
 import net.fabricmc.accesswidener.AccessWidenerReader;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -59,7 +60,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 
     public static final int ASM_VERSION = Opcodes.ASM9;
 
-    public static final String VERSION = "0.0.3";
+    public static final String VERSION = "1.0.0";
     public static final String MOD_ID = "leafloader";
 
     public static final String CACHE_DIR_NAME = ".leaf"; // relative to game dir
@@ -129,7 +130,8 @@ public final class LeafLoaderImpl extends LeafLoader {
             setup();
         } catch (ModResolutionException exception) {
             if (exception.getCause() == null) {
-                throw FormattedException.ofLocalized("exception.incompatible", exception.getMessage());
+                throw FormattedException.ofLocalized("exception.incompatible",
+                    exception.getMessage());
             } else {
                 throw FormattedException.ofLocalized("exception.incompatible", exception);
             }
@@ -144,14 +146,20 @@ public final class LeafLoaderImpl extends LeafLoader {
         DependencyOverrides depOverrides = new DependencyOverrides(configDir);
 
         // discover mods
-
         ModDiscoverer discoverer = new ModDiscoverer(versionOverrides, depOverrides);
         discoverer.addCandidateFinder(new ClasspathModCandidateFinder());
-        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(), remapRegularMods));
         discoverer.addCandidateFinder(new ArgumentModCandidateFinder(remapRegularMods));
 
         // Zomboid-specific directories to load mods from.
-        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getZomboidWorkshopPath(), remapRegularMods));
+        final Path modSubpath = Paths.get(".leaf/mods");
+        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(),
+            remapRegularMods, 4, modSubpath));
+        // Don't load mods from workshop folders if in development or disableWorkshopMods is active.
+        if (System.getProperty(SystemProperties.DEVELOPMENT) == null &&
+            System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null) {
+            discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getZomboidWorkshopPath(),
+                remapRegularMods, 6, modSubpath));
+        }
 
         Map<String, Set<ModCandidateImpl>> envDisabledMods = new HashMap<>();
         modCandidates = discoverer.discoverMods(this, envDisabledMods);
@@ -185,8 +193,8 @@ public final class LeafLoaderImpl extends LeafLoader {
         if (remapRegularMods) {
             if (System.getProperty(SystemProperties.REMAP_CLASSPATH_FILE) == null) {
                 Log.warn(LogCategory.MOD_REMAP,
-                    "Runtime mod remapping disabled due to no leaf.remapClasspathFile being specified. You may need " +
-                    "to update loom.");
+                    "Runtime mod remapping disabled due to no leaf.remapClasspathFile being " +
+                    "specified. You may need to update loom.");
             } else {
                 RuntimeModRemapper.remap(modCandidates, cacheDir.resolve(TMP_DIR_NAME), outputdir);
             }
@@ -194,7 +202,8 @@ public final class LeafLoaderImpl extends LeafLoader {
 
         // shuffle mods in-dev to reduce the risk of false order reliance, apply late load requests
 
-        if (isDevelopmentEnvironment() && System.getProperty(SystemProperties.DEBUG_DISABLE_MOD_SHUFFLE) == null) {
+        if (isDevelopmentEnvironment() &&
+            System.getProperty(SystemProperties.DEBUG_DISABLE_MOD_SHUFFLE) == null) {
             Collections.shuffle(modCandidates);
         }
 
@@ -243,7 +252,8 @@ public final class LeafLoaderImpl extends LeafLoader {
         }
 
         int modsCount = nonLeafMods.size();
-        Log.warn(LogCategory.GENERAL, "Found %d non-leaf mod%s:%s", modsCount, modsCount != 1 ? "s" : "", outputText);
+        Log.warn(LogCategory.GENERAL, "Found %d non-leaf mod%s:%s", modsCount,
+            modsCount != 1 ? "s" : "", outputText);
     }
 
     private void dumpModList(List<ModCandidateImpl> mods) {
@@ -266,10 +276,12 @@ public final class LeafLoaderImpl extends LeafLoader {
         }
 
         int modsCount = mods.size();
-        Log.info(LogCategory.GENERAL, "Loading %d mod%s:%n%s", modsCount, modsCount != 1 ? "s" : "", modListText);
+        Log.info(LogCategory.GENERAL, "Loading %d mod%s:%n%s", modsCount, modsCount != 1 ? "s" : "",
+            modListText);
     }
 
-    private void dumpModList0(ModCandidateImpl mod, StringBuilder log, int nestLevel, boolean[] lastItemOfNestLevel) {
+    private void dumpModList0(ModCandidateImpl mod, StringBuilder log, int nestLevel,
+        boolean[] lastItemOfNestLevel) {
         if (log.length() > 0) {
             log.append('\n');
         }
@@ -314,7 +326,8 @@ public final class LeafLoaderImpl extends LeafLoader {
         // add mods to classpath
         // TODO: This can probably be made safer, but that's a long-term goal
         for (ModContainerImpl mod : mods) {
-            if (!mod.getMetadata().getId().equals(MOD_ID) && !mod.getMetadata().getType().equals("builtin")) {
+            if (!mod.getMetadata().getId().equals(MOD_ID) &&
+                !mod.getMetadata().getType().equals("builtin")) {
                 for (Path path : mod.getCodeSourcePaths()) {
                     LeafLauncherBase.getLauncher().addToClassPath(path);
                 }
@@ -350,8 +363,9 @@ public final class LeafLoaderImpl extends LeafLoader {
             return Paths.get("C:\\Program Files (x86)\\Steam\\steamapps\\common\\ProjectZomboid");
         } catch (InvalidPathException e) {
             throw new RuntimeException(
-                "Failed to find the game directory for Project Zomboid. This could happen if Steam is not installed " +
-                "at the default location, or if the game is in a different Steam library from the default library. " +
+                "Failed to find the game directory for Project Zomboid. This could happen if " +
+                "Steam is not installed at the default location, or if the game is in a " +
+                "different Steam library from the default library. " +
                 "Please manually set it via the launch option 'leaf.gameInstallPath'.");
         }
     }
@@ -366,9 +380,10 @@ public final class LeafLoaderImpl extends LeafLoader {
             return getZomboidGamePath().getParent().getParent().resolve("workshop/content/108600");
         } catch (InvalidPathException e) {
             throw new RuntimeException(
-                "Failed to find Steam workshop directory for Project Zomboid. This could happen if your workshop " +
-                "folder is separate from the Steam library folder. Please manually specify the workshop path " +
-                "(workshop/content/108600) via the 'leaf.workshopFolder' system property.");
+                "Failed to find Steam workshop directory for Project Zomboid. This could happen " +
+                "if your workshop folder is separate from the Steam library folder. " +
+                "Please manually specify the workshop path (workshop/content/108600) via " +
+                "the 'leaf.workshopFolder' system property.");
         }
     }
 
@@ -399,7 +414,8 @@ public final class LeafLoaderImpl extends LeafLoader {
                 exception = ExceptionUtil.gatherExceptions(t,
                     exception,
                     exc -> new RuntimeException(String.format(
-                        "Could not execute entrypoint stage '%s' due to errors, provided by '%s' at '%s'!",
+                        "Could not execute entrypoint stage '%s' due to errors, provided by '%s' " +
+                        "at '%s'!",
                         key,
                         container.getProvider().getMetadata().getId(),
                         container.getDefinition()),
@@ -512,8 +528,8 @@ public final class LeafLoaderImpl extends LeafLoader {
     }
 
     /**
-     * Sets the game instance. This is only used in 20w22a+ by the dedicated server and should not be called by anything
-     * else.
+     * Sets the game instance. This is only used in 20w22a+ by the dedicated server and should not
+     * be called by anything else.
      */
     public void setGameInstance(Object gameInstance) {
         if (getEnvironmentType() != EnvType.SERVER) {
@@ -560,10 +576,13 @@ public final class LeafLoaderImpl extends LeafLoader {
 
         for (ModContainerImpl mod : mods) {
             // add language adapters
-            for (Map.Entry<String, String> laEntry : mod.getInfo().getLanguageAdapterDefinitions().entrySet()) {
+            for (Map.Entry<String, String> laEntry : mod.getInfo()
+                .getLanguageAdapterDefinitions()
+                .entrySet()) {
                 if (adapterMap.containsKey(laEntry.getKey())) {
                     throw new RuntimeException(
-                        "Duplicate language adapter key: " + laEntry.getKey() + "! (" + laEntry.getValue() + ", " +
+                        "Duplicate language adapter key: " + laEntry.getKey() + "! (" +
+                        laEntry.getValue() + ", " +
                         adapterMap.get(laEntry.getKey()).getClass().getName() + ")");
                 }
 
@@ -575,7 +594,8 @@ public final class LeafLoaderImpl extends LeafLoader {
                             .getDeclaredConstructor()
                             .newInstance());
                 } catch (Exception e) {
-                    throw new RuntimeException("Failed to instantiate language adapter: " + laEntry.getKey(), e);
+                    throw new RuntimeException(
+                        "Failed to instantiate language adapter: " + laEntry.getKey(), e);
                 }
             }
         }
@@ -614,15 +634,18 @@ public final class LeafLoaderImpl extends LeafLoader {
 
             Path path = modContainer.findPath(accessWidener).orElse(null);
             if (path == null) {
-                throw new RuntimeException(String.format("Missing accessWidener file %s from mod %s",
-                    accessWidener,
-                    modContainer.getMetadata().getId()));
+                throw new RuntimeException(
+                    String.format("Missing accessWidener file %s from mod %s",
+                        accessWidener,
+                        modContainer.getMetadata().getId()));
             }
 
             try (BufferedReader reader = Files.newBufferedReader(path)) {
-                accessWidenerReader.read(reader, LeafLauncherBase.getLauncher().getTargetNamespace());
+                accessWidenerReader.read(reader,
+                    LeafLauncherBase.getLauncher().getTargetNamespace());
             } catch (Exception e) {
-                throw new RuntimeException("Failed to read accessWidener file from mod " + modMetadata.getId(), e);
+                throw new RuntimeException(
+                    "Failed to read accessWidener file from mod " + modMetadata.getId(), e);
             }
         }
     }
@@ -633,7 +656,8 @@ public final class LeafLoaderImpl extends LeafLoader {
         }
 
         if (gameInstance != null && LeafLauncherBase.getLauncher() instanceof Knot) {
-            // I removed the getClass() call for gameInstance because we already pass the class node.
+            // I removed the getClass() call for gameInstance because we already pass the class
+            // node.
             ClassLoader gameClassLoader = gameInstance.getClassLoader();
             ClassLoader targetClassLoader = LeafLauncherBase.getLauncher().getTargetClassLoader();
             boolean matchesKnot = (gameClassLoader == targetClassLoader);
@@ -655,13 +679,16 @@ public final class LeafLoaderImpl extends LeafLoader {
 
             if (!matchesKnot) {
                 if (containsKnot) {
-                    Log.info(LogCategory.KNOT, "Environment: Target class loader is parent of game class loader.");
+                    Log.info(LogCategory.KNOT,
+                        "Environment: Target class loader is parent of game class loader.");
                 } else {
                     Log.warn(LogCategory.KNOT,
-                        "\n\n* CLASS LOADER MISMATCH! THIS IS VERY BAD AND WILL PROBABLY CAUSE WEIRD ISSUES! *\n"
+                        "\n\n* CLASS LOADER MISMATCH! THIS IS VERY BAD AND WILL PROBABLY CAUSE " +
+                        "WEIRD ISSUES! *\n"
                         + " - Expected game class loader: %s\n"
                         + " - Actual game class loader: %s\n"
-                        + "Could not find the expected class loader in game class loader parents!\n",
+                        +
+                        "Could not find the expected class loader in game class loader parents!\n",
                         LeafLauncherBase.getLauncher().getTargetClassLoader(),
                         gameClassLoader);
                 }
@@ -674,13 +701,15 @@ public final class LeafLoaderImpl extends LeafLoader {
             try {
                 if (!gameDir.toRealPath().equals(newRunDir.toRealPath())) {
                     Log.warn(LogCategory.GENERAL,
-                        "Inconsistent game execution directories: engine says %s, while initializer says %s...",
+                        "Inconsistent game execution directories: engine says %s, while " +
+                        "initializer says %s...",
                         newRunDir.toRealPath(),
                         gameDir.toRealPath());
                     setGameDir(newRunDir);
                 }
             } catch (IOException e) {
-                Log.warn(LogCategory.GENERAL, "Exception while checking game execution directory consistency!", e);
+                Log.warn(LogCategory.GENERAL,
+                    "Exception while checking game execution directory consistency!", e);
             }
         } else {
             setGameDir(newRunDir);

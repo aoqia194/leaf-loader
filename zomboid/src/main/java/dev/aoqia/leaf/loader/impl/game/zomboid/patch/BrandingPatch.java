@@ -57,7 +57,7 @@ public final class BrandingPatch extends GamePatch {
                 "Could not find InitDisplay method in " + classNode.name + "!");
         }
 
-        Log.debug(LogCategory.GAME_PATCH, "Applying brand name hook to %s::%s",
+        Log.debug(LogCategory.GAME_PATCH, "Applying brand name hook to %s#%s",
             classNode.name, methodNode.name);
 
         ListIterator<AbstractInsnNode> it = methodNode.instructions.iterator();

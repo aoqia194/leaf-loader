@@ -37,6 +37,8 @@ public final class SystemProperties {
 	public static final String GAME_INSTALL_PATH = "leaf.gameInstallPath";
     // a path to the Steam workshop path for Zomboid (appid 108600).
     public static final String GAME_WORKSHOP_PATH = "leaf.gameWorkshopPath";
+    // Disables workshop mod loading for developer environments.
+    public static final String DISABLE_WORKSHOP_MODS = "leaf.disableWorkshopMods";
 	// additional mods to load (path separator separated paths, @ prefix for meta-file with each line referencing an actual file)
 	public static final String ADD_MODS = "leaf.addMods";
 	// a comma-separated list of mod ids to disable, even if they're discovered. mostly useful for unit testing.

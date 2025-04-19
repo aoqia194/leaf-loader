@@ -23,8 +23,10 @@ import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.game.patch.GamePatch;
 import dev.aoqia.leaf.loader.impl.game.zomboid.Hooks;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
@@ -36,7 +38,6 @@ public class EntrypointPatch extends GamePatch {
         Consumer<ClassNode> classEmitter) {
         EnvType type = launcher.getEnvironmentType();
         String entrypoint = launcher.getEntrypoint();
-
         if (!entrypoint.startsWith("zombie.")) {
             return;
         }
@@ -47,11 +48,7 @@ public class EntrypointPatch extends GamePatch {
             throw new RuntimeException("Could not load main class " + entrypoint + "!");
         }
 
-        // Main -> Game entrypoint search
-        // -- CLIENT --
-        // 41.78.16 - MainScreenState#main() has a GameWindow.InitGameThread() or RenderThread.init() call.
-        // -- SERVER --
-        // TODO: Do it
+        // Main game entrypoint search. Hook just under DebugLog.init() call in both enviros.
 
         // Find the main method in MainScreenState.
         MethodNode mainMethod = findMethod(mainClass, (method) -> {
@@ -63,66 +60,41 @@ public class EntrypointPatch extends GamePatch {
             throw new RuntimeException("Could not find main method in " + entrypoint + "!");
         }
 
-        AbstractInsnNode gameWindowInitInsn = null;
-        // Attempt to find the RenderThread.init() function call and store the instruction.
-        for (AbstractInsnNode insn : mainMethod.instructions) {
-            if (insn.getOpcode() == Opcodes.INVOKESTATIC && insn instanceof MethodInsnNode) {
-                final MethodInsnNode methodInsn = (MethodInsnNode) insn;
-
-                if (methodInsn.name.equals("init") && methodInsn.owner.equals("zombie/core/opengl/RenderThread")) {
-                    gameWindowInitInsn = methodInsn;
-                }
-            }
+        // Attempt to find the DebugLog.init() function call and store the instruction.
+        MethodInsnNode debugLogInitInsn = (MethodInsnNode) findInsn(mainMethod, (insn) -> {
+            return insn instanceof MethodInsnNode && insn.getOpcode() == Opcodes.INVOKESTATIC &&
+                   ((MethodInsnNode) insn).name.equals("init") &&
+                   ((MethodInsnNode) insn).owner.equals("zombie/debug/DebugLog");
+        }, false);
+        if (debugLogInitInsn == null) {
+            throw new RuntimeException(
+                "Could not find DebugLog init method in " + entrypoint + "!");
         }
 
-        if (gameWindowInitInsn == null) {
-            throw new RuntimeException("Could not find RenderThread init method in " + entrypoint + "!");
-        }
+        Log.debug(LogCategory.GAME_PATCH, "Patching main function %s%s", mainMethod.name,
+            mainMethod.desc);
 
-        boolean patched = false;
-        Log.debug(LogCategory.GAME_PATCH, "Patching main function %s%s", mainMethod.name, mainMethod.desc);
-
-        // Iterate through main() instructions and find where cacheDir is.
-        ListIterator<AbstractInsnNode> consIt = mainMethod.instructions.iterator();
-        while (consIt.hasNext()) {
-            AbstractInsnNode insn = consIt.next();
-            if (insn.getOpcode() == Opcodes.INVOKEVIRTUAL && ((MethodInsnNode) insn).name.equals("getCacheDir")) {
-                MethodInsnNode insnNode = ((MethodInsnNode) insn);
-                Log.debug(LogCategory.GAME_PATCH, "getCacheDir is found at %s/%s", insnNode.owner, insnNode.name);
-
-                // Add the entrypoint hook just before the RenderThread.init() call.
-                moveBefore(consIt, gameWindowInitInsn);
-
-                // Set up ZomboidFileSystem.instance.getCacheDir() as the first arg.
-                consIt.add(new FieldInsnNode(Opcodes.GETSTATIC,
-                    insnNode.owner,
-                    "instance",
-                    "Lzombie/ZomboidFileSystem;"));
-                consIt.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-                    insnNode.owner,
-                    insnNode.name,
-                    insnNode.desc,
-                    false));
-                // Set up the class itself as the second arg.
-                consIt.add(new LdcInsnNode(Type.getObjectType(entrypoint.replace(".", "/"))));
-                // Send to startClient/startServer
-                finishEntrypoint(type, consIt);
-
-                patched = true;
-                break;
-            }
-        }
-
-        if (!patched) {
-            throw new RuntimeException("Game constructor patch not applied!");
-        }
+        ListIterator<AbstractInsnNode> iter = mainMethod.instructions.iterator();
+        moveAfter(iter, debugLogInitInsn);
+        // Init leaf's logger so that we can not use the builtin logger. Moved from game provider.
+        iter.add(new MethodInsnNode(Opcodes.INVOKESTATIC,
+            Type.getInternalName(LeafLauncherBase.class), "getLauncher",
+            "()L" + Type.getInternalName(LeafLauncher.class) + ";", false));
+        iter.add(new InsnNode(Opcodes.ICONST_1));
+        iter.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, "setupLogHandler",
+            "(L" + Type.getInternalName(LeafLauncher.class) + ";Z)V"));
+        // Set up ZomboidFileSystem.instance.getCacheDir() as first arg.
+        iter.add(new FieldInsnNode(Opcodes.GETSTATIC, "zombie/ZomboidFileSystem", "instance",
+            "Lzombie/ZomboidFileSystem;"));
+        iter.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "zombie/ZomboidFileSystem",
+            "getCacheDir", "()Ljava/lang/String;"));
+        // Set up the class itself as the second arg.
+        iter.add(new LdcInsnNode(Type.getObjectType(entrypoint.replace(".", "/"))));
+        // Add the final startClient/startServer method call.
+        iter.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME,
+            type == EnvType.CLIENT ? "startClient" : "startServer",
+            "(Ljava/lang/String;Ljava/lang/Class;)V", false));
 
         classEmitter.accept(mainClass);
-    }
-
-    private void finishEntrypoint(EnvType type, ListIterator<AbstractInsnNode> it) {
-        String methodName = String.format("start%s", type == EnvType.CLIENT ? "Client" : "Server");
-        it.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, methodName,
-            "(Ljava/lang/String;Ljava/lang/Class;)V", false));
     }
 }
