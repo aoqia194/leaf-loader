@@ -100,7 +100,7 @@ dependencies {
 		transitive = false
 	}
 
-//	 development "io.github.llamalad7:mixinextras-common:$mixin_extras_version"
+    development "io.github.llamalad7:mixinextras-common:$mixin_extras_version"
 
 	testCompileOnly 'org.jetbrains:annotations:23.0.0'
 
