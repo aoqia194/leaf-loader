@@ -13,8 +13,8 @@ plugins {
 	id 'eclipse'
 	id 'maven-publish'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'dev.aoqia.leaf.loom' version '0.1.7' apply false
-	id 'com.github.johnrengelman.shadow' version '8.1.1'
+	id 'dev.aoqia.leaf.loom' version '0.3.1' apply false
+	id 'com.gradleup.shadow' version '8.3.6'
     // Releasing to maven central via sonatype
     id 'org.jreleaser' version '1.17.0'
 }
@@ -73,16 +73,17 @@ configurations {
 	}
 	development {
 		transitive = false
+        visible = false
 	}
 
 	api {
 		extendsFrom installer
-		extendsFrom development
+		// extendsFrom development
 	}
 }
 
 dependencies {
-	// fabric-loader dependencies
+	// leaf-loader dependencies
 	installer "org.ow2.asm:asm:${asm_version}"
 	installer "org.ow2.asm:asm-analysis:${asm_version}"
 	installer "org.ow2.asm:asm-commons:${asm_version}"
@@ -100,7 +101,8 @@ dependencies {
 		transitive = false
 	}
 
-    development "io.github.llamalad7:mixinextras-common:$mixin_extras_version"
+    // We JiJ this into the launcher jar directly! (thanks llamalad7 for the help)
+    development(project(path: ':mixinextras', configuration: 'shadow'))
 
 	testCompileOnly 'org.jetbrains:annotations:23.0.0'
 
@@ -112,13 +114,12 @@ dependencies {
 }
 
 apply from: rootProject.file('gradle/installer-json.gradle')
-apply from: rootProject.file('gradle/launcher.gradle')
 
 processResources {
 	inputs.property "version", project.version
 
 	filesMatching("leaf.mod.json") {
-		expand "version": project.version
+		expand "version": project.version.toString().replace('.local', '')
 	}
 }
 
@@ -145,14 +146,14 @@ shadowJar {
 	enabled = false
 }
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 /**
  * A task to get the raw loader version, used for GitHub workflows.
  */
 tasks.register('getLoaderVersion') {
     print version
 }
-
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 // Renaming in the shadow jar task doesnt seem to work, so do it here
 tasks.register('getSat4jAbout', Copy) {
@@ -173,7 +174,9 @@ tasks.register('getSat4jAbout', Copy) {
 }
 
 tasks.register('fatJar', ShadowJar) {
+    dependsOn(':mixinextras:shadowJar')
 	dependsOn getSat4jAbout
+
 	from sourceSets.main.output
 	from project(":zomboid").sourceSets.main.output
 	from getSat4jAbout.destinationDir
@@ -205,7 +208,9 @@ tasks.register('fatJar', ShadowJar) {
 	exclude 'META-INF/*.SF'
 
 	doLast {
-		JarNester.nestJars(project.configurations.development.files, archiveFile.get().asFile, LoggerFactory.getLogger("JiJ"))
+		JarNester.nestJars(project.configurations.development.files,
+            archiveFile.get().asFile,
+            LoggerFactory.getLogger("JiJ"))
 	}
 
 	outputs.upToDateWhen { false }
@@ -252,9 +257,9 @@ tasks.register('finalJar', Zip) {
 
 build.dependsOn finalJar
 
-tasks.withType(AbstractArchiveTask) {
-	preserveFileTimestamps = false
-	reproducibleFileOrder = true
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
 }
 
 sourcesJar {
@@ -280,7 +285,7 @@ tasks.register('copyJson') {
 	}
 }
 
-tasks.build.dependsOn "copyJson"
+build.dependsOn 'copyJson'
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
@@ -329,8 +334,8 @@ allprojects {
 }
 
 // Causes more trouble than its worth
-tasks.withType(GenerateModuleMetadata) {
-	enabled = false
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
 }
 
 publishing {

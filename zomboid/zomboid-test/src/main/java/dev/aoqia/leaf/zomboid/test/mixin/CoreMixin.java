@@ -15,12 +15,14 @@
  */
 package dev.aoqia.leaf.zomboid.test.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import zombie.core.Core;
+import zombie.iso.IsoPuddles;
 
 import static dev.aoqia.leaf.zomboid.test.TestEntrypoint.LOGGER;
 
@@ -30,5 +32,17 @@ public class CoreMixin {
     private void getVersion(CallbackInfoReturnable<String> cir) {
         LOGGER.println("Setting game version internally to 43.0.0!");
         cir.setReturnValue("43.0.0");
+    }
+
+    @ModifyExpressionValue(
+        method = "initShaders",
+        at = @At(
+            value = "INVOKE",
+            target = "Lzombie/iso/IsoPuddles;getInstance()Lzombie/iso/IsoPuddles;"
+        )
+    )
+    private IsoPuddles initShaders(IsoPuddles instance) {
+        LOGGER.debugln("initShaders IsoPuddles instance effect name: " + instance.Effect.name);
+        return instance;
     }
 }
