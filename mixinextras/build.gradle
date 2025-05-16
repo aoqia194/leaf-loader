@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.6'
+}
+
+configurations {
+    implementation.extendsFrom shadow
+}
+
+dependencies {
+    compileOnly "org.ow2.asm:asm:${asm_version}"
+    compileOnly "org.ow2.asm:asm-analysis:${asm_version}"
+    compileOnly "org.ow2.asm:asm-commons:${asm_version}"
+    compileOnly "org.ow2.asm:asm-tree:${asm_version}"
+    compileOnly "org.ow2.asm:asm-util:${asm_version}"
+
+    compileOnly("net.fabricmc:sponge-mixin:${project.mixin_version}") {
+        exclude module: 'guava'
+    }
+    shadow(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
+}
+
+jar {
+    dependsOn(shadowJar)
+
+    enabled = false
+
+    archiveBaseName = 'mixinextras-leaf'
+    archiveVersion = mixin_extras_version
+    manifest.attributes('Leaf-Loom-Remap': 'false')
+}
+
+shadowJar {
+    archiveBaseName = 'mixinextras-leaf'
+    archiveClassifier = ''
+    archiveVersion = mixin_extras_version
+
+    configurations = [project.configurations.shadow]
+    // I think I will keep it in the default 'namespace' unless issues arise.
+    // relocate('com.llamalad7.mixinextras', 'dev.aoqia.leaf.mixinextras')
+    mergeServiceFiles()
+}
+
+assemble {
+    dependsOn shadowJar
+}
+
+processResources {
+    inputs.property('version', mixin_extras_version)
+
+    filesMatching('leaf.mod.json') {
+        expand('version': mixin_extras_version)
+    }
+}
