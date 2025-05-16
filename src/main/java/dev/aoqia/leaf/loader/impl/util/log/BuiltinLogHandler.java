@@ -186,7 +186,8 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
                 }
 
                 String fileName = System.getProperty(SystemProperties.LOG_FILE,
-                    Paths.get(System.getProperty("leaf.runDir", "."))
+                    Paths.get(System.getProperty("leaf.runDir",
+                            System.getProperty("leaf.log.file", ".")))
                         .resolve(DEFAULT_LOG_FILE)
                         .toString());
                 if (fileName.isEmpty()) {
