@@ -21,6 +21,7 @@
 !/settings.gradle
 !/proguard.conf
 
+!/mixinextras
 !/zomboid
 !/junit
 
