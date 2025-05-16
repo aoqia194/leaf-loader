@@ -33,11 +33,18 @@ public final class VersionOverrides {
 
 		for (String entry : property.split(",")) {
 			int pos = entry.indexOf(":");
-			if (pos <= 0 || pos >= entry.length() - 1) throw new RuntimeException("invalid version replacement entry: "+entry);
+			if (pos <= 0 || pos >= entry.length() - 1) {
+                throw new RuntimeException("invalid version replacement entry: "+entry);
+            }
 
 			String id = entry.substring(0, pos);
 			String rawVersion = entry.substring(pos + 1);
 			Version version;
+
+            // Small patch to fix development versions not launching in IDE.
+            if (id.equals("leafloader") && rawVersion.contains(".local")) {
+                rawVersion = rawVersion.replace(".local", "");
+            }
 
 			try {
 				version = VersionParser.parse(rawVersion, false);

@@ -19,6 +19,7 @@ if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
 	throw new UnsupportedOperationException("Leaf Loader requires Java 17+ to build.")
 }
 
+include "mixinextras"
 include "zomboid"
 include "junit"
 include "zomboid:zomboid-test"

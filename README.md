@@ -13,6 +13,8 @@ who've directly influenced the development of the fork!
 - @LlamaLad7
 - @apple502j
 - @Juuxel
+- @chocohead
+- player4590
 
 ## Special Thanks
 
