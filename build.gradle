@@ -56,13 +56,13 @@ allprojects {
 project(':zomboid:zomboid-test') {
     compileJava {
         onlyIf {
-            !ENV.CI || (ENV.CI && project.hasProperty('leaf.loom.ignoreMissingFiles'))
+            !ENV.CI || (ENV.CI && !project.hasProperty('leaf.loom.ignoreMissingFiles'))
         }
     }
 
     test {
         onlyIf {
-            !ENV.CI || (ENV.CI && project.hasProperty('leaf.loom.ignoreMissingFiles'))
+            !ENV.CI || (ENV.CI && !project.hasProperty('leaf.loom.ignoreMissingFiles'))
         }
     }
 }
@@ -266,8 +266,8 @@ tasks.register('finalJar', Zip) {
 	into('META-INF/versions/17') {
 		from sourceSets.java17.output
 	}
-	destinationDirectory = file("build/libs")
-	archiveExtension = "jar"
+	destinationDirectory = file('build/libs')
+	archiveExtension = 'jar'
 }
 
 build.dependsOn finalJar
