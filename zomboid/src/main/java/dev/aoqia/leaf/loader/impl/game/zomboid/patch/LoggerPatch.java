@@ -38,17 +38,21 @@ public class LoggerPatch extends GamePatch {
             throw new RuntimeException("Could not find DebugType game class.");
         }
 
-        final int newFieldCount = debugTypeClass.fields.size();
+        int enumFieldCount = debugTypeClass.fields.size();
+        // Ignore Default class field that b42 sets
+        if (debugTypeClass.fields.get(enumFieldCount - 2).name.equalsIgnoreCase("default")) {
+            enumFieldCount--;
+        }
 
         // Add field itself
         debugTypeClass.fields.add(
-            new FieldNode(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
+            new FieldNode(
+                Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL | Opcodes.ACC_ENUM,
                 leafDebugType, "Lzombie/debug/DebugType;", null, null));
 
         // Add to clinit
-        final MethodNode clinit = findMethod(debugTypeClass, (method) -> {
-            return method.name.equals("<clinit>");
-        });
+        final MethodNode clinit = findMethod(debugTypeClass,
+            (method) -> method.name.equals("<clinit>"));
         if (clinit == null) {
             throw new RuntimeException("Failed to find DebugType clinit method!");
         }
@@ -58,7 +62,7 @@ public class LoggerPatch extends GamePatch {
             iter.add(new TypeInsnNode(Opcodes.NEW, "zombie/debug/DebugType"));
             iter.add(new InsnNode(Opcodes.DUP));
             iter.add(new LdcInsnNode(leafDebugType));
-            iter.add(new IntInsnNode(Opcodes.BIPUSH, newFieldCount - 1));
+            iter.add(new IntInsnNode(Opcodes.BIPUSH, enumFieldCount - 1));
             iter.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, debugTypeClass.name, "<init>",
                 "(Ljava/lang/String;I)V"));
             iter.add(new FieldInsnNode(Opcodes.PUTSTATIC, debugTypeClass.name, leafDebugType,
@@ -66,9 +70,8 @@ public class LoggerPatch extends GamePatch {
         }
 
         // Add to $values()
-        final MethodNode values = findMethod(debugTypeClass, (method) -> {
-            return method.name.equals("$values");
-        });
+        final MethodNode values = findMethod(debugTypeClass,
+            (method) -> method.name.equals("$values"));
         if (values == null) {
             throw new RuntimeException("Failed to find synthetic DebugType $values method!");
         }
@@ -76,10 +79,10 @@ public class LoggerPatch extends GamePatch {
             ListIterator<AbstractInsnNode> iter = values.instructions.iterator();
             moveBefore(iter, Opcodes.BIPUSH);
             iter.next();
-            iter.set(new IntInsnNode(Opcodes.BIPUSH, newFieldCount));
+            iter.set(new IntInsnNode(Opcodes.BIPUSH, enumFieldCount));
             moveBefore(iter, Opcodes.ARETURN);
             iter.add(new InsnNode(Opcodes.DUP));
-            iter.add(new IntInsnNode(Opcodes.BIPUSH, newFieldCount - 1));
+            iter.add(new IntInsnNode(Opcodes.BIPUSH, enumFieldCount - 1));
             iter.add(new FieldInsnNode(Opcodes.GETSTATIC, debugTypeClass.name, leafDebugType,
                 debugTypeClassSig));
             iter.add(new InsnNode(Opcodes.AASTORE));
