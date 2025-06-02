@@ -52,6 +52,21 @@ allprojects {
 	}
 }
 
+// Disable zomboid-test Java code from compiling if CI and ignoreMissingFiles.
+project(':zomboid:zomboid-test') {
+    compileJava {
+        onlyIf {
+            !ENV.CI || (ENV.CI && project.hasProperty('leaf.loom.ignoreMissingFiles'))
+        }
+    }
+
+    test {
+        onlyIf {
+            !ENV.CI || (ENV.CI && project.hasProperty('leaf.loom.ignoreMissingFiles'))
+        }
+    }
+}
+
 sourceSets {
 	main {
 		java.srcDirs = ['src/main/java', 'src/main/legacyJava']
@@ -193,7 +208,7 @@ tasks.register('fatJar', ShadowJar) {
 		)
 	}
 
-	archiveClassifier = "fat"
+	archiveClassifier = 'fat'
 	configurations = [project.configurations.include]
 
 	relocate 'org.sat4j', 'dev.aoqia.leaf.loader.impl.lib.sat4j'
