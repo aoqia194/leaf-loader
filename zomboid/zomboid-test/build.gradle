@@ -9,7 +9,8 @@ loom {
     }
 }
 
-def zomboid_version = '41.78.16'
+def zomboid_version = '42.8.1-unstable.29171'
+def zomboid_mappings = '41.78.16+build.1'
 
 repositories {
     mavenCentral()
@@ -17,26 +18,12 @@ repositories {
 
 dependencies {
     zomboid "com.theindiestone:zomboid:${zomboid_version}"
-    mappings "dev.aoqia.leaf:yarn:${zomboid_version}+build.1:v2"
+    mappings "dev.aoqia.leaf:yarn:${zomboid_mappings}:v2"
 
     implementation project(':zomboid')
     implementation project(':zomboid').sourceSets.main.output
     implementation project(':').sourceSets.main.output
-
-    // Required for mixin annotation processor
-    // annotationProcessor "org.ow2.asm:asm:${project.asm_version}"
-    // annotationProcessor "org.ow2.asm:asm-analysis:${project.asm_version}"
-    // annotationProcessor "org.ow2.asm:asm-commons:${project.asm_version}"
-    // annotationProcessor "org.ow2.asm:asm-tree:${project.asm_version}"
-    // annotationProcessor "org.ow2.asm:asm-util:${project.asm_version}"
-
-    // Don't apply it because it will make us remap all mixins. We can still use features of it.
-    // Since it's shaded in the base loader fatJar.
-    // annotationProcessor("net.fabricmc:sponge-mixin:${project.mixin_version}") {
-    //    exclude module: 'guava'
-    // }
-    // annotationProcessor(project(path: ':mixinextras', configuration: 'shadow'))
-    implementation(project(path: ':mixinextras', configuration: 'shadow'))
+    implementation(project(path: ':mixinextras-leaf', configuration: 'shadow'))
 
     testImplementation project(':junit')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
@@ -52,8 +39,7 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    dependsOn(':mixinextras:shadowJar')
-    dependsOn(':mixinextras:jar')
+    dependsOn(':mixinextras-leaf:shadowJar')
 
     it.options.encoding = "UTF-8"
     it.options.release = 17

@@ -20,18 +20,25 @@ dependencies {
     shadow(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
 }
 
-jar {
-    dependsOn(shadowJar)
+version = mixin_extras_version
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+jar {
     enabled = false
 
-    archiveBaseName = 'mixinextras-leaf'
+    archiveBaseName = project.name
     archiveVersion = mixin_extras_version
     manifest.attributes('Leaf-Loom-Remap': 'false')
 }
 
 shadowJar {
-    archiveBaseName = 'mixinextras-leaf'
+    dependsOn(jar)
+
+    archiveBaseName = project.name
     archiveClassifier = ''
     archiveVersion = mixin_extras_version
 

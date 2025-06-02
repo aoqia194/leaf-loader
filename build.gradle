@@ -13,7 +13,7 @@ plugins {
 	id 'eclipse'
 	id 'maven-publish'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'dev.aoqia.leaf.loom' version '0.3.1' apply false
+	id 'dev.aoqia.leaf.loom' version '0.3.2' apply false
 	id 'com.gradleup.shadow' version '8.3.6'
     // Releasing to maven central via sonatype
     id 'org.jreleaser' version '1.17.0'
@@ -102,7 +102,7 @@ dependencies {
 	}
 
     // We JiJ this into the launcher jar directly! (thanks llamalad7 for the help)
-    development(project(path: ':mixinextras', configuration: 'shadow'))
+    development(project(path: ':mixinextras-leaf', configuration: 'shadow'))
 
 	testCompileOnly 'org.jetbrains:annotations:23.0.0'
 
@@ -174,7 +174,7 @@ tasks.register('getSat4jAbout', Copy) {
 }
 
 tasks.register('fatJar', ShadowJar) {
-    dependsOn(':mixinextras:shadowJar')
+    dependsOn(':mixinextras-leaf:shadowJar')
 	dependsOn getSat4jAbout
 
 	from sourceSets.main.output

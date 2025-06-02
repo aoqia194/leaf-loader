@@ -20,6 +20,8 @@ if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
 }
 
 include "mixinextras"
+project(':mixinextras').name = 'mixinextras-leaf'
+
 include "zomboid"
 include "junit"
 include "zomboid:zomboid-test"
