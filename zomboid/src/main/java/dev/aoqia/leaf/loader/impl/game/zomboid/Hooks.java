@@ -20,6 +20,8 @@ import java.io.File;
 import dev.aoqia.leaf.api.ClientModInitializer;
 import dev.aoqia.leaf.api.DedicatedServerModInitializer;
 import dev.aoqia.leaf.api.ModInitializer;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
@@ -73,6 +75,16 @@ public final class Hooks {
         LeafLoaderImpl.INSTANCE.setGameInstance(gameInstance);
     }
 
+    public static SemanticVersion getGameVersion() {
+        try {
+            return SemanticVersion.parse(
+                LeafLoaderImpl.INSTANCE.getGameProvider().getNormalizedGameVersion());
+        } catch (VersionParsingException e) {
+            throw new RuntimeException(
+                "Failed to get normalized game version parsed as SemanticVersion");
+        }
+    }
+
     /**
      * Sets up the Log class for leaf. Moved from ZomboidGameProvider to here so that the
      * EntrypointPatch can access it easily.
@@ -84,8 +96,9 @@ public final class Hooks {
         System.setProperty("log4j2.formatMsgNoLookups", "true");
 
         try {
-            final String logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid" +
-                                             ".ZomboidLogHandler";
+            final String logHandlerClsName = getGameVersion().getVersionComponent(0) <= 41
+                ? "dev.aoqia.leaf.loader.impl.game.zomboid.LogHandlers.OldZomboidLogHandler"
+                : "dev.aoqia.leaf.loader.impl.game.zomboid.LogHandlers.NewZomboidLogHandler";
             ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
             Class<?> logHandlerCls;
 
@@ -98,22 +111,6 @@ public final class Hooks {
 
             Log.init((LogHandler) logHandlerCls.getConstructor().newInstance());
             Thread.currentThread().setContextClassLoader(prevCl);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Sets up the Log class for leaf. Moved from ZomboidGameProvider to here so that the
-     * EntrypointPatch can access it easily.
-     */
-    public static void setupLogHandler() {
-        System.setProperty("log4j2.formatMsgNoLookups", "true");
-
-        try {
-            Class<?> logHandlerCls = Class.forName(
-                "dev.aoqia.leaf.loader.impl.game.zomboid.ZomboidLogHandler");
-            Log.init((LogHandler) logHandlerCls.getConstructor().newInstance());
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }

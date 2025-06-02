@@ -13,7 +13,7 @@ plugins {
 	id 'eclipse'
 	id 'maven-publish'
 	id 'com.diffplug.spotless' version "6.22.0"
-	id 'dev.aoqia.leaf.loom' version '0.3.1' apply false
+	id 'dev.aoqia.leaf.loom' version '0.3.2' apply false
 	id 'com.gradleup.shadow' version '8.3.6'
     // Releasing to maven central via sonatype
     id 'org.jreleaser' version '1.17.0'
@@ -31,7 +31,7 @@ allprojects {
 	apply plugin: 'com.diffplug.spotless'
 
 	def constantsSource = rootProject.file("src/main/java/dev/aoqia/leaf/loader/impl/LeafLoaderImpl.java").text
-	version = (constantsSource =~ /\s+VERSION\s*=\s*"(.*)";/)[0][1] + (ENV.GITHUB_ACTIONS ? "" : ".local")
+	version = (constantsSource =~ /\s+VERSION\s*=\s*"(.*)";/)[0][1] + (ENV.CI ? "" : ".local")
 
 	repositories {
 		maven {
@@ -50,6 +50,21 @@ allprojects {
 	dependencies {
 		compileOnly 'org.jetbrains:annotations:23.0.0'
 	}
+}
+
+// Disable zomboid-test Java code from compiling if CI and ignoreMissingFiles.
+project(':zomboid:zomboid-test') {
+    compileJava {
+        onlyIf {
+            !ENV.CI || (ENV.CI && !project.hasProperty('leaf.loom.ignoreMissingFiles'))
+        }
+    }
+
+    test {
+        onlyIf {
+            !ENV.CI || (ENV.CI && !project.hasProperty('leaf.loom.ignoreMissingFiles'))
+        }
+    }
 }
 
 sourceSets {
@@ -102,7 +117,7 @@ dependencies {
 	}
 
     // We JiJ this into the launcher jar directly! (thanks llamalad7 for the help)
-    development(project(path: ':mixinextras', configuration: 'shadow'))
+    development(project(path: ':mixinextras-leaf', configuration: 'shadow'))
 
 	testCompileOnly 'org.jetbrains:annotations:23.0.0'
 
@@ -174,7 +189,7 @@ tasks.register('getSat4jAbout', Copy) {
 }
 
 tasks.register('fatJar', ShadowJar) {
-    dependsOn(':mixinextras:shadowJar')
+    dependsOn(':mixinextras-leaf:shadowJar')
 	dependsOn getSat4jAbout
 
 	from sourceSets.main.output
@@ -193,7 +208,7 @@ tasks.register('fatJar', ShadowJar) {
 		)
 	}
 
-	archiveClassifier = "fat"
+	archiveClassifier = 'fat'
 	configurations = [project.configurations.include]
 
 	relocate 'org.sat4j', 'dev.aoqia.leaf.loader.impl.lib.sat4j'
@@ -251,8 +266,8 @@ tasks.register('finalJar', Zip) {
 	into('META-INF/versions/17') {
 		from sourceSets.java17.output
 	}
-	destinationDirectory = file("build/libs")
-	archiveExtension = "jar"
+	destinationDirectory = file('build/libs')
+	archiveExtension = 'jar'
 }
 
 build.dependsOn finalJar

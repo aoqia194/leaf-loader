@@ -1,0 +1,46 @@
+name: Dry Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  actions: write
+  id-token: write
+  contents: write
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
+
+  dry-release:
+    name: Dry Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: build/
+
+      - name: Deploy
+        run: ./gradlew publish -S -Pleaf.loom.ignoreMissingFiles=true
+
+      - name: Dry Release
+        env:
+          JRELEASER_DRY_RUN: true
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+        run: ./gradlew jreleaserFullRelease -S -Pleaf.loom.ignoreMissingFiles=true

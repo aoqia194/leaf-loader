@@ -28,10 +28,10 @@ import static dev.aoqia.leaf.zomboid.test.TestEntrypoint.LOGGER;
 
 @Mixin(Core.class)
 public class CoreMixin {
-    @Inject(method = "getVersion", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getVersion", at = @At("HEAD"), cancellable = true)
     private void getVersion(CallbackInfoReturnable<String> cir) {
-        LOGGER.println("Setting game version internally to 43.0.0!");
         cir.setReturnValue("43.0.0");
+        cir.cancel();
     }
 
     @ModifyExpressionValue(
@@ -42,7 +42,7 @@ public class CoreMixin {
         )
     )
     private IsoPuddles initShaders(IsoPuddles instance) {
-        LOGGER.debugln("initShaders IsoPuddles instance effect name: " + instance.Effect.name);
+        LOGGER.warn("IsoPuddles::initShaders instance effect name: " + instance.Effect.getName());
         return instance;
     }
 }

@@ -12,7 +12,7 @@ jobs:
     if: ${{ github.repository_owner == 'aoqia194' }}
     name: Release
     needs: build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -34,7 +34,8 @@ jobs:
           GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
           MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-        run: ./gradlew checkVersion generateInstallerJson jreleaserFullRelease -S
+        run: ./gradlew checkVersion generateInstallerJson publish |
+          jreleaserFullRelease -S -Pleaf.loom.ignoreMissingFiles=true
 
       # Taken from installerjson.yml
 
