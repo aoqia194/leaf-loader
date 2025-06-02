@@ -1,17 +1,25 @@
 name: Build
 
 on:
-  # I don't want my self hosted runner that isn't available 24/7 to run builds constantly.
-  #  - push
-  #  - pull_request
-  - workflow_call
-  - workflow_dispatch
+  push:
+    branches:
+      - dev
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     if: ${{ github.repository_owner == 'aoqia194' }}
     name: Build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,6 +29,7 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -28,7 +37,7 @@ jobs:
           gradle-home-cache-excludes: 'caches/leaf-loom' # Causes a massive stall for CI builds.
 
       - name: Build
-        run: ./gradlew build publish -x test -S
+        run: ./gradlew build -x test -S -Dleaf.loom.ignoreMissingFiles=true
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
