@@ -67,24 +67,33 @@ abstract class GenerateInstallerJsonTask extends DefaultTask {
                         id.name,
                         id.version)
 
-                    try {
-                        // Check if the repository is valid.
-                        def jarFile = new URL(jarUrl).openStream()
-                        def correctRepo = jarFile != null
-                        jarFile.close()
+                    if (side == 'development' && artifact.file.toString().startsWith(
+                        getProject().getRootProject().getProjectDir().toString())) {
+                        json.libraries[side].add([
+                            name: artifact.moduleVersion.toString(),
+                            file: "loader://META-INF/jars/${id.name}-${id.version}.jar"
+                        ])
+                        processed.add(artifact.moduleVersion.toString())
+                    } else {
+                        try {
+                            // Check if the repository is valid.
+                            def jarFile = new URL(jarUrl).openStream()
+                            def correctRepo = jarFile != null
+                            jarFile.close()
 
-                        if (correctRepo) {
-                            def library = [
-                                name: artifact.moduleVersion.toString(),
-                                url: url.toString()
-                            ]
-                            library.putAll(resolveHashes(artifact.moduleVersion.toString()))
-                            json.libraries[side].add(library)
+                            if (correctRepo) {
+                                def library = [
+                                    name: artifact.moduleVersion.toString(),
+                                    url: url.toString()
+                                ]
+                                library.putAll(resolveHashes(artifact.moduleVersion.toString()))
+                                json.libraries[side].add(library)
 
-                            // Add it to a processed list to prevent duplicates.
-                            processed.add(artifact.moduleVersion.toString())
+                                // Add it to a processed list to prevent duplicates.
+                                processed.add(artifact.moduleVersion.toString())
+                            }
+                        } catch (Exception ignored) {
                         }
-                    } catch (Exception ignored) {
                     }
                 }
             }
