@@ -287,8 +287,6 @@ public class ZomboidGameProvider implements GameProvider {
             }
         }
 
-        // Setup the log handler later because game logging isn't ready yet.
-        // setupLogHandler(launcher, true);
         transformer.locateEntrypoints(launcher, gameJars);
     }
 
@@ -319,8 +317,8 @@ public class ZomboidGameProvider implements GameProvider {
 
         try {
             Class<?> c = loader.loadClass(targetClass);
-            invoker = MethodHandles.lookup()
-                .findStatic(c, "main", MethodType.methodType(void.class, String[].class));
+            invoker = MethodHandles.lookup().findStatic(c, "main",
+                MethodType.methodType(void.class, String[].class));
         } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             throw FormattedException.ofLocalized("exception.zomboid.invokeFailure", e);
         }
