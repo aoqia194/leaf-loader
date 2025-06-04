@@ -286,8 +286,6 @@ tasks.register('testJar', Jar) {
 }
 
 tasks.register('copyJson') {
-	dependsOn generateInstallerJson
-
 	def inJson = file('src/main/resources/leaf-installer.json')
 	def outJson = file("build/libs/${project.base.archivesName.get()}-${version}.json")
 
@@ -299,7 +297,7 @@ tasks.register('copyJson') {
 	}
 }
 
-build.dependsOn 'copyJson'
+tasks.build.dependsOn 'copyJson'
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
