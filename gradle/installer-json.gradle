@@ -1,5 +1,4 @@
 import groovy.json.JsonOutput
-import org.gradle.api.internal.artifacts.ivyservice.TypedResolveException
 
 tasks.register("generateInstallerJson", GenerateInstallerJsonTask) {
     configurations = [common: "installer", development: "development"]
@@ -30,7 +29,6 @@ abstract class GenerateInstallerJsonTask extends DefaultTask {
 
     @TaskAction
     def run() {
-
         def json = [
             version: 2,
             min_java_version: 17,
@@ -43,57 +41,67 @@ abstract class GenerateInstallerJsonTask extends DefaultTask {
         ]
 
         configurations.get().each { side, name ->
-            Set<ResolvedArtifact> resolvedArtifacts = getProject()
+            def resolvedArtifacts = getProject()
                 .configurations
                 .getByName(name)
                 .resolvedConfiguration
                 .resolvedArtifacts
 
+            // Makes sure that no artifacts are duplicated.
+            // Sometimes the same artifact is under 2 repositories.
             def processed = []
-            for (final ArtifactRepository repo in getProject().repositories.asList()) {
-                for (final ResolvedArtifact artifact in resolvedArtifacts) {
+
+            for (final def artifact in resolvedArtifacts) {
+                if (artifact.moduleVersion.toString() in processed) {
+                    continue
+                }
+
+                final def id = artifact.moduleVersion.id
+
+                // If it's a development dependency, add it to JiJ and go to next artifact.
+                if (side == "development") {
+                    json.libraries[side].add([
+                        name: artifact.moduleVersion.toString(),
+                        file: "loader://META-INF/jars/${id.name}-${id.version}.jar"
+                    ])
+                    processed.add(artifact.moduleVersion.toString())
+                    continue
+                }
+
+                // Otherwise, we need to get the repository URL that the dep is located at.
+                for (final var repo in getProject().repositories.asList()) {
                     if (artifact.moduleVersion.toString() in processed) {
                         continue
                     }
 
-                    // Parse the url from the ArtifactRepository.
-                    final def id = artifact.moduleVersion.id
                     final def url = repo.properties.get('url')
-                    final String jarUrl = String.format("%s%s/%s/%s/%s-%s.jar",
-                        url.toString(),
-                        id.group.replace('.', '/'),
-                        id.name,
-                        id.version,
-                        id.name,
-                        id.version)
 
-                    if (side == 'development' && artifact.file.toString().startsWith(
-                        getProject().getRootProject().getProjectDir().toString())) {
-                        json.libraries[side].add([
-                            name: artifact.moduleVersion.toString(),
-                            file: "loader://META-INF/jars/${id.name}-${id.version}.jar"
-                        ])
-                        processed.add(artifact.moduleVersion.toString())
-                    } else {
-                        try {
-                            // Check if the repository is valid.
-                            def jarFile = new URL(jarUrl).openStream()
-                            def correctRepo = jarFile != null
-                            jarFile.close()
+                    try {
+                        final String jarUrl = String.format("%s%s/%s/%s/%s-%s.jar",
+                            url.toString(),
+                            id.group.replace('.', '/'),
+                            id.name,
+                            id.version,
+                            id.name,
+                            id.version)
 
-                            if (correctRepo) {
-                                def library = [
-                                    name: artifact.moduleVersion.toString(),
-                                    url: url.toString()
-                                ]
-                                library.putAll(resolveHashes(artifact.moduleVersion.toString()))
-                                json.libraries[side].add(library)
+                        // Check if the repository is valid.
+                        def jarFile = new URL(jarUrl).openStream()
+                        def correctRepo = jarFile != null
+                        jarFile.close()
 
-                                // Add it to a processed list to prevent duplicates.
-                                processed.add(artifact.moduleVersion.toString())
-                            }
-                        } catch (Exception ignored) {
+                        if (correctRepo) {
+                            def library = [
+                                name: artifact.moduleVersion.toString(),
+                                url: url.toString()
+                            ]
+                            library.putAll(resolveHashes(artifact.moduleVersion.toString()))
+                            json.libraries[side].add(library)
+
+                            // Add it to a processed list to prevent duplicates.
+                            processed.add(artifact.moduleVersion.toString())
                         }
+                    } catch (Exception ignored) {
                     }
                 }
             }
@@ -110,26 +118,28 @@ abstract class GenerateInstallerJsonTask extends DefaultTask {
             sha256: resolveHash(artifact, "sha256", false),
             sha512: resolveHash(artifact, "sha512", false),
             size: resolveSize(artifact),
-        ] as Map<String, Object>
+        ]
     }
 
     String resolveHash(String artifact, String hash, boolean required) {
         try {
-            def config = project.configurations.detachedConfiguration(project.dependencies
-                .create("${artifact}@jar.${hash}"))
+            def config = project.configurations.detachedConfiguration(project
+                .dependencies.create("${artifact}@jar.${hash}"))
             return config.singleFile.text
-        } catch (TypedResolveException e) {
+        } catch (ResolveException e) {
             def msg = hash + " hash was required but not found for artifact " + artifact
             if (required) {
-                e.printStackTrace()
+                // e.printStackTrace()
                 throw new RuntimeException(msg)
             }
         }
+
+        return null
     }
 
     long resolveSize(String artifact) {
-        def config = project.configurations.detachedConfiguration(project.dependencies
-            .create("${artifact}@jar"))
+        def config = project.configurations.detachedConfiguration(
+            project.dependencies.create("${artifact}@jar"))
         return config.singleFile.size()
     }
 }
