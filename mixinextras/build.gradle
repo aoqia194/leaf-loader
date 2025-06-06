@@ -14,7 +14,7 @@ dependencies {
     compileOnly "org.ow2.asm:asm-tree:${asm_version}"
     compileOnly "org.ow2.asm:asm-util:${asm_version}"
 
-    compileOnly("net.fabricmc:sponge-mixin:${project.mixin_version}") {
+    compileOnly("net.fabricmc:sponge-mixin:${mixin_version}") {
         exclude module: 'guava'
     }
     shadow(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
