@@ -287,6 +287,8 @@ tasks.register('testJar', Jar) {
 }
 
 tasks.register('copyJson') {
+	dependsOn generateInstallerJson
+
 	def inJson = file('src/main/resources/leaf-installer.json')
 	def outJson = file("build/libs/${project.base.archivesName.get()}-${version}.json")
 
