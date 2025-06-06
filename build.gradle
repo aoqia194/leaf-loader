@@ -129,6 +129,8 @@ dependencies {
 apply from: rootProject.file('gradle/installer-json.gradle')
 
 processResources {
+    dependsOn 'generateInstallerJson'
+
 	inputs.property "version", project.version
 
 	filesMatching("leaf.mod.json") {
@@ -276,6 +278,8 @@ tasks.withType(AbstractArchiveTask).configureEach {
 }
 
 sourcesJar {
+    dependsOn generateInstallerJson
+
 	from sourceSets.main.allSource
 	from project(":zomboid").sourceSets.main.allSource
 }
