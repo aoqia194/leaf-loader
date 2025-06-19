@@ -1,0 +1,61 @@
+[versions]
+
+accesswidener = "2.1.0"
+annotations = "23.0.0"
+asm = "9.8"
+jreleaser = "1.17.0"
+junit-bom = "5.10.0"
+junit-jupiter = "5.9.2"
+loom = "0.4.0"
+mappingio = "0.7.1"
+mixin = "0.15.5+mixin.0.8.7"
+mixinextras = "0.4.1"
+mockito-core = "5.10.0"
+sat4j = "2.3.6"
+shadow = "8.3.6"
+spotless = "6.22.0"
+tinyremapper = "0.11.1"
+
+[libraries]
+
+accesswidener = { module = "net.fabricmc:access-widener", version.ref = "accesswidener" }
+
+annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
+
+asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
+asm-analysis = { module = "org.ow2.asm:asm-analysis", version.ref = "asm" }
+asm-commons = { module = "org.ow2.asm:asm-commons", version.ref = "asm" }
+asm-tree = { module = "org.ow2.asm:asm-tree", version.ref = "asm" }
+asm-util = { module = "org.ow2.asm:asm-util", version.ref = "asm" }
+
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-platformlauncher = { module = "org.junit.platform:junit-platform-launcher" }
+
+mappingio = { module = "net.fabricmc:mapping-io", version.ref = "mappingio" }
+
+mixin = { module = "net.fabricmc:sponge-mixin", version.ref = "mixin" }
+
+# MixinExtras common for subproject
+mixinextras = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinextras" }
+
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
+
+sat4j-core = { module = "org.ow2.sat4j:org.ow2.sat4j.core", version.ref = "sat4j" }
+sat4j-pb = { module = "org.ow2.sat4j:org.ow2.sat4j.pb", version.ref = "sat4j" }
+
+tinyremapper = { module = "net.fabricmc:tiny-remapper", version.ref = "tinyremapper" }
+
+[bundles]
+
+asm = ["asm", "asm-analysis", "asm-commons", "asm-tree", "asm-util"]
+sat4j = ["sat4j-core", "sat4j-pb"]
+
+[plugins]
+
+loom = { id = "dev.aoqia.leaf.loom", version.ref = "loom" }
+
+jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
