@@ -151,12 +151,14 @@ public final class LeafLoaderImpl extends LeafLoader {
         discoverer.addCandidateFinder(new ArgumentModCandidateFinder(remapRegularMods));
 
         // Zomboid-specific directories to load mods from.
-        final Path modSubpath = Paths.get(".leaf/mods");
+        final Path modSubpath = Paths.get("leaf/mods");
         discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(),
             remapRegularMods, 4, modSubpath));
         // Don't load mods from workshop folders if in development or disableWorkshopMods is active.
+        // OR if zomboid.steam=0
         if (System.getProperty(SystemProperties.DEVELOPMENT) == null &&
-            System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null) {
+            System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null &&
+            "1".equals(System.getProperty(SystemProperties.ZOMBOID_STEAM))) {
             discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getZomboidWorkshopPath(),
                 remapRegularMods, 6, modSubpath));
         }

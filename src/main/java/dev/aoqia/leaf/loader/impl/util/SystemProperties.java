@@ -78,6 +78,9 @@ public final class SystemProperties {
 	// whether fabric loader is running in a unit test, this affects logging classpath setup
 	public static final String UNIT_TEST = "leaf.unitTest";
 
+    // Zomboid-specific props
+    public static final String ZOMBOID_STEAM = "zomboid.steam";
+
 	private SystemProperties() {
 	}
 }
