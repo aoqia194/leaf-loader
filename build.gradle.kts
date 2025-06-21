@@ -461,7 +461,7 @@ publishing {
             artifact(javadocJar)
 
             artifact(tasks.generateInstallerJson) {
-                builtBy(copyJson))
+                builtBy(copyJson)
             }
         }
     }
