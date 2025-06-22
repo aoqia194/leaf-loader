@@ -476,25 +476,25 @@ publishing {
 jreleaser {
     project {
         name = project.name
-        version.set(project.version)
-        versionPattern.set("SEMVER")
-        authors.set(listOf("aoqia194", "FabricMC"))
-        maintainers.set(listOf("aoqia194"))
-        license.set("Apache-2.0")
-        inceptionYear.set("2025")
+        version = project.version
+        versionPattern = "SEMVER"
+        authors = listOf("aoqia194", "FabricMC")
+        maintainers = listOf("aoqia194")
+        license = "Apache-2.0"
+        inceptionYear = "2025"
 
         links {
-            homepage.set(property("url").toString())
-            license.set("https://spdx.org/licenses/Apache-2.0.html")
+            homepage = property("url").toString()
+            license = "https://spdx.org/licenses/Apache-2.0.html"
         }
     }
 
     signing {
-        active.set(Active.ALWAYS)
-        armored.set(true)
-        passphrase.set(gpgKeyPassphrase)
-        publicKey.set(gpgKeyPublic)
-        secretKey.set(gpgKeyPrivate)
+        active = Active.ALWAYS
+        armored = true
+        passphrase = gpgKeyPassphrase
+        publicKey = gpgKeyPublic
+        secretKey = gpgKeyPrivate
     }
 
     deploy {
@@ -505,20 +505,21 @@ jreleaser {
                 failOnError = true
                 strict = true
             }
+
             mavenCentral {
                 create("sonatype") {
-                    applyMavenCentralRules.set(true)
-                    active.set(Active.ALWAYS)
-                    snapshotSupported.set(true)
-                    authorization.set(Http.Authorization.BEARER)
-                    username.set(mavenUsername)
-                    password.set(mavenPassword)
-                    url.set("https://central.sonatype.com/api/v1/publisher")
+                    applyMavenCentralRules = true
+                    active = Active.ALWAYS
+                    snapshotSupported = true
+                    authorization = Http.Authorization.BEARER
+                    username = mavenUsername
+                    password = mavenPassword
+                    url = "https://central.sonatype.com/api/v1/publisher"
                     stagingRepository("build/staging-deploy")
-                    verifyUrl.set("https://repo1.maven.org/maven2/{{path}}/{{filename}}")
-                    namespace.set(rootProject.group.toString())
-                    retryDelay.set(60)
-                    maxRetries.set(30)
+                    verifyUrl = "https://repo1.maven.org/maven2/{{path}}/{{filename}}"
+                    namespace = rootProject.group.toString()
+                    retryDelay = 60
+                    maxRetries = 30
                 }
             }
         }
@@ -526,17 +527,17 @@ jreleaser {
 
     release {
         github {
-            enabled.set(true)
-            repoOwner.set("aoqia194")
-            name.set("leaf-loader")
-            host.set("github.com")
-            releaseName.set("{{tagName}}")
-            sign.set(true)
-            overwrite.set(true)
+            enabled = true
+            repoOwner = "aoqia194"
+            name = "leaf-loader"
+            host = "github.com"
+            releaseName = "{{tagName}}"
+            sign = true
+            overwrite = true
 
             changelog {
-                formatted.set(Active.ALWAYS)
-                preset.set("conventional-commits")
+                formatted = Active.ALWAYS
+                preset = "conventional-commits"
                 extraProperties.put("categorizeScopes", "true")
             }
         }
