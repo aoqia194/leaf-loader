@@ -1,3 +1,8 @@
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+}
+
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
