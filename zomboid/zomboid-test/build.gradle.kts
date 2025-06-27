@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 
-val zomboidVersion = property("zomboid_version") as String
-val zomboidMappings = property("zomboid_mappings") as String
+val zomboidVersion: String by project
+val zomboidMappings: String by project
 
 plugins {
     alias(libs.plugins.loom)
