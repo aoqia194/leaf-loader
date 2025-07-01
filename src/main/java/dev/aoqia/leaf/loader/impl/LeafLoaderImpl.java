@@ -207,7 +207,7 @@ public final class LeafLoaderImpl extends LeafLoader {
         // shuffle mods in-dev to reduce the risk of false order reliance, apply late load requests
 
         if (isDevelopmentEnvironment() &&
-            System.getProperty(SystemProperties.DEBUG_DISABLE_MOD_SHUFFLE) == null) {
+            !SystemProperties.isSet(SystemProperties.DEBUG_DISABLE_MOD_SHUFFLE)) {
             Collections.shuffle(modCandidates);
         }
 
@@ -441,11 +441,9 @@ public final class LeafLoaderImpl extends LeafLoader {
     public MappingResolver getMappingResolver() {
         if (mappingResolver == null) {
             final String targetNamespace = LeafLauncherBase.getLauncher().getTargetNamespace();
-
             mappingResolver = new LazyMappingResolver(() -> new MappingResolverImpl(
                 LeafLauncherBase.getLauncher().getMappingConfiguration().getMappings(),
-                targetNamespace
-            ), targetNamespace);
+                targetNamespace), targetNamespace);
         }
 
         return mappingResolver;
