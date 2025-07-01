@@ -494,7 +494,7 @@ public final class LeafLoaderImpl extends LeafLoader {
     }
 
     private void setGameDir(Path gameDir) {
-        this.gameDir = gameDir;
+        this.gameDir = gameDir.toAbsolutePath().normalize();
         this.configDir = gameDir.resolve("config");
     }
 
