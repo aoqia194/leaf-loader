@@ -475,8 +475,8 @@ publishing {
 
 jreleaser {
     project {
-        name = project.name
-        version = project.version
+        name = rootProject.name
+        version = rootProject.version
         versionPattern = "SEMVER"
         authors = listOf("aoqia194", "FabricMC")
         maintainers = listOf("aoqia194")
