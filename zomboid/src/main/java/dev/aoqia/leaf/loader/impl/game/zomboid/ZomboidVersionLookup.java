@@ -28,6 +28,7 @@ import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.util.ExceptionUtil;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SimpleClassPath;
+
 import org.objectweb.asm.*;
 
 public final class ZomboidVersionLookup {
@@ -36,13 +37,15 @@ public final class ZomboidVersionLookup {
         "\\d+\\.\\d+\\.\\d+(-unstable\\.\\d+)?"
     );
     private static final Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+");
-    private static final Pattern RELEASE_JARNAME_PATTERN = Pattern.compile(".+?(?:\\d+\\.|-)(\\d+\\.\\d+\\.\\d+).+");
+    private static final Pattern RELEASE_JARNAME_PATTERN =
+        Pattern.compile(".+?(?:\\d+\\.|-)(\\d+\\.\\d+\\.\\d+).+");
     private static final Pattern UNSTABLE_RELEASE_PATTERN = Pattern.compile(".+-unstable\\.(\\d+)");
-    private static final Pattern UNSTABLE_RELEASE_JARNAME_PATTERN = Pattern.compile(
-        ".+?(?:\\d+\\.|-)(\\d+\\.\\d+\\.\\d+-unstable\\.\\d+).+");
-    private static final String STRING_DESC = "Ljava/lang/String;";
+    private static final Pattern UNSTABLE_RELEASE_JARNAME_PATTERN =
+        Pattern.compile(".+?(?:\\d+\\.|-)(\\d+\\.\\d+\\.\\d+-unstable\\.\\d+).+");
+    private static final Pattern UNSTABLE_REVISION_PATTERN = Pattern.compile("\\s*rev:(\\d+).+");
 
-    public static ZomboidVersion getVersion(List<Path> gameJars, String entrypointClass, String versionName) {
+    public static ZomboidVersion getVersion(List<Path> gameJars, String entrypointClass,
+        String versionName) {
         ZomboidVersion.Builder builder = new ZomboidVersion.Builder();
 
         if (versionName != null) {
@@ -52,7 +55,8 @@ public final class ZomboidVersionLookup {
         try (SimpleClassPath cp = new SimpleClassPath(gameJars)) {
             // Determine class version
             if (entrypointClass != null) {
-                try (InputStream is = cp.getInputStream(LoaderUtil.getClassFileName(entrypointClass))) {
+                try (InputStream is = cp.getInputStream(
+                    LoaderUtil.getClassFileName(entrypointClass))) {
                     DataInputStream dis = new DataInputStream(is);
 
                     if (dis.readInt() == 0xCAFEBABE) {
@@ -73,18 +77,22 @@ public final class ZomboidVersionLookup {
         return builder.build();
     }
 
+    public static ZomboidVersion getVersionExceptClassVersion(Path gameJar) {
+        ZomboidVersion.Builder builder = new ZomboidVersion.Builder();
+
+        try (SimpleClassPath cp = new SimpleClassPath(Collections.singletonList(gameJar))) {
+            fillVersionFromJar(cp, builder);
+        } catch (IOException e) {
+            throw ExceptionUtil.wrap(e);
+        }
+
+        return builder.build();
+    }
+
     public static void fillVersionFromJar(SimpleClassPath cp, ZomboidVersion.Builder builder) {
         try {
-            InputStream is;
-
-            // version.json - contains version and target release for most if not all releases
-            //            if ((is = cp.getInputStream("version.json")) != null && fromVersionJson(is, builder)) {
-            //                return;
-            //            }
-
-            // constant return value of Core#getGameVersion().
-            if ((is = cp.getInputStream("zombie/core/Core.class")) != null &&
-                fromAnalyzer(is, new MethodConstantRetVisitor("gameVersion"), builder)) {
+            InputStream is = cp.getInputStream("zombie/core/Core.class");
+            if (is != null && fromAnalyzer(is, new GameVersionVisitor(), builder)) {
                 return;
             }
         } catch (IOException e) {
@@ -101,9 +109,9 @@ public final class ZomboidVersionLookup {
         if (result != null) {
             builder.setId(result);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     private static <T extends ClassVisitor & Analyzer> String analyze(InputStream is, T analyzer) {
@@ -125,20 +133,9 @@ public final class ZomboidVersionLookup {
         return null;
     }
 
-    public static ZomboidVersion getVersionExceptClassVersion(Path gameJar) {
-        ZomboidVersion.Builder builder = new ZomboidVersion.Builder();
-
-        try (SimpleClassPath cp = new SimpleClassPath(Collections.singletonList(gameJar))) {
-            fillVersionFromJar(cp, builder);
-        } catch (IOException e) {
-            throw ExceptionUtil.wrap(e);
-        }
-
-        return builder.build();
-    }
-
     public static String getRelease(String version) {
-        if (RELEASE_PATTERN.matcher(version).matches() || UNSTABLE_RELEASE_PATTERN.matcher(version).matches()) {
+        if (RELEASE_PATTERN.matcher(version).matches() ||
+            UNSTABLE_RELEASE_PATTERN.matcher(version).matches()) {
             return version;
         }
 
@@ -150,6 +147,7 @@ public final class ZomboidVersionLookup {
         }
 
         // Try to get version info from jar name as last resort.
+
         Matcher matcher = UNSTABLE_RELEASE_JARNAME_PATTERN.matcher(version);
         if (matcher.find()) {
             return matcher.group(1);
@@ -167,271 +165,132 @@ public final class ZomboidVersionLookup {
         return VERSION_PATTERN.matcher(str).matches();
     }
 
+    private static String findProbableRevisionNumber(String str) {
+        if (str == null) {
+            return null;
+        }
+
+        Matcher matcher = UNSTABLE_REVISION_PATTERN.matcher(str);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return null;
+    }
+
     /**
-     * Returns the probable version contained in the given string, or null if the string doesn't contain a version.
+     * Returns the probable version contained in the given string, or null if the string doesn't
+     * contain a version.
      */
     private static String findProbableVersion(String str) {
         Matcher matcher = VERSION_PATTERN.matcher(str);
-
         if (matcher.find()) {
             return matcher.group();
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     private interface Analyzer {
         String getResult();
     }
 
-    private static final class FieldStringConstantVisitor extends ClassVisitor implements Analyzer {
-        private final String fieldName;
-        private String className;
-        private String result;
+    private static final class GameVersionVisitor extends ClassVisitor implements Analyzer {
+        private int patch = -1;
+        private int major = -1;
+        private int minor = -1;
+        private int revision = -1;
 
-        FieldStringConstantVisitor(String fieldName) {
+        // Visit the BIPUSH 41, BIPUSH 78, LDC "" (for 41.78.16) instructions
+        // and store these statics, including revision number (only present on 42+)
+
+        GameVersionVisitor() {
             super(LeafLoaderImpl.ASM_VERSION);
-            this.fieldName = fieldName;
         }
 
         @Override
         public String getResult() {
-            return result;
+            if (revision == -1) {
+                return String.format("%d.%d.%d", major, minor, patch);
+            }
+
+            return String.format("%d.%d.%d-unstable.%d", major, minor, patch, revision);
         }
 
-        @Override
-        public void visit(int version,
-            int access,
-            String name,
-            String signature,
-            String superName,
-            String[] interfaces) {
-            this.className = name;
-        }
+
 
         @Override
-        public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-            if (result == null && name.equals(fieldName) && descriptor.equals(STRING_DESC) && value instanceof String) {
-                result = (String) value;
+        public MethodVisitor visitMethod(int access, String name, String descriptor,
+            String signature, String[] exceptions) {
+            // If all version data set, no need to visit anything else.
+            if (major != -1 && minor != -1 && patch != -1 && revision != -1) {
+                return null;
+            }
+
+            // Capture first two BIPISH instructions from the GameVersion constructor.
+            // These are the MAJOR and MINOR numbers respectively.
+            if (major == -1 && name.equals("<clinit>")) {
+                return new InsnFwdMethodVisitor() {
+                    @Override
+                    public void visitIntInsn(int opcode, int operand) {
+                        if (opcode != Opcodes.BIPUSH) {
+                            return;
+                        }
+
+                        if (major == -1) {
+                            major = operand;
+                        } else if (minor == -1) {
+                            minor = operand;
+                        }
+                    }
+
+                    @Override
+                    protected void visitAnyInsn() {}
+                };
+            }
+
+            // Capture LDC instruction for patch number.
+            if (patch == -1 && name.equals("getVersion")) {
+                return new InsnFwdMethodVisitor() {
+                    @Override
+                    public void visitInvokeDynamicInsn(String name, String descriptor,
+                        Handle bootstrapMethodHandle, Object... bootstrapMethodArguments) {
+                        if (patch != -1) {
+                            return;
+                        }
+
+                        Object arg = bootstrapMethodArguments[0];
+                        if (arg instanceof String) {
+                            patch = Integer.parseInt(((String) arg).replace(".", "").trim());
+                        }
+                    }
+
+                    @Override
+                    protected void visitAnyInsn() {}
+                };
+            }
+
+            // Capture LDC instruction (revision number) from getSVNRevisionString() function.
+            // If this function doesn't exist, it means we are on a build older than `42.0.0`.
+            if (revision == -1 && name.equals("getSVNRevisionString")) {
+                return new InsnFwdMethodVisitor() {
+                    @Override
+                    public void visitLdcInsn(Object value) {
+                        if (revision != -1) {
+                            return;
+                        }
+
+                        if (value instanceof String) {
+                            revision = Integer.parseInt(findProbableRevisionNumber((String) value));
+                        }
+                    }
+
+                    @Override
+                    protected void visitAnyInsn() {}
+                };
             }
 
             return null;
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access,
-            String name,
-            String descriptor,
-            String signature,
-            String[] exceptions) {
-            if (result != null || !name.equals("<clinit>")) {
-                return null;
-            }
-
-            // capture LDC ".." followed by PUTSTATIC this.fieldName
-            return new InsnFwdMethodVisitor() {
-                String lastLdc;
-
-                @Override
-                public void visitFieldInsn(int opcode, String owner, String name, String descriptor) {
-                    if (result == null
-                        && lastLdc != null
-                        && opcode == Opcodes.PUTSTATIC
-                        && owner.equals(className)
-                        && name.equals(fieldName)
-                        && descriptor.equals(STRING_DESC)) {
-                        result = lastLdc;
-                    }
-
-                    lastLdc = null;
-                }
-
-                @Override
-                public void visitLdcInsn(Object value) {
-                    String str;
-
-                    if (value instanceof String && isProbableVersion(str = (String) value)) {
-                        lastLdc = str;
-                    } else {
-                        lastLdc = null;
-                    }
-                }
-
-                @Override
-                protected void visitAnyInsn() {
-                    lastLdc = null;
-                }
-            };
-        }
-    }
-
-    private static final class MethodStringConstantContainsVisitor extends ClassVisitor implements Analyzer {
-        private final String methodOwner;
-        private final String methodName;
-        private String result;
-
-        MethodStringConstantContainsVisitor(String methodOwner, String methodName) {
-            super(LeafLoaderImpl.ASM_VERSION);
-
-            this.methodOwner = methodOwner;
-            this.methodName = methodName;
-        }
-
-        @Override
-        public String getResult() {
-            return result;
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access,
-            String name,
-            String descriptor,
-            String signature,
-            String[] exceptions) {
-            if (result != null) {
-                return null;
-            }
-
-            // capture LDC ".." followed by INVOKE methodOwner.methodName
-            return new InsnFwdMethodVisitor() {
-                String lastLdc;
-
-                @Override
-                public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean itf) {
-                    if (result == null
-                        && lastLdc != null
-                        && owner.equals(methodOwner)
-                        && name.equals(methodName)
-                        && descriptor.startsWith("(" + STRING_DESC + ")")) {
-                        result = lastLdc;
-                    }
-
-                    lastLdc = null;
-                }
-
-                @Override
-                public void visitLdcInsn(Object value) {
-                    if (value instanceof String) {
-                        lastLdc = findProbableVersion((String) value);
-                    } else {
-                        lastLdc = null;
-                    }
-                }
-
-                @Override
-                protected void visitAnyInsn() {
-                    lastLdc = null;
-                }
-            };
-        }
-    }
-
-    private static final class MethodConstantRetVisitor extends ClassVisitor implements Analyzer {
-        private final String methodName;
-        private String result;
-
-        MethodConstantRetVisitor(String methodName) {
-            super(LeafLoaderImpl.ASM_VERSION);
-
-            this.methodName = methodName;
-        }
-
-        @Override
-        public String getResult() {
-            return result;
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access,
-            String name,
-            String descriptor,
-            String signature,
-            String[] exceptions) {
-            if (result != null
-                || methodName != null && !name.equals(methodName)
-                || !descriptor.endsWith(STRING_DESC)
-                || descriptor.charAt(descriptor.length() - STRING_DESC.length() - 1) != ')') {
-                return null;
-            }
-
-            // capture LDC ".." followed by ARETURN
-            return new InsnFwdMethodVisitor() {
-                String lastLdc;
-
-                @Override
-                public void visitInsn(int opcode) {
-                    if (result == null
-                        && lastLdc != null
-                        && opcode == Opcodes.ARETURN) {
-                        result = lastLdc;
-                    }
-
-                    lastLdc = null;
-                }
-
-                @Override
-                public void visitLdcInsn(Object value) {
-                    String str;
-
-                    if (value instanceof String && isProbableVersion(str = (String) value)) {
-                        lastLdc = str;
-                    } else {
-                        lastLdc = null;
-                    }
-                }
-
-                @Override
-                protected void visitAnyInsn() {
-                    lastLdc = null;
-                }
-            };
-        }
-    }
-
-    private static final class MethodConstantVisitor extends ClassVisitor implements Analyzer {
-        private static final String STARTING_MESSAGE = "Starting Zomboid server version ";
-        private static final String CLASSIC_PREFIX = "Zomboid ";
-
-        private final String methodNameHint;
-        private String result;
-        private boolean foundInMethodHint;
-
-        MethodConstantVisitor(String methodNameHint) {
-            super(LeafLoaderImpl.ASM_VERSION);
-
-            this.methodNameHint = methodNameHint;
-        }
-
-        @Override
-        public String getResult() {
-            return result;
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access,
-            String name,
-            String descriptor,
-            String signature,
-            String[] exceptions) {
-            final boolean isRequestedMethod = name.equals(methodNameHint);
-
-            if (result != null && !isRequestedMethod) {
-                return null;
-            }
-
-            return new MethodVisitor(LeafLoaderImpl.ASM_VERSION) {
-                @Override
-                public void visitLdcInsn(Object value) {
-                    if ((result == null || !foundInMethodHint && isRequestedMethod) && value instanceof String) {
-                        String str = (String) value;
-
-                        if (isProbableVersion(str)) {
-                            result = str;
-                            foundInMethodHint = isRequestedMethod;
-                        }
-                    }
-                }
-            };
         }
     }
 
@@ -456,7 +315,7 @@ public final class ZomboidVersionLookup {
         }
 
         @Override
-        public void visitTypeInsn(int opcode, java.lang.String type) {
+        public void visitTypeInsn(int opcode, String type) {
             visitAnyInsn();
         }
 
@@ -467,16 +326,16 @@ public final class ZomboidVersionLookup {
 
         @Override
         public void visitMethodInsn(int opcode,
-            java.lang.String owner,
-            java.lang.String name,
-            java.lang.String descriptor,
+            String owner,
+            String name,
+            String descriptor,
             boolean isInterface) {
             visitAnyInsn();
         }
 
         @Override
-        public void visitInvokeDynamicInsn(java.lang.String name,
-            java.lang.String descriptor,
+        public void visitInvokeDynamicInsn(String name,
+            String descriptor,
             Handle bootstrapMethodHandle,
             Object... bootstrapMethodArguments) {
             visitAnyInsn();
@@ -508,41 +367,10 @@ public final class ZomboidVersionLookup {
         }
 
         @Override
-        public void visitMultiANewArrayInsn(java.lang.String descriptor, int numDimensions) {
+        public void visitMultiANewArrayInsn(String descriptor, int numDimensions) {
             visitAnyInsn();
         }
 
         protected abstract void visitAnyInsn();
-    }
-
-    private static final class FieldTypeCaptureVisitor extends ClassVisitor implements Analyzer {
-        private String type;
-
-        FieldTypeCaptureVisitor() {
-            super(LeafLoaderImpl.ASM_VERSION);
-        }
-
-        @Override
-        public String getResult() {
-            return type;
-        }
-
-        @Override
-        public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-            if (type == null && descriptor.startsWith("L") && !descriptor.startsWith("Ljava/")) {
-                type = descriptor.substring(1, descriptor.length() - 1);
-            }
-
-            return null;
-        }
-
-        @Override
-        public MethodVisitor visitMethod(int access,
-            String name,
-            String descriptor,
-            String signature,
-            String[] exceptions) {
-            return null;
-        }
     }
 }
