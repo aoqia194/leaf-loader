@@ -157,12 +157,10 @@ sourceSets {
 artifacts {
     val main = sourceSets.main.get()
     main.output.classesDirs.forEach {
-        println("Adding dir (${it}) to mainSourceSetOutput!")
         add(mainSourceSetOutput.name, provider { it }) {
             builtBy(tasks.compileJava)
         }
     }
-    println("Adding dir (${main.output.resourcesDir}) to mainSourceSetOutput!")
     add(mainSourceSetOutput.name, provider { main.output.resourcesDir }) {
         builtBy(tasks.processResources)
     }
