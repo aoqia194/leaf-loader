@@ -63,10 +63,12 @@ public final class LeafLoaderImpl extends LeafLoader {
     public static final String VERSION = "1.2.0";
     public static final String MOD_ID = "leafloader";
 
-    public static final String CACHE_DIR_NAME = ".leaf"; // relative to game dir
-    public static final String REMAPPED_JARS_DIR_NAME = "remappedJars"; // relative to cache dir
-    private static final String PROCESSED_MODS_DIR_NAME = "processedMods"; // relative to cache dir
-    private static final String TMP_DIR_NAME = "tmp"; // relative to cache dir
+    // Relative to game dir.
+    public static final String CACHE_DIR_NAME = ".leaf";
+    // Relative to cache dir.
+    public static final String REMAPPED_JARS_DIR_NAME = "remappedJars";
+    private static final String PROCESSED_MODS_DIR_NAME = "processedMods";
+    private static final String TMP_DIR_NAME = "tmp";
 
     static {
         LoaderUtil.verifyNotInTargetCl(LeafLoaderImpl.class);
@@ -151,12 +153,14 @@ public final class LeafLoaderImpl extends LeafLoader {
         discoverer.addCandidateFinder(new ArgumentModCandidateFinder(remapRegularMods));
 
         // Zomboid-specific directories to load mods from.
-        final Path modSubpath = Paths.get(".leaf/mods");
+        final Path modSubpath = Paths.get("leaf/mods");
         discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(),
             remapRegularMods, 4, modSubpath));
         // Don't load mods from workshop folders if in development or disableWorkshopMods is active.
+        // OR if zomboid.steam=0
         if (System.getProperty(SystemProperties.DEVELOPMENT) == null &&
-            System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null) {
+            System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null &&
+            "1".equals(System.getProperty(SystemProperties.ZOMBOID_STEAM))) {
             discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getZomboidWorkshopPath(),
                 remapRegularMods, 6, modSubpath));
         }
@@ -203,7 +207,7 @@ public final class LeafLoaderImpl extends LeafLoader {
         // shuffle mods in-dev to reduce the risk of false order reliance, apply late load requests
 
         if (isDevelopmentEnvironment() &&
-            System.getProperty(SystemProperties.DEBUG_DISABLE_MOD_SHUFFLE) == null) {
+            !SystemProperties.isSet(SystemProperties.DEBUG_DISABLE_MOD_SHUFFLE)) {
             Collections.shuffle(modCandidates);
         }
 
@@ -437,11 +441,9 @@ public final class LeafLoaderImpl extends LeafLoader {
     public MappingResolver getMappingResolver() {
         if (mappingResolver == null) {
             final String targetNamespace = LeafLauncherBase.getLauncher().getTargetNamespace();
-
             mappingResolver = new LazyMappingResolver(() -> new MappingResolverImpl(
                 LeafLauncherBase.getLauncher().getMappingConfiguration().getMappings(),
-                targetNamespace
-            ), targetNamespace);
+                targetNamespace), targetNamespace);
         }
 
         return mappingResolver;
@@ -490,7 +492,7 @@ public final class LeafLoaderImpl extends LeafLoader {
     }
 
     private void setGameDir(Path gameDir) {
-        this.gameDir = gameDir;
+        this.gameDir = gameDir.toAbsolutePath().normalize();
         this.configDir = gameDir.resolve("config");
     }
 

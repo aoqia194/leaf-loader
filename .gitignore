@@ -3,6 +3,7 @@
 
 # Folders
 !/gradle
+!/buildSrc
 !/src
 !/.github
 
@@ -10,7 +11,7 @@
 !/.gitattributes
 !/.gitignore
 !/.editorconfig
-!/build.gradle
+!/build.gradle.kts
 !/checkstyle.xml
 !/gradle.properties
 !/gradlew
@@ -18,7 +19,7 @@
 !/HEADER
 !/LICENSE
 !/README.md
-!/settings.gradle
+!/settings.gradle.kts
 !/proguard.conf
 
 !/mixinextras

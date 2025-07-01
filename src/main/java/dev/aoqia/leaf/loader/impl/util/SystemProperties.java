@@ -18,6 +18,8 @@ package dev.aoqia.leaf.loader.impl.util;
 public final class SystemProperties {
 	// whether fabric loader is running in a development environment / mode, affects class path mod discovery, remapping, logging, ...
 	public static final String DEVELOPMENT = "leaf.development";
+    // Should leaf use a class loader that is an instance of URLClassLoader?
+    public static final String USE_COMPAT_CL = "leaf.loader.useCompatibilityClassLoader";
 	public static final String SIDE = "leaf.side";
 	// skips the embedded Zbomoid game provider, letting ServiceLoader-provided ones take over
 	public static final String SKIP_ZOMBOID_PROVIDER = "leaf.skipZomboidProvider";
@@ -78,6 +80,11 @@ public final class SystemProperties {
 	// whether fabric loader is running in a unit test, this affects logging classpath setup
 	public static final String UNIT_TEST = "leaf.unitTest";
 
-	private SystemProperties() {
-	}
+    // Zomboid-specific props
+    public static final String ZOMBOID_STEAM = "zomboid.steam";
+
+    public static boolean isSet(String property) {
+        final String val = System.getProperty(property);
+        return val != null && !val.equalsIgnoreCase("false");
+    }
 }

@@ -153,7 +153,7 @@ public class ZomboidGameProvider implements GameProvider {
 
     @Override
     public boolean isEnabled() {
-        return System.getProperty(SystemProperties.SKIP_ZOMBOID_PROVIDER) == null;
+        return !SystemProperties.isSet(SystemProperties.SKIP_ZOMBOID_PROVIDER);
     }
 
     @Override

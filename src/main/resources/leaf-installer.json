@@ -66,8 +66,8 @@
         ],
         "development": [
             {
-                "name": "dev.aoqia.leaf:mixinextras-leaf:0.4.1",
-                "file": "loader://META-INF/jars/mixinextras-leaf-0.4.1.jar"
+                "name": "dev.aoqia.leaf:mixinextras:0.4.1",
+                "file": "loader://META-INF/jars/mixinextras-0.4.1.jar"
             }
         ]
     },

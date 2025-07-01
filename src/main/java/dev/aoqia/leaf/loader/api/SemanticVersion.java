@@ -86,7 +86,7 @@ public interface SemanticVersion extends Version {
 	boolean hasWildcard();
 
 	/**
-	 * @deprecated Use {@link #compareTo(Version)} instead
+	 * @deprecated Use {@link #compareTo(Object)} instead and cast o to {@link Version}.
 	 */
 	@Deprecated
 	default int compareTo(SemanticVersion o) {

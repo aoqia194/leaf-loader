@@ -26,16 +26,15 @@ public final class Arguments {
     // line referencing an
     // actual file)
     public static final String ADD_MODS = SystemProperties.ADD_MODS;
-    // Arguments that present like solo args but are actually value args. Special handling required.
-    private final static List<String> valueArgNames = Collections.unmodifiableList(
-        Arrays.asList("-pzexeconfig", "-pzexelog"));
-    // Solo args are like -arg1 -arg2 -arg3
-    private final List<String> soloArgs;
-    // Value args are like -arg1=somevalue -arg2=C:\folder\file.png
-    private final Map<String, String> valueArgs;
 
+    // Single args are like -arg1 -arg2 -arg3
+    private final List<String> singleArgs;
+    // Value args are like -arg1=somevalue -arg2=C:\folder\file.png
+    // Also contains args that have no delimiter like Steam's `+connect 127.0.0.1`
+    private final Map<String, String> valueArgs;
+    
     public Arguments() {
-        soloArgs = new ArrayList<>();
+        singleArgs = new ArrayList<>();
         valueArgs = new LinkedHashMap<>();
     }
 
@@ -57,11 +56,11 @@ public final class Arguments {
     }
 
     public void add(String value) {
-        soloArgs.add(value);
+        singleArgs.add(value);
     }
 
     public boolean contains(String value) {
-        return soloArgs.contains(value);
+        return singleArgs.contains(value);
     }
 
     public void put(String key, String value) {
@@ -82,7 +81,9 @@ public final class Arguments {
         for (int i = 0; i < args.size(); i++) {
             final String arg = args.get(i);
 
-            // Value arg if = is present, otherwise solo arg.
+            // If it has an equals, it's a true value arg.
+            // If it starts with a plus, it's a steam arg (fake value arg).
+            // Otherwise, it's a normal arg.
             if (arg.contains("=")) {
                 final String[] pair = arg.split("=", 1);
                 if (pair.length <= 1) {
@@ -95,33 +96,45 @@ public final class Arguments {
                 }
 
                 valueArgs.put(pair[0].substring(1), pair[1]);
-            } else if (valueArgNames.contains(arg)) {
+            } else {
                 // Special handling for value args that look like solo args where i+1 is the value.
-                final String value = i + 1 > args.size() ? null : args.get(i + 1);
-                if (value == null || value.startsWith("-")) {
-                    // Silently ignore? I don't know if this is the best choice but ok!
-                    // throw new RuntimeException(
-                    //     "Invalid game arguments provided. Found vararg with no value.");
-                    continue;
+
+                // Check the next value and if it's an arg, set the value to blank.
+                String value = i + 1 >= args.size() ? null : args.get(i + 1);
+                if (value == null || value.startsWith("-") || value.startsWith("+")) {
+                    if (arg.startsWith("-")) {
+                        singleArgs.add(arg);
+                        continue;
+                    }
+
+                    value = "";
                 }
 
-                valueArgs.put(arg.substring(1), value);
-            } else {
-                soloArgs.add(arg);
+                // If it's a steam arg using +, dont remove it.
+                // This is to explicitly differentiate between Steam and normal value args.
+                // It can also be the case for args starting with - that use a space delimiter,
+                // but the only such args in this game currently are bootstrapper-specific
+                valueArgs.put(arg.startsWith("+") ? arg : arg.substring(1), value);
             }
         }
     }
 
     public String[] toArray() {
-        String[] newArgs = new String[soloArgs.size() * 2 + valueArgs.size()];
+        String[] newArgs = new String[singleArgs.size() + valueArgs.size()];
         int i = 0;
 
-        for (String s : soloArgs) {
-            newArgs[i++] = "-" + s;
+        for (String s : valueArgs.keySet()) {
+            if (s.startsWith("+")) {
+                newArgs[i++] = s;
+                newArgs[i++] = valueArgs.get(s);
+                continue;
+            }
+
+            newArgs[i++] = "-" + s + "=" + valueArgs.get(s);
         }
 
-        for (String s : valueArgs.keySet()) {
-            newArgs[i++] = "-" + s + "=" + valueArgs.get(s);
+        for (String s : singleArgs) {
+            newArgs[i++] = s;
         }
 
         return newArgs;

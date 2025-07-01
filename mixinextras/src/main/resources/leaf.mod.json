@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "mixinextras",
+    "id": "${id}",
     "provides": [
         "com_llamalad7_mixinextras"
     ],
