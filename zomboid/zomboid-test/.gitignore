@@ -3,4 +3,5 @@
 
 !/src
 !/build.gradle.kts
+!/gradle.properties
 !/.gitignore
