@@ -403,7 +403,7 @@ val checkVersion by tasks.registering {
         val xml = URL(
             "https://repo.maven.apache.org/maven2/${
                 rootProject.group.toString().replace(".", "/")
-            }/loader/maven-metadata.xml"
+            }/${rootProject.name}/maven-metadata.xml"
         ).readText()
         val metadata = XmlSlurper().parseText(xml)
 
