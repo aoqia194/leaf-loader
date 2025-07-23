@@ -27,21 +27,24 @@ public final class UrlUtil {
     public static Path getCodeSource(URL url, String localPath) throws UrlConversionException {
         try {
             URLConnection connection = url.openConnection();
-
             if (connection instanceof JarURLConnection) {
                 return asPath(((JarURLConnection) connection).getJarFileURL());
-            } else {
-                String path = url.getPath();
-
-                if (path.endsWith(localPath)) {
-                    return asPath(new URL(url.getProtocol(), url.getHost(), url.getPort(),
-                        path.substring(0, path.length() - localPath.length())));
-                } else {
-                    throw new UrlConversionException(
-                        "Could not figure out code source for file '" + localPath + "' in URL '" +
-                        url + "'!");
-                }
             }
+
+            final URI uri = url.toURI();
+            final String path = uri.getPath();
+
+            if (path.endsWith(localPath)) {
+                final String basePath = path.substring(0, path.length() - localPath.length());
+                final URI baseUri = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(),
+                    uri.getPort(), basePath, uri.getQuery(), uri.getFragment());
+
+                return Paths.get(baseUri);
+            }
+
+            throw new UrlConversionException(
+                String.format("Could not figure out code source for file '%s' in URL '%s'!",
+                    localPath, url));
         } catch (Exception e) {
             throw new UrlConversionException(e);
         }
