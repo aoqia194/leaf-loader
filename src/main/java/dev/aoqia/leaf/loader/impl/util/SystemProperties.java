@@ -22,6 +22,8 @@ public final class SystemProperties {
     // Should leaf use a class loader that is an instance of URLClassLoader?
     public static final String USE_COMPAT_CL = "leaf.loader.useCompatibilityClassLoader";
     public static final String SIDE = "leaf.side";
+    // File to source mappings from, defaults to mappings/mappings.tiny on the classpath.
+    public static final String MAPPING_PATH = "leaf.mappingPath";
     // Mapping namespace used by the game, defaults to named if DEVELOPMENT is set or official
     // otherwise.
     public static final String GAME_MAPPING_NAMESPACE = "leaf.gameMappingNamespace";
