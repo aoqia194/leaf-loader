@@ -19,12 +19,15 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+import dev.aoqia.leaf.api.Environment;
 import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.util.Arguments;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
 // Name directly referenced in dev.aoqia.leaf.loader.impl.launch.knot.Knot
 // findEmbedddedGameProvider() and service loader records.
@@ -38,6 +41,8 @@ public interface GameProvider {
     String getNormalizedGameVersion();
 
     Collection<BuiltinMod> getBuiltinMods();
+
+    Set<BuiltinTransform> getBuiltinTransforms(String className);
 
     String getEntrypoint();
 
@@ -73,6 +78,26 @@ public interface GameProvider {
 
     default boolean hasAwtSupport() {
         return LoaderUtil.hasAwtSupport();
+    }
+
+    enum BuiltinTransform {
+        /**
+         * Removes classes, fields, and methods annotated with a different
+         * {@literal @}{@link Environment} from the current runtime.
+         */
+        STRIP_ENVIRONMENT,
+        /**
+         * Widens all package-internal access modifiers to public (protected and package-private,
+         * but not private)
+         *
+         * <p>This only has an effect if the mappings or
+         * {@link SystemProperties#FIX_PACKAGE_ACCESS} require these access modifications.</p>
+         */
+        WIDEN_ALL_PACKAGE_ACCESS,
+        /**
+         * Applies class tweakers, including access wideners, as supplied by mods.
+         */
+        CLASS_TWEAKS,
     }
 
     class BuiltinMod {

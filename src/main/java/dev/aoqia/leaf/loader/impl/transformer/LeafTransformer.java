@@ -15,8 +15,11 @@
  */
 package dev.aoqia.leaf.loader.impl.transformer;
 
+import java.util.Set;
+
 import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
+import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinTransform;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 
 import net.fabricmc.accesswidener.AccessWidenerClassVisitor;
@@ -27,15 +30,17 @@ import org.objectweb.asm.ClassWriter;
 public final class LeafTransformer {
     public static byte[] transform(boolean isDevelopment, EnvType envType, String name,
         byte[] bytes) {
-        boolean isZomboidClass = name.startsWith("zomboid.") || name.indexOf('.') < 0;
-        boolean transformAccess = isZomboidClass && LeafLauncherBase.getLauncher()
-            .getMappingConfiguration()
-            .requiresPackageAccessHack();
-        boolean environmentStrip = !isZomboidClass || isDevelopment;
-        boolean applyAccessWidener = isZomboidClass && LeafLoaderImpl.INSTANCE.getAccessWidener()
-            .getTargets()
-            .contains(name);
+        Set<BuiltinTransform> transforms = LeafLoaderImpl.INSTANCE.getGameProvider()
+            .getBuiltinTransforms(name);
 
+        final boolean transformAccess =
+            transforms.contains(BuiltinTransform.WIDEN_ALL_PACKAGE_ACCESS) &&
+            LeafLauncherBase.getLauncher().getMappingConfiguration().requiresPackageAccessHack();
+        final boolean environmentStrip = transforms.contains(BuiltinTransform.STRIP_ENVIRONMENT);
+        final boolean applyAccessWidener = transforms.contains(BuiltinTransform.CLASS_TWEAKS) &&
+                                           LeafLoaderImpl.INSTANCE.getAccessWidener()
+                                               .getTargets()
+                                               .contains(name);
         if (!transformAccess && !environmentStrip && !applyAccessWidener) {
             return bytes;
         }

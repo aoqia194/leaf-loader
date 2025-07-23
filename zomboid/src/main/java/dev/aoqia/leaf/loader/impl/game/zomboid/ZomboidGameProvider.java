@@ -51,6 +51,13 @@ public class ZomboidGameProvider implements GameProvider {
     private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = {};
 
     private static final Set<String> SENSITIVE_ARGS = new HashSet<>(Collections.emptyList());
+    private static final Set<BuiltinTransform> TRANSFORM_WIDENALL_STRIPENV_CLASSTWEAKS = EnumSet.of(
+        BuiltinTransform.WIDEN_ALL_PACKAGE_ACCESS, BuiltinTransform.STRIP_ENVIRONMENT,
+        BuiltinTransform.CLASS_TWEAKS);
+    private static final Set<BuiltinTransform> TRANSFORM_WIDENALL_CLASSTWEAKS = EnumSet.of(
+        BuiltinTransform.WIDEN_ALL_PACKAGE_ACCESS, BuiltinTransform.CLASS_TWEAKS);
+    private static final Set<BuiltinTransform> TRANSFORM_STRIPENV = EnumSet.of(
+        BuiltinTransform.STRIP_ENVIRONMENT);
     private final List<Path> gameJars = new ArrayList<>(
         2); // env game jar and potentially common game jar
     private final Set<Path> logJars = new HashSet<>();
@@ -125,6 +132,23 @@ public class ZomboidGameProvider implements GameProvider {
         }
 
         return Collections.singletonList(new BuiltinMod(gameJars, metadata.build()));
+    }
+
+    @Override
+    public Set<BuiltinTransform> getBuiltinTransforms(String className) {
+        final boolean isZomboidClass = className.startsWith("zomboid.");
+        if (!isZomboidClass) {
+            // mod class TODO: exclude game libs
+            return TRANSFORM_STRIPENV;
+        }
+
+        // Combined client+server JAR, strip back down to production equivalent.
+        if (LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+            return TRANSFORM_WIDENALL_STRIPENV_CLASSTWEAKS;
+        }
+
+        // Environment-specific JAR, inherently env stripped.
+        return TRANSFORM_WIDENALL_CLASSTWEAKS;
     }
 
     @Override
