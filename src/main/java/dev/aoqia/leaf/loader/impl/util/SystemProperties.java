@@ -37,6 +37,8 @@ public final class SystemProperties {
     public static final String GAME_JAR_PATH = "leaf.gameJarPath";
     public static final String GAME_JAR_PATH_CLIENT = "leaf.gameJarPath.client";
     public static final String GAME_JAR_PATH_SERVER = "leaf.gameJarPath.server";
+    // Game library paths, replaces lookup from classpath if present.
+    public static final String GAME_LIBRARIES = "leaf.gameLibraries";
     // set the game version for the builtin game mod/dependencies, bypassing auto-detection
     public static final String GAME_VERSION = "leaf.gameVersion";
     // fallback log file for the builtin log handler (dumped on exit if not replaced with another
@@ -66,7 +68,8 @@ public final class SystemProperties {
     // enable the fixing of package access errors in the game jar(s)
     public static final String FIX_PACKAGE_ACCESS = "leaf.fixPackageAccess";
     // system level libraries, matching code sources will not be assumed to be part of the game
-    // or mods and remain on the system class path (paths separated by path separator)
+    // or mods and remain on the system class path, paths separated by path separator
+    // @ prefix for meta-file with each line referencing an actual file
     public static final String SYSTEM_LIBRARIES = "leaf.systemLibraries";
     // throw exceptions from entrypoints, discovery etc. directly instead of gathering and
     // attaching as suppressed

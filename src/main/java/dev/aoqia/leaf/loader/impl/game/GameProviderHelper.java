@@ -15,6 +15,8 @@
  */
 package dev.aoqia.leaf.loader.impl.game;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -41,6 +43,7 @@ import dev.aoqia.leaf.loader.impl.util.log.TinyRemapperLoggerAdapter;
 
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.tinyremapper.*;
+import org.jetbrains.annotations.Nullable;
 
 public final class GameProviderHelper {
     private static boolean emittedInfo = false;
@@ -70,6 +73,61 @@ public final class GameProviderHelper {
         }
 
         return LoaderUtil.normalizeExistingPath(path);
+    }
+
+    public static @Nullable List<Path> getLibraries(String property) {
+        String value = System.getProperty(property);
+        if (value == null) {
+            return null;
+        }
+
+        List<Path> ret = new ArrayList<>();
+        for (String pathStr : value.split(File.pathSeparator)) {
+            if (pathStr.isEmpty()) {
+                continue;
+            }
+
+            if (pathStr.startsWith("@")) {
+                Path path = Paths.get(pathStr.substring(1));
+
+                if (!Files.isRegularFile(path)) {
+                    Log.warn(LogCategory.GAME_PROVIDER,
+                        "Skipping missing/invalid library list file %s", path);
+                    continue;
+                }
+
+                try (BufferedReader reader = Files.newBufferedReader(path)) {
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim();
+                        if (line.isEmpty()) {
+                            continue;
+                        }
+
+                        addLibrary(line, ret);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(
+                        String.format("Error reading library list file %s", path), e);
+                }
+            } else {
+                addLibrary(pathStr, ret);
+            }
+        }
+
+        return ret;
+    }
+
+    public static void addLibrary(String pathStr, List<Path> out) {
+        Path path = LoaderUtil.normalizePath(Paths.get(pathStr));
+
+        if (!Files.exists(path)) {
+            // Missing.
+            Log.warn(LogCategory.GAME_PROVIDER, "Skipping missing library path %s", path);
+        } else {
+            out.add(path);
+        }
     }
 
     public static Optional<Path> getSource(ClassLoader loader, String filename) {
