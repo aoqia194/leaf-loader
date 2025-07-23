@@ -478,6 +478,11 @@ public final class LeafLoaderImpl extends LeafLoader {
     }
 
     @Override
+    public String getRawGameVersion() {
+        return provider.getRawGameVersion();
+    }
+
+    @Override
     public Object getGameInstance() {
         return gameInstance;
     }
