@@ -25,40 +25,43 @@ import java.util.jar.Manifest;
 import dev.aoqia.leaf.api.EnvType;
 
 public interface LeafLauncher {
-	MappingConfiguration getMappingConfiguration();
+    MappingConfiguration getMappingConfiguration();
 
-	void addToClassPath(Path path, String... allowedPrefixes);
-	void setAllowedPrefixes(Path path, String... prefixes);
-	void setValidParentClassPath(Collection<Path> paths);
+    void addToClassPath(Path path, String... allowedPrefixes);
 
-	EnvType getEnvironmentType();
+    void setAllowedPrefixes(Path path, String... prefixes);
 
-	boolean isClassLoaded(String name);
+    void setValidParentClassPath(Collection<Path> paths);
 
-	/**
-	 * Load a class into the game's class loader even if its bytes are only available from the parent class loader.
-	 */
-	Class<?> loadIntoTarget(String name) throws ClassNotFoundException;
+    EnvType getEnvironmentType();
 
-	InputStream getResourceAsStream(String name);
+    boolean isClassLoaded(String name);
 
-	ClassLoader getTargetClassLoader();
+    /**
+     * Load a class into the game's class loader even if its bytes are only available from the
+     * parent class loader.
+     */
+    Class<?> loadIntoTarget(String name) throws ClassNotFoundException;
 
-	/**
-	 * Gets the byte array for a particular class.
-	 *
-	 * @param name The name of the class to retrieve
-	 * @param runTransformers Whether to run all transformers <i>except mixin</i> on the class
-	 */
-	byte[] getClassByteArray(String name, boolean runTransformers) throws IOException;
+    InputStream getResourceAsStream(String name);
 
-	Manifest getManifest(Path originPath);
+    ClassLoader getTargetClassLoader();
 
-	boolean isDevelopment();
+    /**
+     * Gets the byte array for a particular class.
+     *
+     * @param name The name of the class to retrieve
+     * @param runTransformers Whether to run all transformers <i>except mixin</i> on the class
+     */
+    byte[] getClassByteArray(String name, boolean runTransformers) throws IOException;
 
-	String getEntrypoint();
+    Manifest getManifest(Path originPath);
 
-	String getTargetNamespace();
+    boolean isDevelopment();
 
-	List<Path> getClassPath();
+    String getEntrypoint();
+
+    String getTargetNamespace();
+
+    List<Path> getClassPath();
 }

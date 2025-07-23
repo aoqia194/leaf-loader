@@ -33,63 +33,64 @@ import dev.aoqia.leaf.loader.impl.util.UrlUtil;
  */
 @Deprecated
 public class LeafLauncherBase implements LeafLauncher {
-	private final dev.aoqia.leaf.loader.impl.launch.LeafLauncher parent = dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase.getLauncher();
+    private final dev.aoqia.leaf.loader.impl.launch.LeafLauncher parent =
+        dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase.getLauncher();
 
-	public static Class<?> getClass(String className) throws ClassNotFoundException {
-		return Class.forName(className, true, getLauncher().getTargetClassLoader());
-	}
+    public static Class<?> getClass(String className) throws ClassNotFoundException {
+        return Class.forName(className, true, getLauncher().getTargetClassLoader());
+    }
 
-	public static LeafLauncher getLauncher() {
-		return new LeafLauncherBase();
-	}
+    public static LeafLauncher getLauncher() {
+        return new LeafLauncherBase();
+    }
 
-	@Override
-	public void propose(URL url) {
-		parent.addToClassPath(UrlUtil.asPath(url));
-	}
+    @Override
+    public void propose(URL url) {
+        parent.addToClassPath(UrlUtil.asPath(url));
+    }
 
-	@Override
-	public EnvType getEnvironmentType() {
-		return LeafLoader.getInstance().getEnvironmentType();
-	}
+    @Override
+    public EnvType getEnvironmentType() {
+        return LeafLoader.getInstance().getEnvironmentType();
+    }
 
-	@Override
-	public boolean isClassLoaded(String name) {
-		return parent.isClassLoaded(name);
-	}
+    @Override
+    public boolean isClassLoaded(String name) {
+        return parent.isClassLoaded(name);
+    }
 
-	@Override
-	public InputStream getResourceAsStream(String name) {
-		return parent.getResourceAsStream(name);
-	}
+    @Override
+    public InputStream getResourceAsStream(String name) {
+        return parent.getResourceAsStream(name);
+    }
 
-	@Override
-	public ClassLoader getTargetClassLoader() {
-		return parent.getTargetClassLoader();
-	}
+    @Override
+    public ClassLoader getTargetClassLoader() {
+        return parent.getTargetClassLoader();
+    }
 
-	@Override
-	public byte[] getClassByteArray(String name, boolean runTransformers) throws IOException {
-		return parent.getClassByteArray(name, runTransformers);
-	}
+    @Override
+    public byte[] getClassByteArray(String name, boolean runTransformers) throws IOException {
+        return parent.getClassByteArray(name, runTransformers);
+    }
 
-	@Override
-	public boolean isDevelopment() {
-		return LeafLoader.getInstance().isDevelopmentEnvironment();
-	}
+    @Override
+    public boolean isDevelopment() {
+        return LeafLoader.getInstance().isDevelopmentEnvironment();
+    }
 
-	@Override
-	public Collection<URL> getLoadTimeDependencies() {
-		List<URL> ret = new ArrayList<>();
+    @Override
+    public Collection<URL> getLoadTimeDependencies() {
+        List<URL> ret = new ArrayList<>();
 
-		for (Path path : parent.getClassPath()) {
-			try {
-				ret.add(UrlUtil.asUrl(path));
-			} catch (MalformedURLException e) {
-				throw new RuntimeException(e);
-			}
-		}
+        for (Path path : parent.getClassPath()) {
+            try {
+                ret.add(UrlUtil.asUrl(path));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 }

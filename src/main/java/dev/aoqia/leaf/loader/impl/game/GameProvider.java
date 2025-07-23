@@ -26,8 +26,8 @@ import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.util.Arguments;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 
-// Name directly referenced in dev.aoqia.leaf.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader
-// records.
+// Name directly referenced in dev.aoqia.leaf.loader.impl.launch.knot.Knot
+// findEmbedddedGameProvider() and service loader records.
 public interface GameProvider {
     String getGameId();
 
@@ -78,6 +78,7 @@ public interface GameProvider {
     class BuiltinMod {
         public final List<Path> paths;
         public final ModMetadata metadata;
+
         public BuiltinMod(List<Path> paths, ModMetadata metadata) {
             Objects.requireNonNull(paths, "null paths");
             Objects.requireNonNull(metadata, "null metadata");

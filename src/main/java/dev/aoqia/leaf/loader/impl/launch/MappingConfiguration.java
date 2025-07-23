@@ -26,177 +26,190 @@ import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
 import java.util.zip.ZipError;
 
-import org.jetbrains.annotations.Nullable;
-
 import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 import dev.aoqia.leaf.loader.impl.util.mappings.FilteringMappingVisitor;
+
 import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.format.MappingFormat;
 import net.fabricmc.mappingio.format.tiny.Tiny1FileReader;
 import net.fabricmc.mappingio.format.tiny.Tiny2FileReader;
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.mappingio.tree.MemoryMappingTree;
+import org.jetbrains.annotations.Nullable;
 
 public final class MappingConfiguration {
-	private static final boolean FIX_PACKAGE_ACCESS = SystemProperties.isSet(SystemProperties.FIX_PACKAGE_ACCESS);
+    private static final boolean FIX_PACKAGE_ACCESS = SystemProperties.isSet(
+        SystemProperties.FIX_PACKAGE_ACCESS);
 
-	private boolean initializedMetadata;
-	private boolean initializedMappings;
+    private boolean initializedMetadata;
+    private boolean initializedMappings;
 
-	@Nullable
-	private String gameId;
-	@Nullable
-	private String gameVersion;
-	@Nullable
-	private List<String> namespaces;
-	@Nullable
-	private MemoryMappingTree mappings;
+    @Nullable
+    private String gameId;
+    @Nullable
+    private String gameVersion;
+    @Nullable
+    private List<String> namespaces;
+    @Nullable
+    private MemoryMappingTree mappings;
 
-	@Nullable
-	public String getGameId() {
-		initializeMetadata();
+    @Nullable
+    public String getGameId() {
+        initializeMetadata();
 
-		return gameId;
-	}
+        return gameId;
+    }
 
-	@Nullable
-	public String getGameVersion() {
-		initializeMetadata();
+    @Nullable
+    public String getGameVersion() {
+        initializeMetadata();
 
-		return gameVersion;
-	}
+        return gameVersion;
+    }
 
-	@Nullable
-	public List<String> getNamespaces() {
-		initializeMetadata();
+    @Nullable
+    public List<String> getNamespaces() {
+        initializeMetadata();
 
-		return namespaces;
-	}
+        return namespaces;
+    }
 
-	public boolean matches(String gameId, String gameVersion) {
-		initializeMetadata();
+    public boolean matches(String gameId, String gameVersion) {
+        initializeMetadata();
 
-		return (this.gameId == null || gameId == null || gameId.equals(this.gameId))
-				&& (this.gameVersion == null || gameVersion == null || gameVersion.equals(this.gameVersion));
-	}
+        return (this.gameId == null || gameId == null || gameId.equals(this.gameId))
+               && (this.gameVersion == null || gameVersion == null ||
+                   gameVersion.equals(this.gameVersion));
+    }
 
-	public MappingTree getMappings() {
-		initializeMappings();
+    public MappingTree getMappings() {
+        initializeMappings();
 
-		return mappings;
-	}
+        return mappings;
+    }
 
-	public String getTargetNamespace() {
-		return LeafLauncherBase.getLauncher().isDevelopment() ? "named" : "official";
-	}
+    public String getTargetNamespace() {
+        return LeafLauncherBase.getLauncher().isDevelopment() ? "named" : "official";
+    }
 
-	public boolean requiresPackageAccessHack() {
-		// TODO
-		return FIX_PACKAGE_ACCESS || getTargetNamespace().equals("named");
-	}
+    public boolean requiresPackageAccessHack() {
+        // TODO
+        return FIX_PACKAGE_ACCESS || getTargetNamespace().equals("named");
+    }
 
-	private void initializeMetadata() {
-		if (initializedMetadata) return;
+    private void initializeMetadata() {
+        if (initializedMetadata) {
+            return;
+        }
 
-		final URLConnection connection = openMappings();
+        final URLConnection connection = openMappings();
 
-		try {
-			if (connection != null) {
-				if (connection instanceof JarURLConnection) {
-					final Manifest manifest = ((JarURLConnection) connection).getManifest();
+        try {
+            if (connection != null) {
+                if (connection instanceof JarURLConnection) {
+                    final Manifest manifest = ((JarURLConnection) connection).getManifest();
 
-					if (manifest != null) {
-						gameId = ManifestUtil.getManifestValue(manifest, new Name("Game-Id"));
-						gameVersion = ManifestUtil.getManifestValue(manifest, new Name("Game-Version"));
-					}
-				}
+                    if (manifest != null) {
+                        gameId = ManifestUtil.getManifestValue(manifest, new Name("Game-Id"));
+                        gameVersion = ManifestUtil.getManifestValue(manifest,
+                            new Name("Game-Version"));
+                    }
+                }
 
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-					final MappingFormat format = readMappingFormat(reader);
+                try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()))) {
+                    final MappingFormat format = readMappingFormat(reader);
 
-					switch (format) {
-					case TINY_FILE:
-						namespaces = Tiny1FileReader.getNamespaces(reader);
-						break;
-					case TINY_2_FILE:
-						namespaces = Tiny2FileReader.getNamespaces(reader);
-						break;
-					default:
-						throw new UnsupportedOperationException("Unsupported mapping format: " + format);
-					}
-				}
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Error reading mapping metadata", e);
-		}
+                    switch (format) {
+                        case TINY_FILE:
+                            namespaces = Tiny1FileReader.getNamespaces(reader);
+                            break;
+                        case TINY_2_FILE:
+                            namespaces = Tiny2FileReader.getNamespaces(reader);
+                            break;
+                        default:
+                            throw new UnsupportedOperationException(
+                                "Unsupported mapping format: " + format);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading mapping metadata", e);
+        }
 
-		initializedMetadata = true;
-	}
+        initializedMetadata = true;
+    }
 
-	private void initializeMappings() {
-		if (initializedMappings) return;
+    private void initializeMappings() {
+        if (initializedMappings) {
+            return;
+        }
 
-		initializeMetadata();
-		final URLConnection connection = openMappings();
+        initializeMetadata();
+        final URLConnection connection = openMappings();
 
-		if (connection != null) {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-				long time = System.currentTimeMillis();
-				mappings = new MemoryMappingTree();
-				final FilteringMappingVisitor mappingFilter = new FilteringMappingVisitor(mappings);
+        if (connection != null) {
+            try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(connection.getInputStream()))) {
+                long time = System.currentTimeMillis();
+                mappings = new MemoryMappingTree();
+                final FilteringMappingVisitor mappingFilter = new FilteringMappingVisitor(mappings);
 
-				final MappingFormat format = readMappingFormat(reader);
+                final MappingFormat format = readMappingFormat(reader);
 
-				switch (format) {
-				case TINY_FILE:
-					Tiny1FileReader.read(reader, mappingFilter);
-					break;
-				case TINY_2_FILE:
-					Tiny2FileReader.read(reader, mappingFilter);
-					break;
-				default:
-					throw new UnsupportedOperationException("Unsupported mapping format: " + format);
-				}
+                switch (format) {
+                    case TINY_FILE:
+                        Tiny1FileReader.read(reader, mappingFilter);
+                        break;
+                    case TINY_2_FILE:
+                        Tiny2FileReader.read(reader, mappingFilter);
+                        break;
+                    default:
+                        throw new UnsupportedOperationException(
+                            "Unsupported mapping format: " + format);
+                }
 
-				Log.debug(LogCategory.MAPPINGS, "Loading mappings took %d ms", System.currentTimeMillis() - time);
-			} catch (IOException e) {
-				throw new RuntimeException("Error reading mappings", e);
-			}
-		}
+                Log.debug(LogCategory.MAPPINGS, "Loading mappings took %d ms",
+                    System.currentTimeMillis() - time);
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading mappings", e);
+            }
+        }
 
-		if (mappings == null) {
-			Log.info(LogCategory.MAPPINGS, "Mappings not present!");
-			mappings = new MemoryMappingTree();
-		}
+        if (mappings == null) {
+            Log.info(LogCategory.MAPPINGS, "Mappings not present!");
+            mappings = new MemoryMappingTree();
+        }
 
-		initializedMappings = true;
-	}
+        initializedMappings = true;
+    }
 
-	@Nullable
-	private URLConnection openMappings() {
-		URL url = MappingConfiguration.class.getClassLoader().getResource("mappings/mappings.tiny");
+    @Nullable
+    private URLConnection openMappings() {
+        URL url = MappingConfiguration.class.getClassLoader().getResource("mappings/mappings.tiny");
 
-		if (url != null) {
-			try {
-				return url.openConnection();
-			} catch (IOException | ZipError e) {
-				throw new RuntimeException("Error reading "+url, e);
-			}
-		}
+        if (url != null) {
+            try {
+                return url.openConnection();
+            } catch (IOException | ZipError e) {
+                throw new RuntimeException("Error reading " + url, e);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private MappingFormat readMappingFormat(BufferedReader reader) throws IOException {
-		// We will only ever need to read tiny here
-		// so to strip the other formats from the included copy of mapping IO, don't use MappingReader.read()
-		reader.mark(4096);
-		final MappingFormat format = MappingReader.detectFormat(reader);
-		reader.reset();
+    private MappingFormat readMappingFormat(BufferedReader reader) throws IOException {
+        // We will only ever need to read tiny here
+        // so to strip the other formats from the included copy of mapping IO, don't use
+        // MappingReader.read()
+        reader.mark(4096);
+        final MappingFormat format = MappingReader.detectFormat(reader);
+        reader.reset();
 
-		return format;
-	}
+        return format;
+    }
 }
