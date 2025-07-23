@@ -3,7 +3,6 @@ import dev.aoqia.leaf.loom.build.nesting.JarNester
 import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.NodeChildren
-import org.gradle.kotlin.dsl.provideDelegate
 import org.jreleaser.model.Active
 import org.jreleaser.model.Http
 import org.slf4j.LoggerFactory
@@ -51,8 +50,8 @@ allprojects {
 
     val constantsSource =
         rootProject.file("src/main/java/dev/aoqia/leaf/loader/impl/LeafLoaderImpl.java").readText()
-    version =
-        Regex("""\s+VERSION\s*=\s*"(.*)";""").find(constantsSource)!!.groupValues[1] + if (isCiEnv) "" else ".local"
+    version = Regex("""\s+VERSION\s*=\s*"(.*)";""")
+        .find(constantsSource)!!.groupValues[1] + if (isCiEnv) "" else ".local"
 
     repositories {
         maven {
@@ -197,13 +196,13 @@ tasks {
         archiveClassifier = "disabled"
     }
 
-    test {
-        useJUnitPlatform()
-    }
-
     shadowJar {
         // Has stupid defaults, make our own.
         enabled = false
+    }
+
+    test {
+        useJUnitPlatform()
     }
 
     publish {
