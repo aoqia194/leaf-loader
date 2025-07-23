@@ -142,20 +142,17 @@ public final class GameProviderHelper {
         return null;
     }
 
-    public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId,
-        String gameVersion, Path gameDir, LeafLauncher launcher) {
-        return deobfuscate(inputFileMap, gameId, gameVersion, gameDir, launcher, "official");
-    }
-
-    public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId,
-        String gameVersion, Path gameDir, LeafLauncher launcher, String sourceNamespace) {
+    public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap,
+        String sourceNamespace, String gameId, String gameVersion, Path gameDir,
+        LeafLauncher launcher) {
         Log.debug(LogCategory.GAME_REMAP, "Requesting deobfuscation of %s", inputFileMap);
 
-        if (launcher.isDevelopment()) { // in-dev is already deobfuscated
+        MappingConfiguration mappingConfig = launcher.getMappingConfiguration();
+        String targetNamespace = mappingConfig.getRuntimeNamespace();
+
+        if (sourceNamespace.equals(targetNamespace)) {
             return inputFileMap;
         }
-
-        MappingConfiguration mappingConfig = launcher.getMappingConfiguration();
 
         if (!mappingConfig.matches(gameId, gameVersion)) {
             String mappingsGameId = mappingConfig.getGameId();
@@ -171,14 +168,16 @@ public final class GameProviderHelper {
                     gameVersion));
         }
 
-        String targetNamespace = mappingConfig.getTargetNamespace();
         List<String> namespaces = mappingConfig.getNamespaces();
 
-        if (namespaces == null) {
+        if (namespaces == null
+            || !namespaces.contains(sourceNamespace)
+            || !namespaces.contains(targetNamespace)) {
             Log.debug(LogCategory.GAME_REMAP, "No mappings, using input files");
             return inputFileMap;
         }
 
+        // This will *literally* not execute ever. Player left it in the loader though, so I will.
         if (!namespaces.contains(targetNamespace) || !namespaces.contains(sourceNamespace)) {
             Log.debug(LogCategory.GAME_REMAP, "Missing namespace in mappings, using input files");
             return inputFileMap;

@@ -166,11 +166,6 @@ public class ZomboidGameProvider implements GameProvider {
     }
 
     @Override
-    public boolean isObfuscated() {
-        return false;
-    }
-
-    @Override
     public boolean requiresUrlClassLoader() {
         return hasModLoader;
     }
@@ -257,7 +252,25 @@ public class ZomboidGameProvider implements GameProvider {
     public void initialize(LeafLauncher launcher) {
         launcher.setValidParentClassPath(validParentClassPath);
 
-        if (isObfuscated()) {
+        String gameNs = System.getProperty(SystemProperties.GAME_MAPPING_NAMESPACE);
+
+        if (gameNs == null) {
+            List<String> mappingNamespaces;
+
+            if (launcher.isDevelopment()) {
+                gameNs = MappingConfiguration.NAMED_NAMESPACE;
+            } else if (
+                (mappingNamespaces = launcher.getMappingConfiguration().getNamespaces()) == null
+                || mappingNamespaces.contains(MappingConfiguration.OFFICIAL_NAMESPACE)) {
+                gameNs = MappingConfiguration.OFFICIAL_NAMESPACE;
+            } else {
+                gameNs = envType == EnvType.CLIENT ? MappingConfiguration.CLIENT_OFFICIAL_NAMESPACE
+                    : MappingConfiguration.SERVER_OFFICIAL_NAMESPACE;
+            }
+        }
+
+        // Game is obfuscated or in another namespace, so we remap.
+        if (!gameNs.equals(launcher.getMappingConfiguration().getRuntimeNamespace())) {
             Map<String, Path> obfJars = new HashMap<>(3);
             String[] names = new String[gameJars.size()];
 
@@ -276,19 +289,8 @@ public class ZomboidGameProvider implements GameProvider {
                 names[i] = name;
             }
 
-            String sourceNamespace = "official";
-
-            MappingConfiguration mappingConfig = launcher.getMappingConfiguration();
-            List<String> mappingNamespaces = mappingConfig.getNamespaces();
-
-            if (mappingNamespaces != null && !mappingNamespaces.contains(sourceNamespace)) {
-                sourceNamespace = envType == EnvType.CLIENT ? "clientOfficial" : "serverOfficial";
-            }
-
-            obfJars = GameProviderHelper.deobfuscate(obfJars,
-                getGameId(), getNormalizedGameVersion(),
-                getLaunchDirectory(),
-                launcher, sourceNamespace);
+            obfJars = GameProviderHelper.deobfuscate(obfJars, gameNs, getGameId(),
+                getNormalizedGameVersion(), getLaunchDirectory(), launcher);
 
             for (int i = 0; i < gameJars.size(); i++) {
                 Path newJar = obfJars.get(names[i]);

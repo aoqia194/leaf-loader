@@ -22,6 +22,12 @@ public final class SystemProperties {
     // Should leaf use a class loader that is an instance of URLClassLoader?
     public static final String USE_COMPAT_CL = "leaf.loader.useCompatibilityClassLoader";
     public static final String SIDE = "leaf.side";
+    // Mapping namespace used by the game, defaults to named if DEVELOPMENT is set or official
+    // otherwise.
+    public static final String GAME_MAPPING_NAMESPACE = "leaf.gameMappingNamespace";
+    // Mapping namespace to use at runtime, defaults to named if DEVELOPMENT is set or official
+    // otherwise.
+    public static final String RUNTIME_MAPPING_NAMESPACE = "leaf.runtimeMappingNamespace";
     // skips the embedded Zbomoid game provider, letting ServiceLoader-provided ones take over
     public static final String SKIP_ZOMBOID_PROVIDER = "leaf.skipZomboidProvider";
     // game jar paths for common/client/server, replaces lookup from class path if present, env

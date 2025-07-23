@@ -61,7 +61,7 @@ public interface LeafLauncher {
 
     String getEntrypoint();
 
-    String getTargetNamespace();
+    String getDefaultRuntimeNamespace();
 
     List<Path> getClassPath();
 }

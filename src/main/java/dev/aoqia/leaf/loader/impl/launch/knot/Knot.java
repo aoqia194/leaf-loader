@@ -42,9 +42,6 @@ import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public final class Knot extends LeafLauncherBase {
-    private static final boolean IS_DEVELOPMENT = SystemProperties.isSet(
-        SystemProperties.DEVELOPMENT);
-
     static {
         LoaderUtil.verifyNotInTargetCl(Knot.class);
         LoaderUtil.verifyClasspath();
@@ -212,12 +209,11 @@ public final class Knot extends LeafLauncherBase {
             provider);
         ClassLoader cl = classLoader.getClassLoader();
 
-        provider.initialize(this);
-
         Thread.currentThread().setContextClassLoader(cl);
 
         LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
         loader.setGameProvider(provider);
+        provider.initialize(this);
         loader.load();
         loader.freeze();
 
@@ -359,19 +355,8 @@ public final class Knot extends LeafLauncherBase {
     }
 
     @Override
-    public boolean isDevelopment() {
-        return IS_DEVELOPMENT;
-    }
-
-    @Override
     public String getEntrypoint() {
         return provider.getEntrypoint();
-    }
-
-    @Override
-    public String getTargetNamespace() {
-        // TODO: Won't work outside of Yarn
-        return IS_DEVELOPMENT ? "named" : "official";
     }
 
     @Override

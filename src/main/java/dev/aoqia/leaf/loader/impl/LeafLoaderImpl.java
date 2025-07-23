@@ -37,6 +37,7 @@ import dev.aoqia.leaf.loader.impl.discovery.*;
 import dev.aoqia.leaf.loader.impl.entrypoint.EntrypointStorage;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
 import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
 import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
@@ -440,10 +441,12 @@ public final class LeafLoaderImpl extends LeafLoader {
     @Override
     public MappingResolver getMappingResolver() {
         if (mappingResolver == null) {
-            final String targetNamespace = LeafLauncherBase.getLauncher().getTargetNamespace();
-            mappingResolver = new LazyMappingResolver(() -> new MappingResolverImpl(
-                LeafLauncherBase.getLauncher().getMappingConfiguration().getMappings(),
-                targetNamespace), targetNamespace);
+            MappingConfiguration config = LeafLauncherBase.getLauncher().getMappingConfiguration();
+            String runtimeNamespace = config.getRuntimeNamespace();
+
+            mappingResolver = new LazyMappingResolver(
+                () -> new MappingResolverImpl(config.getMappings(), runtimeNamespace),
+                runtimeNamespace);
         }
 
         return mappingResolver;
@@ -644,7 +647,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 
             try (BufferedReader reader = Files.newBufferedReader(path)) {
                 accessWidenerReader.read(reader,
-                    LeafLauncherBase.getLauncher().getTargetNamespace());
+                    LeafLauncherBase.getLauncher().getMappingConfiguration().getRuntimeNamespace());
             } catch (Exception e) {
                 throw new RuntimeException(
                     "Failed to read accessWidener file from mod " + modMetadata.getId(), e);

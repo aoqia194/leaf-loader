@@ -48,8 +48,6 @@ public interface GameProvider {
 
     Path getLaunchDirectory();
 
-    boolean isObfuscated();
-
     boolean requiresUrlClassLoader();
 
     boolean isEnabled();
@@ -71,6 +69,10 @@ public interface GameProvider {
     Arguments getArguments();
 
     String[] getLaunchArguments(boolean sanitize);
+
+    default String getRuntimeNamespace(String defaultNs) {
+        return defaultNs;
+    }
 
     default boolean canOpenErrorGui() {
         return true;

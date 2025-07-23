@@ -26,6 +26,7 @@ import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
 import java.util.zip.ZipError;
 
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
@@ -41,11 +42,18 @@ import net.fabricmc.mappingio.tree.MemoryMappingTree;
 import org.jetbrains.annotations.Nullable;
 
 public final class MappingConfiguration {
+    // Same namespace between client and server
+    public static final String OFFICIAL_NAMESPACE = "official";
+    // Separate client and server namespaces;
+    public static final String CLIENT_OFFICIAL_NAMESPACE = "clientOfficial";
+    public static final String SERVER_OFFICIAL_NAMESPACE = "serverOfficial";
+    // public static final String INTERMEDIARY_NAMESPACE = "intermediary";
+    public static final String NAMED_NAMESPACE = "named";
     private static final boolean FIX_PACKAGE_ACCESS = SystemProperties.isSet(
         SystemProperties.FIX_PACKAGE_ACCESS);
-
     private boolean initializedMetadata;
     private boolean initializedMappings;
+    private String namespace;
 
     @Nullable
     private String gameId;
@@ -91,13 +99,18 @@ public final class MappingConfiguration {
         return mappings;
     }
 
-    public String getTargetNamespace() {
-        return LeafLauncherBase.getLauncher().isDevelopment() ? "named" : "official";
+    public String getRuntimeNamespace() {
+        if (namespace == null) {
+            namespace = LeafLoaderImpl.INSTANCE.getGameProvider()
+                .getRuntimeNamespace(LeafLauncherBase.getLauncher().getDefaultRuntimeNamespace());
+        }
+
+        return namespace;
     }
 
     public boolean requiresPackageAccessHack() {
         // TODO
-        return FIX_PACKAGE_ACCESS || getTargetNamespace().equals("named");
+        return FIX_PACKAGE_ACCESS || getRuntimeNamespace().equals(NAMED_NAMESPACE);
     }
 
     private void initializeMetadata() {

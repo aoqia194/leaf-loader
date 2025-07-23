@@ -25,6 +25,7 @@ import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.gui.LeafGuiEntry;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
@@ -32,6 +33,8 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 public abstract class LeafLauncherBase implements LeafLauncher {
+    protected static final boolean IS_DEVELOPMENT = SystemProperties.isSet(
+        SystemProperties.DEVELOPMENT);
     private static final MappingConfiguration mappingConfiguration = new MappingConfiguration();
     private static boolean mixinReady;
     private static Map<String, Object> properties;
@@ -143,5 +146,21 @@ public abstract class LeafLauncherBase implements LeafLauncher {
     @Override
     public MappingConfiguration getMappingConfiguration() {
         return mappingConfiguration;
+    }
+
+    @Override
+    public boolean isDevelopment() {
+        return false;
+    }
+
+    @Override
+    public String getDefaultRuntimeNamespace() {
+        String ret = System.getProperty(SystemProperties.RUNTIME_MAPPING_NAMESPACE);
+        if (ret != null) {
+            return ret;
+        }
+
+        return IS_DEVELOPMENT ? MappingConfiguration.NAMED_NAMESPACE
+            : MappingConfiguration.OFFICIAL_NAMESPACE;
     }
 }
