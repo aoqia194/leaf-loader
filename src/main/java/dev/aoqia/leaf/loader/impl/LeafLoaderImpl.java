@@ -190,6 +190,10 @@ public final class LeafLoaderImpl extends LeafLoader {
         dumpModList(modCandidates);
         dumpNonLeafMods(discoverer.getNonLeafMods());
 
+        if (SystemProperties.isSet(SystemProperties.DRY_RUN_MOD_DISCOVERY)) {
+            throw new RuntimeException("Dry run mod discovery was set. Stopping before mod init.");
+        }
+
         Path cacheDir = gameDir.resolve(CACHE_DIR_NAME);
         Path outputdir = cacheDir.resolve(PROCESSED_MODS_DIR_NAME);
 

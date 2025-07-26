@@ -54,6 +54,9 @@ public final class SystemProperties {
     public static final String GAME_WORKSHOP_PATH = "leaf.gameWorkshopPath";
     // Disables workshop mod loading for developer environments.
     public static final String DISABLE_WORKSHOP_MODS = "leaf.disableWorkshopMods";
+    // Does a dry run of the mod init stage. Stops the loader after mods are discovered.
+    // The mods are not and should not be loaded at all.
+    public static final String DRY_RUN_MOD_DISCOVERY = "leaf.dryRunModDiscovery";
     // additional mods to load (path separator separated paths, @ prefix for meta-file with each
     // line referencing an actual file)
     public static final String ADD_MODS = "leaf.addMods";
