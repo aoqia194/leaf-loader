@@ -270,7 +270,8 @@ public class ZomboidGameProvider implements GameProvider {
         }
 
         // Game is obfuscated or in another namespace, so we remap.
-        if (!gameNs.equals(launcher.getMappingConfiguration().getRuntimeNamespace())) {
+        // NOTE: False always here due to Project Zomboid not yet being obfuscated.
+        if (false && !gameNs.equals(launcher.getMappingConfiguration().getRuntimeNamespace())) {
             Map<String, Path> obfJars = new HashMap<>(3);
             String[] names = new String[gameJars.size()];
 
