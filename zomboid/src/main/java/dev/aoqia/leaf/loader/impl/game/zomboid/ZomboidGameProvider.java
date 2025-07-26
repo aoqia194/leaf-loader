@@ -51,6 +51,13 @@ public class ZomboidGameProvider implements GameProvider {
     private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = {};
 
     private static final Set<String> SENSITIVE_ARGS = new HashSet<>(Collections.emptyList());
+    private static final Set<BuiltinTransform> TRANSFORM_WIDENALL_STRIPENV_CLASSTWEAKS = EnumSet.of(
+        BuiltinTransform.WIDEN_ALL_PACKAGE_ACCESS, BuiltinTransform.STRIP_ENVIRONMENT,
+        BuiltinTransform.CLASS_TWEAKS);
+    private static final Set<BuiltinTransform> TRANSFORM_WIDENALL_CLASSTWEAKS = EnumSet.of(
+        BuiltinTransform.WIDEN_ALL_PACKAGE_ACCESS, BuiltinTransform.CLASS_TWEAKS);
+    private static final Set<BuiltinTransform> TRANSFORM_STRIPENV = EnumSet.of(
+        BuiltinTransform.STRIP_ENVIRONMENT);
     private final List<Path> gameJars = new ArrayList<>(
         2); // env game jar and potentially common game jar
     private final Set<Path> logJars = new HashSet<>();
@@ -128,6 +135,23 @@ public class ZomboidGameProvider implements GameProvider {
     }
 
     @Override
+    public Set<BuiltinTransform> getBuiltinTransforms(String className) {
+        final boolean isZomboidClass = className.startsWith("zomboid.");
+        if (!isZomboidClass) {
+            // mod class TODO: exclude game libs
+            return TRANSFORM_STRIPENV;
+        }
+
+        // Combined client+server JAR, strip back down to production equivalent.
+        if (LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+            return TRANSFORM_WIDENALL_STRIPENV_CLASSTWEAKS;
+        }
+
+        // Environment-specific JAR, inherently env stripped.
+        return TRANSFORM_WIDENALL_CLASSTWEAKS;
+    }
+
+    @Override
     public String getEntrypoint() {
         return entrypoint;
     }
@@ -139,11 +163,6 @@ public class ZomboidGameProvider implements GameProvider {
         }
 
         return getLaunchDirectory(arguments);
-    }
-
-    @Override
-    public boolean isObfuscated() {
-        return false;
     }
 
     @Override
@@ -233,7 +252,26 @@ public class ZomboidGameProvider implements GameProvider {
     public void initialize(LeafLauncher launcher) {
         launcher.setValidParentClassPath(validParentClassPath);
 
-        if (isObfuscated()) {
+        String gameNs = System.getProperty(SystemProperties.GAME_MAPPING_NAMESPACE);
+
+        if (gameNs == null) {
+            List<String> mappingNamespaces;
+
+            if (launcher.isDevelopment()) {
+                gameNs = MappingConfiguration.NAMED_NAMESPACE;
+            } else if (
+                (mappingNamespaces = launcher.getMappingConfiguration().getNamespaces()) == null
+                || mappingNamespaces.contains(MappingConfiguration.OFFICIAL_NAMESPACE)) {
+                gameNs = MappingConfiguration.OFFICIAL_NAMESPACE;
+            } else {
+                gameNs = envType == EnvType.CLIENT ? MappingConfiguration.CLIENT_OFFICIAL_NAMESPACE
+                    : MappingConfiguration.SERVER_OFFICIAL_NAMESPACE;
+            }
+        }
+
+        // Game is obfuscated or in another namespace, so we remap.
+        // NOTE: False always here due to Project Zomboid not yet being obfuscated.
+        if (false && !gameNs.equals(launcher.getMappingConfiguration().getRuntimeNamespace())) {
             Map<String, Path> obfJars = new HashMap<>(3);
             String[] names = new String[gameJars.size()];
 
@@ -252,19 +290,8 @@ public class ZomboidGameProvider implements GameProvider {
                 names[i] = name;
             }
 
-            String sourceNamespace = "official";
-
-            MappingConfiguration mappingConfig = launcher.getMappingConfiguration();
-            List<String> mappingNamespaces = mappingConfig.getNamespaces();
-
-            if (mappingNamespaces != null && !mappingNamespaces.contains(sourceNamespace)) {
-                sourceNamespace = envType == EnvType.CLIENT ? "clientOfficial" : "serverOfficial";
-            }
-
-            obfJars = GameProviderHelper.deobfuscate(obfJars,
-                getGameId(), getNormalizedGameVersion(),
-                getLaunchDirectory(),
-                launcher, sourceNamespace);
+            obfJars = GameProviderHelper.deobfuscate(obfJars, gameNs, getGameId(),
+                getNormalizedGameVersion(), getLaunchDirectory(), launcher);
 
             for (int i = 0; i < gameJars.size(); i++) {
                 Path newJar = obfJars.get(names[i]);

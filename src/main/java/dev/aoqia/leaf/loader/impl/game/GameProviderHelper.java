@@ -15,6 +15,8 @@
  */
 package dev.aoqia.leaf.loader.impl.game;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -41,6 +43,7 @@ import dev.aoqia.leaf.loader.impl.util.log.TinyRemapperLoggerAdapter;
 
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.tinyremapper.*;
+import org.jetbrains.annotations.Nullable;
 
 public final class GameProviderHelper {
     private static boolean emittedInfo = false;
@@ -70,6 +73,61 @@ public final class GameProviderHelper {
         }
 
         return LoaderUtil.normalizeExistingPath(path);
+    }
+
+    public static @Nullable List<Path> getLibraries(String property) {
+        String value = System.getProperty(property);
+        if (value == null) {
+            return null;
+        }
+
+        List<Path> ret = new ArrayList<>();
+        for (String pathStr : value.split(File.pathSeparator)) {
+            if (pathStr.isEmpty()) {
+                continue;
+            }
+
+            if (pathStr.startsWith("@")) {
+                Path path = Paths.get(pathStr.substring(1));
+
+                if (!Files.isRegularFile(path)) {
+                    Log.warn(LogCategory.GAME_PROVIDER,
+                        "Skipping missing/invalid library list file %s", path);
+                    continue;
+                }
+
+                try (BufferedReader reader = Files.newBufferedReader(path)) {
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        line = line.trim();
+                        if (line.isEmpty()) {
+                            continue;
+                        }
+
+                        addLibrary(line, ret);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(
+                        String.format("Error reading library list file %s", path), e);
+                }
+            } else {
+                addLibrary(pathStr, ret);
+            }
+        }
+
+        return ret;
+    }
+
+    public static void addLibrary(String pathStr, List<Path> out) {
+        Path path = LoaderUtil.normalizePath(Paths.get(pathStr));
+
+        if (!Files.exists(path)) {
+            // Missing.
+            Log.warn(LogCategory.GAME_PROVIDER, "Skipping missing library path %s", path);
+        } else {
+            out.add(path);
+        }
     }
 
     public static Optional<Path> getSource(ClassLoader loader, String filename) {
@@ -142,20 +200,17 @@ public final class GameProviderHelper {
         return null;
     }
 
-    public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId,
-        String gameVersion, Path gameDir, LeafLauncher launcher) {
-        return deobfuscate(inputFileMap, gameId, gameVersion, gameDir, launcher, "official");
-    }
-
-    public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap, String gameId,
-        String gameVersion, Path gameDir, LeafLauncher launcher, String sourceNamespace) {
+    public static Map<String, Path> deobfuscate(Map<String, Path> inputFileMap,
+        String sourceNamespace, String gameId, String gameVersion, Path gameDir,
+        LeafLauncher launcher) {
         Log.debug(LogCategory.GAME_REMAP, "Requesting deobfuscation of %s", inputFileMap);
 
-        if (launcher.isDevelopment()) { // in-dev is already deobfuscated
+        MappingConfiguration mappingConfig = launcher.getMappingConfiguration();
+        String targetNamespace = mappingConfig.getRuntimeNamespace();
+
+        if (sourceNamespace.equals(targetNamespace)) {
             return inputFileMap;
         }
-
-        MappingConfiguration mappingConfig = launcher.getMappingConfiguration();
 
         if (!mappingConfig.matches(gameId, gameVersion)) {
             String mappingsGameId = mappingConfig.getGameId();
@@ -171,14 +226,16 @@ public final class GameProviderHelper {
                     gameVersion));
         }
 
-        String targetNamespace = mappingConfig.getTargetNamespace();
         List<String> namespaces = mappingConfig.getNamespaces();
 
-        if (namespaces == null) {
+        if (namespaces == null
+            || !namespaces.contains(sourceNamespace)
+            || !namespaces.contains(targetNamespace)) {
             Log.debug(LogCategory.GAME_REMAP, "No mappings, using input files");
             return inputFileMap;
         }
 
+        // This will *literally* not execute ever. Player left it in the loader though, so I will.
         if (!namespaces.contains(targetNamespace) || !namespaces.contains(sourceNamespace)) {
             Log.debug(LogCategory.GAME_REMAP, "Missing namespace in mappings, using input files");
             return inputFileMap;

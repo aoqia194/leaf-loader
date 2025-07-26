@@ -37,6 +37,7 @@ import dev.aoqia.leaf.loader.impl.discovery.*;
 import dev.aoqia.leaf.loader.impl.entrypoint.EntrypointStorage;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
 import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
 import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
@@ -60,7 +61,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 
     public static final int ASM_VERSION = Opcodes.ASM9;
 
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.3.0";
     public static final String MOD_ID = "leafloader";
 
     // Relative to game dir.
@@ -188,6 +189,10 @@ public final class LeafLoaderImpl extends LeafLoader {
 
         dumpModList(modCandidates);
         dumpNonLeafMods(discoverer.getNonLeafMods());
+
+        if (SystemProperties.isSet(SystemProperties.DRY_RUN_MOD_DISCOVERY)) {
+            throw new RuntimeException("Dry run mod discovery was set. Stopping before mod init.");
+        }
 
         Path cacheDir = gameDir.resolve(CACHE_DIR_NAME);
         Path outputdir = cacheDir.resolve(PROCESSED_MODS_DIR_NAME);
@@ -440,10 +445,12 @@ public final class LeafLoaderImpl extends LeafLoader {
     @Override
     public MappingResolver getMappingResolver() {
         if (mappingResolver == null) {
-            final String targetNamespace = LeafLauncherBase.getLauncher().getTargetNamespace();
-            mappingResolver = new LazyMappingResolver(() -> new MappingResolverImpl(
-                LeafLauncherBase.getLauncher().getMappingConfiguration().getMappings(),
-                targetNamespace), targetNamespace);
+            MappingConfiguration config = LeafLauncherBase.getLauncher().getMappingConfiguration();
+            String runtimeNamespace = config.getRuntimeNamespace();
+
+            mappingResolver = new LazyMappingResolver(
+                () -> new MappingResolverImpl(config.getMappings(), runtimeNamespace),
+                runtimeNamespace);
         }
 
         return mappingResolver;
@@ -472,6 +479,11 @@ public final class LeafLoaderImpl extends LeafLoader {
     @Override
     public EnvType getEnvironmentType() {
         return LeafLauncherBase.getLauncher().getEnvironmentType();
+    }
+
+    @Override
+    public String getRawGameVersion() {
+        return provider.getRawGameVersion();
     }
 
     @Override
@@ -644,7 +656,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 
             try (BufferedReader reader = Files.newBufferedReader(path)) {
                 accessWidenerReader.read(reader,
-                    LeafLauncherBase.getLauncher().getTargetNamespace());
+                    LeafLauncherBase.getLauncher().getMappingConfiguration().getRuntimeNamespace());
             } catch (Exception e) {
                 throw new RuntimeException(
                     "Failed to read accessWidener file from mod " + modMetadata.getId(), e);

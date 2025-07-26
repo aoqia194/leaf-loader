@@ -32,6 +32,7 @@ import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.util.FileSystemUtil;
 import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
@@ -47,7 +48,6 @@ import org.objectweb.asm.commons.Remapper;
 public final class RuntimeModRemapper {
     private static final String REMAP_TYPE_MANIFEST_KEY = "Leaf-Loom-Mixin-Remap-Type";
     private static final String REMAP_TYPE_STATIC = "static";
-    private static final String SOURCE_NAMESPACE = "official";
 
     public static void remap(Collection<ModCandidateImpl> modCandidates, Path tmpDir,
         Path outputDir) {
@@ -64,15 +64,21 @@ public final class RuntimeModRemapper {
             return;
         }
 
-        Map<ModCandidateImpl, RemapInfo> infoMap = new HashMap<>();
+        MappingConfiguration config = LeafLauncherBase.getLauncher().getMappingConfiguration();
+        String modNs = MappingConfiguration.OFFICIAL_NAMESPACE;
+        String runtimeNs = config.getRuntimeNamespace();
+        if (modNs.equals(runtimeNs)) {
+            return;
+        }
 
+        Map<ModCandidateImpl, RemapInfo> infoMap = new HashMap<>();
         TinyRemapper remapper = null;
 
         try {
             LeafLauncher launcher = LeafLauncherBase.getLauncher();
 
             AccessWidener mergedAccessWidener = new AccessWidener();
-            mergedAccessWidener.visitHeader(SOURCE_NAMESPACE);
+            mergedAccessWidener.visitHeader(modNs);
 
             for (ModCandidateImpl mod : modsToRemap) {
                 RemapInfo info = new RemapInfo();
@@ -114,8 +120,7 @@ public final class RuntimeModRemapper {
             remapper = TinyRemapper.newRemapper(
                     new TinyRemapperLoggerAdapter(LogCategory.MOD_REMAP))
                 .withMappings(TinyUtils.createMappingProvider(
-                    launcher.getMappingConfiguration().getMappings(), SOURCE_NAMESPACE,
-                    launcher.getTargetNamespace()))
+                    launcher.getMappingConfiguration().getMappings(), modNs, runtimeNs))
                 .renameInvalidLocals(false)
                 .extension(new MixinExtension(remapMixins::contains))
                 .extraAnalyzeVisitor((mrjVersion, className, next) ->
@@ -172,7 +177,7 @@ public final class RuntimeModRemapper {
 
                 if (info.accessWidener != null) {
                     info.accessWidener = remapAccessWidener(info.accessWidener,
-                        remapper.getRemapper(), launcher.getTargetNamespace());
+                        remapper.getEnvironment().getRemapper(), modNs, runtimeNs);
                 }
             }
 
@@ -229,12 +234,12 @@ public final class RuntimeModRemapper {
     }
 
     private static byte[] remapAccessWidener(byte[] input, Remapper remapper,
-        String targetNamespace) {
+        String modNs, String runtimeNs) {
         AccessWidenerWriter writer = new AccessWidenerWriter();
         AccessWidenerRemapper remappingDecorator = new AccessWidenerRemapper(writer, remapper,
-            SOURCE_NAMESPACE, targetNamespace);
+            modNs, runtimeNs);
         AccessWidenerReader accessWidenerReader = new AccessWidenerReader(remappingDecorator);
-        accessWidenerReader.read(input, SOURCE_NAMESPACE);
+        accessWidenerReader.read(input, modNs);
         return writer.write();
     }
 
@@ -259,8 +264,7 @@ public final class RuntimeModRemapper {
      * <p>This is typically the case when a mod was built without the Mixin annotation processor
      * generating refmaps.
      */
-    private static boolean requiresMixinRemap(Path inputPath) throws IOException,
-        URISyntaxException {
+    private static boolean requiresMixinRemap(Path inputPath) throws IOException {
         final Manifest manifest = ManifestUtil.readManifest(inputPath);
         if (manifest == null) {
             return false;

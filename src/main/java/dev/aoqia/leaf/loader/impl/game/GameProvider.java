@@ -19,15 +19,18 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+import dev.aoqia.leaf.api.Environment;
 import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.util.Arguments;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
-// Name directly referenced in dev.aoqia.leaf.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader
-// records.
+// Name directly referenced in dev.aoqia.leaf.loader.impl.launch.knot.Knot
+// findEmbedddedGameProvider() and service loader records.
 public interface GameProvider {
     String getGameId();
 
@@ -39,11 +42,11 @@ public interface GameProvider {
 
     Collection<BuiltinMod> getBuiltinMods();
 
+    Set<BuiltinTransform> getBuiltinTransforms(String className);
+
     String getEntrypoint();
 
     Path getLaunchDirectory();
-
-    boolean isObfuscated();
 
     boolean requiresUrlClassLoader();
 
@@ -67,6 +70,10 @@ public interface GameProvider {
 
     String[] getLaunchArguments(boolean sanitize);
 
+    default String getRuntimeNamespace(String defaultNs) {
+        return defaultNs;
+    }
+
     default boolean canOpenErrorGui() {
         return true;
     }
@@ -75,9 +82,30 @@ public interface GameProvider {
         return LoaderUtil.hasAwtSupport();
     }
 
+    enum BuiltinTransform {
+        /**
+         * Removes classes, fields, and methods annotated with a different
+         * {@literal @}{@link Environment} from the current runtime.
+         */
+        STRIP_ENVIRONMENT,
+        /**
+         * Widens all package-internal access modifiers to public (protected and package-private,
+         * but not private)
+         *
+         * <p>This only has an effect if the mappings or
+         * {@link SystemProperties#FIX_PACKAGE_ACCESS} require these access modifications.</p>
+         */
+        WIDEN_ALL_PACKAGE_ACCESS,
+        /**
+         * Applies class tweakers, including access wideners, as supplied by mods.
+         */
+        CLASS_TWEAKS,
+    }
+
     class BuiltinMod {
         public final List<Path> paths;
         public final ModMetadata metadata;
+
         public BuiltinMod(List<Path> paths, ModMetadata metadata) {
             Objects.requireNonNull(paths, "null paths");
             Objects.requireNonNull(metadata, "null metadata");
