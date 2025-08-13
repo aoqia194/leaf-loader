@@ -87,7 +87,7 @@ public final class Arguments {
             // If it starts with a plus, it's a steam arg (fake value arg).
             // Otherwise, it's a normal arg.
             if (arg.contains("=")) {
-                final String[] pair = arg.split("=", 1);
+                final String[] pair = arg.split("=", 2);
                 if (pair.length <= 1) {
                     throw new FormattedException("Failed to parse argument",
                         "Argument contains '=' but couldn't split.");
