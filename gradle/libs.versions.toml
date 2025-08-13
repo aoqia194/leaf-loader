@@ -14,7 +14,7 @@ mockito-core = "5.10.0"
 sat4j = "2.3.6"
 shadow = "8.3.6"
 spotless = "6.22.0"
-tinyremapper = "0.11.1"
+tinyremapper = "0.11.2"
 
 [libraries]
 
