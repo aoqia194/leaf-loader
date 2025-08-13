@@ -17,6 +17,8 @@ package dev.aoqia.leaf.loader.impl.util;
 
 import java.util.*;
 
+import dev.aoqia.leaf.loader.impl.FormattedException;
+
 import org.jetbrains.annotations.Nullable;
 
 public final class Arguments {
@@ -32,7 +34,7 @@ public final class Arguments {
     // Value args are like -arg1=somevalue -arg2=C:\folder\file.png
     // Also contains args that have no delimiter like Steam's `+connect 127.0.0.1`
     private final Map<String, String> valueArgs;
-    
+
     public Arguments() {
         singleArgs = new ArrayList<>();
         valueArgs = new LinkedHashMap<>();
@@ -87,7 +89,8 @@ public final class Arguments {
             if (arg.contains("=")) {
                 final String[] pair = arg.split("=", 1);
                 if (pair.length <= 1) {
-                    throw new RuntimeException("Argument contains '=' but couldn't split.");
+                    throw new FormattedException("Failed to parse argument",
+                        "Argument contains '=' but couldn't split.");
                 }
 
                 // Set it to nothing if the value is nothing.

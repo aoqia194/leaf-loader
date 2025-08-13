@@ -61,7 +61,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 
     public static final int ASM_VERSION = Opcodes.ASM9;
 
-    public static final String VERSION = "1.3.0";
+    public static final String VERSION = "1.4.0";
     public static final String MOD_ID = "leafloader";
 
     // Relative to game dir.
@@ -191,7 +191,8 @@ public final class LeafLoaderImpl extends LeafLoader {
         dumpNonLeafMods(discoverer.getNonLeafMods());
 
         if (SystemProperties.isSet(SystemProperties.DRY_RUN_MOD_DISCOVERY)) {
-            throw new RuntimeException("Dry run mod discovery was set. Stopping before mod init.");
+            throw new FormattedException("Dry run mod discovery",
+                "Stopping before mod init due to dry run mod discovery");
         }
 
         Path cacheDir = gameDir.resolve(CACHE_DIR_NAME);
