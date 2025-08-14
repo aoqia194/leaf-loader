@@ -18,6 +18,7 @@ package dev.aoqia.leaf.loader.impl.game.zomboid.LogHandlers;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
 import dev.aoqia.leaf.loader.impl.util.log.LogLevel;
@@ -74,7 +75,7 @@ public final class NewZomboidLogHandler implements LogHandler {
                 LOG_SEVERITY);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
                  InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new FormattedException("Failed to handle reflection for new log handler", e);
         }
     }
 
@@ -144,8 +145,8 @@ public final class NewZomboidLogHandler implements LogHandler {
                     throw new IllegalArgumentException("Unknown level: " + level);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(
-                "Failed to invoke logging functions for log() in NewZomboidLogHandler!");
+            throw new FormattedException(
+                "Failed to invoke logging functions for log() in NewZomboidLogHandler!", e);
         }
     }
 
@@ -174,7 +175,7 @@ public final class NewZomboidLogHandler implements LogHandler {
                         LOG_SEVERITY_Trace);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to invoke isLogEnabled in shouldLog!");
+            throw new FormattedException("Failed to invoke isLogEnabled in shouldLog!", e);
         }
 
         throw new IllegalArgumentException("Unknown level: " + level);
