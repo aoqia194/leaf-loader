@@ -136,7 +136,7 @@ public class ZomboidGameProvider implements GameProvider {
 
     @Override
     public Set<BuiltinTransform> getBuiltinTransforms(String className) {
-        final boolean isZomboidClass = className.startsWith("zomboid.");
+        final boolean isZomboidClass = className.startsWith("zombie.");
         if (!isZomboidClass) {
             // mod class TODO: exclude game libs
             return TRANSFORM_STRIPENV;
