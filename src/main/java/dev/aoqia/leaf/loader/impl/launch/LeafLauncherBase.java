@@ -150,7 +150,7 @@ public abstract class LeafLauncherBase implements LeafLauncher {
 
     @Override
     public boolean isDevelopment() {
-        return false;
+        return IS_DEVELOPMENT;
     }
 
     @Override
