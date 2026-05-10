@@ -2,7 +2,7 @@
 /*
 
 !/src
-!/build.gradle
-!/.gitignore
+!/zomboid-test
 
-!/minecraft-test
+!/.gitignore
+!/build.gradle*
