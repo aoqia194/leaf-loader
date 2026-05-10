@@ -176,9 +176,8 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
                 if (!enableOutput) {
                     enableOutput = true;
 
-                    for (int i = 0; i <
-                                    buffer.size(); i++) { // index based loop to
-                        // tolerate replay producing log output by itself
+                    for (int i = 0; i < buffer.size(); i++) {
+                        // index based loop to tolerate replay producing log output by itself
                         ReplayEntry entry = buffer.get(i);
                         BuiltinLogHandler.super.log(entry.time, entry.level,
                             entry.category, entry.msg, entry.exc, true, true);
@@ -186,8 +185,8 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
                 }
 
                 String fileName = System.getProperty(SystemProperties.LOG_FILE,
-                    Paths.get(System.getProperty("leaf.runDir",
-                            System.getProperty("leaf.log.file", ".")))
+                    Paths.get(System.getProperty("leaf.log.file",
+                            System.getProperty("leaf.runDir", ".")))
                         .resolve(DEFAULT_LOG_FILE)
                         .toString());
                 if (fileName.isEmpty()) {
