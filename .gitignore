@@ -2,15 +2,16 @@
 /*
 
 # Folders
+!/.github
+!/buildSrc
 !/gradle
 !/src
-!/.github
 
 # Files
 !/.gitattributes
 !/.gitignore
 !/.editorconfig
-!/build.gradle
+!/build.gradle*
 !/checkstyle.xml
 !/gradle.properties
 !/gradlew
@@ -18,11 +19,8 @@
 !/HEADER
 !/LICENSE
 !/README.md
-!/settings.gradle
+!/settings.gradle*
 !/proguard.conf
 
-!/minecraft
+!/zomboid
 !/junit
-
-# MacOS junk files
-.DS_Store
