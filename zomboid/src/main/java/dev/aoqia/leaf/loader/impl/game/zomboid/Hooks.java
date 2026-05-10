@@ -21,9 +21,9 @@ import java.io.File;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public final class Hooks {
 	public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');

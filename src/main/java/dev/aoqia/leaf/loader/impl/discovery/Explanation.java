@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.impl.discovery;
 
-import net.fabricmc.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
 
 class Explanation implements Comparable<Explanation> {
 	private static int nextCmpId;

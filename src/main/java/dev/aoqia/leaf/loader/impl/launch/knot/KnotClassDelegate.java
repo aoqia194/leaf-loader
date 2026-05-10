@@ -49,20 +49,20 @@ import java.util.zip.ZipFile;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
-import net.fabricmc.loader.impl.transformer.FabricTransformer;
-import net.fabricmc.loader.impl.util.ExceptionUtil;
-import net.fabricmc.loader.impl.util.FileSystemUtil;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.ManifestUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlConversionException;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.game.GameProvider;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
+import dev.aoqia.leaf.loader.impl.transformer.FabricTransformer;
+import dev.aoqia.leaf.loader.impl.util.ExceptionUtil;
+import dev.aoqia.leaf.loader.impl.util.FileSystemUtil;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
+import dev.aoqia.leaf.loader.impl.util.UrlConversionException;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> implements KnotClassLoaderInterface {
 	private static final boolean LOG_CLASS_LOAD = SystemProperties.isSet(SystemProperties.DEBUG_LOG_CLASS_LOAD);

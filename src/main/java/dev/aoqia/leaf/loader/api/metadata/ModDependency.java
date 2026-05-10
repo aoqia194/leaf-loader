@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionPredicate;
 
 /**
  * Represents a dependency.

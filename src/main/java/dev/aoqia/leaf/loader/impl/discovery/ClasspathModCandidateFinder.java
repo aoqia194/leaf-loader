@@ -32,13 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlConversionException;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
+import dev.aoqia.leaf.loader.impl.util.UrlConversionException;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public class ClasspathModCandidateFinder implements ModCandidateFinder {
 	@Override

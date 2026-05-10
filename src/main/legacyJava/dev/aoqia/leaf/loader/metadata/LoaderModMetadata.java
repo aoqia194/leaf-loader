@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.metadata.ModMetadata;
+import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 
 /**
  * @deprecated Use {@link ModMetadata} instead

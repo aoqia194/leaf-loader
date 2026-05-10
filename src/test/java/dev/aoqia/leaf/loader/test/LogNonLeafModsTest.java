@@ -28,9 +28,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogHandler;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
 
 public class LogNonFabricModsTest {
 	private LogHandler logHandler;

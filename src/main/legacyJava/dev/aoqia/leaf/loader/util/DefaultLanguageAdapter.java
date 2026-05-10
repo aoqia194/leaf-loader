@@ -16,9 +16,9 @@
 
 package dev.aoqia.leaf.loader.util;
 
-import net.fabricmc.loader.api.LanguageAdapter;
-import net.fabricmc.loader.api.LanguageAdapterException;
-import net.fabricmc.loader.api.ModContainer;
+import dev.aoqia.leaf.loader.api.LanguageAdapter;
+import dev.aoqia.leaf.loader.api.LanguageAdapterException;
+import dev.aoqia.leaf.loader.api.ModContainer;
 
 /**
  * @deprecated Use {@link LanguageAdapter} instead.

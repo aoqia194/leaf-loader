@@ -26,12 +26,12 @@ import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.tree.ClassNode;
 
-import net.fabricmc.loader.impl.game.patch.GamePatch;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.launch.knot.Knot;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.game.patch.GamePatch;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
+import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public class EntrypointPatchFML125 extends GamePatch {
 	private static final String FROM = ModClassLoader_125_FML.class.getName();

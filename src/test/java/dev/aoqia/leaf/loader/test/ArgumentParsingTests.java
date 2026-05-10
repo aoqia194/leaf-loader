@@ -19,7 +19,7 @@ package net.fabricmc.test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import net.fabricmc.loader.impl.util.Arguments;
+import dev.aoqia.leaf.loader.impl.util.Arguments;
 
 public class ArgumentParsingTests {
 	@Test

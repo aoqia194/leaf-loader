@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import net.fabricmc.loader.api.Version;
+import dev.aoqia.leaf.loader.api.Version;
 
 /**
  * The metadata of a mod.

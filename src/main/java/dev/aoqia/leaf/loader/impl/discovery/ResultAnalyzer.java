@@ -32,15 +32,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.impl.discovery.ModSolver.AddModVar;
-import net.fabricmc.loader.impl.discovery.ModSolver.InactiveReason;
-import net.fabricmc.loader.impl.metadata.AbstractModMetadata;
-import net.fabricmc.loader.impl.util.Localization;
-import net.fabricmc.loader.impl.util.StringUtil;
-import net.fabricmc.loader.impl.util.version.VersionIntervalImpl;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.leaf.loader.impl.discovery.ModSolver.AddModVar;
+import dev.aoqia.leaf.loader.impl.discovery.ModSolver.InactiveReason;
+import dev.aoqia.leaf.loader.impl.metadata.AbstractModMetadata;
+import dev.aoqia.leaf.loader.impl.util.Localization;
+import dev.aoqia.leaf.loader.impl.util.StringUtil;
+import dev.aoqia.leaf.loader.impl.util.version.VersionIntervalImpl;
 
 final class ResultAnalyzer {
 	private static final boolean SHOW_PATH_INFO = false;

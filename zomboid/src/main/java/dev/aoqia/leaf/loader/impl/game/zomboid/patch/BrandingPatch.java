@@ -26,11 +26,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.fabricmc.loader.impl.game.minecraft.Hooks;
-import net.fabricmc.loader.impl.game.patch.GamePatch;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.game.minecraft.Hooks;
+import dev.aoqia.leaf.loader.impl.game.patch.GamePatch;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public final class BrandingPatch extends GamePatch {
 	@Override

@@ -19,9 +19,9 @@ package dev.aoqia.leaf.loader.impl.game.minecraft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.log.LogHandler;
-import net.fabricmc.loader.impl.util.log.LogLevel;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
+import dev.aoqia.leaf.loader.impl.util.log.LogLevel;
 
 public final class Slf4jLogHandler implements LogHandler {
 	@Override

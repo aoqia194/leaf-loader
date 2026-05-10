@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.MappingResolver;
+import dev.aoqia.leaf.loader.api.FabricLoader;
+import dev.aoqia.leaf.loader.api.MappingResolver;
 
 public class MappingResolverTest {
 	final MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();

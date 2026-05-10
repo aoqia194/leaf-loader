@@ -29,7 +29,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.fabricmc.loader.impl.launch.FabricLauncher;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
 
 public abstract class GamePatch {
 	protected FieldNode findField(ClassNode node, Predicate<FieldNode> predicate) {

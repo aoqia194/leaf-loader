@@ -17,7 +17,7 @@
 package dev.aoqia.leaf.loader.impl.game.minecraft;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.game.LibClassifier.LibraryType;
+import dev.aoqia.leaf.loader.impl.game.LibClassifier.LibraryType;
 
 enum McLibrary implements LibraryType {
 	MC_CLIENT(EnvType.CLIENT, "net/minecraft/client/main/Main.class", "net/minecraft/client/MinecraftApplet.class", "com/mojang/minecraft/MinecraftApplet.class", "com/mojang/minecraft/RubyDung.class", "com/mojang/rubydung/RubyDung.class"),

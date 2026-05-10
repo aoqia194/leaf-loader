@@ -23,12 +23,12 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.impl.game.patch.GameTransformer;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.util.Arguments;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
+import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
+import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
+import dev.aoqia.leaf.loader.impl.util.Arguments;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
 public interface GameProvider { // name directly referenced in net.fabricmc.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader records
 	String getGameId();

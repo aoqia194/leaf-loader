@@ -18,9 +18,9 @@ package dev.aoqia.leaf.loader.util.version;
 
 import java.util.Optional;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
 
 /**
  * @deprecated Internal API, do not use

@@ -16,8 +16,8 @@
 
 package dev.aoqia.leaf.loader.impl.metadata;
 
-import net.fabricmc.loader.api.metadata.ContactInformation;
-import net.fabricmc.loader.api.metadata.Person;
+import dev.aoqia.leaf.loader.api.metadata.ContactInformation;
+import dev.aoqia.leaf.loader.api.metadata.Person;
 
 /**
  * Represents a simple implementation of person which is only identified by name.

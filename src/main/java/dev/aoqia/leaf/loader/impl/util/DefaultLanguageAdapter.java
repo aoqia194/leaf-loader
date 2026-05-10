@@ -25,10 +25,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.loader.api.LanguageAdapter;
-import net.fabricmc.loader.api.LanguageAdapterException;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.api.LanguageAdapter;
+import dev.aoqia.leaf.loader.api.LanguageAdapterException;
+import dev.aoqia.leaf.loader.api.ModContainer;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
 
 public final class DefaultLanguageAdapter implements LanguageAdapter {
 	public static final DefaultLanguageAdapter INSTANCE = new DefaultLanguageAdapter();

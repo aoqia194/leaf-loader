@@ -31,13 +31,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggerContext;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.impl.util.ManifestUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.log.LogHandler;
-import net.fabricmc.loader.impl.util.log.LogLevel;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
+import dev.aoqia.leaf.loader.impl.util.log.LogLevel;
 
 public final class Log4jLogHandler implements LogHandler {
 	@Override

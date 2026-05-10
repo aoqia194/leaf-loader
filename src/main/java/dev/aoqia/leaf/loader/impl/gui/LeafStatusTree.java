@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.UnaryOperator;
 
-import net.fabricmc.loader.impl.FormattedException;
+import dev.aoqia.leaf.loader.impl.FormattedException;
 
 public final class FabricStatusTree {
 	public enum FabricTreeWarningLevel {

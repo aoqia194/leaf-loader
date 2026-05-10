@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
-import net.fabricmc.loader.api.metadata.ContactInformation;
+import dev.aoqia.leaf.loader.api.metadata.ContactInformation;
 
 /**
  * @deprecated Use {@link ContactInformation} instead

@@ -20,11 +20,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionPredicate;
 
 public final class ModDependencyImpl implements ModDependency {
 	private Kind kind;

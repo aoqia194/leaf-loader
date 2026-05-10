@@ -25,14 +25,14 @@ import java.util.Optional;
 import java.util.SortedMap;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.ContactInformation;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.ModEnvironment;
-import net.fabricmc.loader.api.metadata.Person;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.metadata.ContactInformation;
+import dev.aoqia.leaf.loader.api.metadata.CustomValue;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.api.metadata.ModEnvironment;
+import dev.aoqia.leaf.loader.api.metadata.Person;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
 	static final IconEntry NO_ICON = size -> Optional.empty();

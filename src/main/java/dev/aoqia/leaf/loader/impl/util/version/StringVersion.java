@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.impl.util.version;
 
-import net.fabricmc.loader.api.Version;
+import dev.aoqia.leaf.loader.api.Version;
 
 public class StringVersion implements Version {
 	private final String version;

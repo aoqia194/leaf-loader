@@ -19,7 +19,7 @@ package dev.aoqia.leaf.loader.impl.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.leaf.loader.impl.lib.gson.JsonReader;
 
 @SuppressWarnings("serial")
 public class ParseMetadataException extends Exception {

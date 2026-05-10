@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.impl.game.minecraft.McVersionLookup;
-import net.fabricmc.loader.impl.util.version.SemanticVersionImpl;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.impl.game.minecraft.McVersionLookup;
+import dev.aoqia.leaf.loader.impl.util.version.SemanticVersionImpl;
 
 public class VersionNormalizationTest {
 	// Expected normalization results, put into the list in

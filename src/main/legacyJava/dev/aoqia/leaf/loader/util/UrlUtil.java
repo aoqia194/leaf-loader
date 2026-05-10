@@ -19,7 +19,7 @@ package dev.aoqia.leaf.loader.util;
 import java.net.URL;
 import java.nio.file.Path;
 
-import net.fabricmc.loader.impl.util.ExceptionUtil.WrappedException;
+import dev.aoqia.leaf.loader.impl.util.ExceptionUtil.WrappedException;
 
 /**
  * @deprecated Internal API, do not use

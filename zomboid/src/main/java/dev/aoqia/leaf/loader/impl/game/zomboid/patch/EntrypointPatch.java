@@ -34,16 +34,16 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate;
-import net.fabricmc.loader.impl.game.minecraft.Hooks;
-import net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider;
-import net.fabricmc.loader.impl.game.patch.GamePatch;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
-import net.fabricmc.loader.impl.util.version.VersionPredicateParser;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.leaf.loader.impl.game.minecraft.Hooks;
+import dev.aoqia.leaf.loader.impl.game.minecraft.MinecraftGameProvider;
+import dev.aoqia.leaf.loader.impl.game.patch.GamePatch;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.util.version.VersionPredicateParser;
 
 public class EntrypointPatch extends GamePatch {
 	private static final VersionPredicate VERSION_1_19_4 = createVersionPredicate(">=1.19.4-");

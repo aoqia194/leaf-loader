@@ -19,9 +19,9 @@ package dev.aoqia.leaf.loader.impl.game.minecraft.launchwrapper;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.transformer.FabricTransformer;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.transformer.FabricTransformer;
 
 public class FabricClassTransformer implements IClassTransformer {
 	@Override

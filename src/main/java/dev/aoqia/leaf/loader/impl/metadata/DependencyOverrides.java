@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.impl.FormattedException;
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
-import net.fabricmc.loader.impl.lib.gson.JsonToken;
-import net.fabricmc.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.impl.FormattedException;
+import dev.aoqia.leaf.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.leaf.loader.impl.lib.gson.JsonToken;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 
 public final class DependencyOverrides {
 	private final Map<String, List<Entry>> dependencyOverrides;

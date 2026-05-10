@@ -37,13 +37,13 @@ import java.util.zip.ZipError;
 import java.util.zip.ZipFile;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.game.LibClassifier.LibraryType;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.ManifestUtil;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.game.LibClassifier.LibraryType;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public final class LibClassifier<L extends Enum<L> & LibraryType> {
 	private static final boolean DEBUG = SystemProperties.isSet(SystemProperties.DEBUG_LOG_LIB_CLASSIFICATION);

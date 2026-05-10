@@ -27,7 +27,7 @@ import java.io.File;
 
 import javax.swing.ImageIcon;
 
-import net.fabricmc.loader.impl.util.Arguments;
+import dev.aoqia.leaf.loader.impl.util.Arguments;
 
 /**
  * PLEASE NOTE:

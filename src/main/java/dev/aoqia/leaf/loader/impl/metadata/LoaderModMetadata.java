@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
 
 /**
  * Internal variant of the ModMetadata interface.

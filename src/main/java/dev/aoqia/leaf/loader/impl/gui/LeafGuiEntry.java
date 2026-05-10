@@ -27,17 +27,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricBasicButtonType;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricStatusTab;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricTreeWarningLevel;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.Localization;
-import net.fabricmc.loader.impl.util.SystemProperties;
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.game.GameProvider;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricBasicButtonType;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusTab;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricTreeWarningLevel;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.Localization;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 /** The main entry point for all fabric-based stuff. */
 public final class FabricGuiEntry {

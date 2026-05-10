@@ -17,7 +17,7 @@
 package dev.aoqia.leaf.loader.launch.knot;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.launch.knot.Knot;
+import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
 
 /**
  * @deprecated Use {@link net.fabricmc.loader.impl.launch.knot.KnotClient} instead

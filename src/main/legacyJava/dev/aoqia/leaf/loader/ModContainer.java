@@ -21,8 +21,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
-import net.fabricmc.loader.impl.util.UrlUtil;
-import net.fabricmc.loader.metadata.LoaderModMetadata;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.metadata.LoaderModMetadata;
 
 /**
  * @deprecated Use {@link net.fabricmc.loader.api.ModContainer} instead

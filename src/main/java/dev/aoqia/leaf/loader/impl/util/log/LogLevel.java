@@ -18,7 +18,7 @@ package dev.aoqia.leaf.loader.impl.util.log;
 
 import java.util.Locale;
 
-import net.fabricmc.loader.impl.util.SystemProperties;
+import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
 public enum LogLevel {
 	ERROR, WARN, INFO, DEBUG, TRACE;

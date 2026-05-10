@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.impl.metadata;
 
-import net.fabricmc.loader.api.metadata.ContactInformation;
+import dev.aoqia.leaf.loader.api.metadata.ContactInformation;
 
 final class ContactInfoBackedPerson extends SimplePerson {
 	private final ContactInformation contact;

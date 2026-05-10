@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-import net.fabricmc.loader.api.MappingResolver;
+import dev.aoqia.leaf.loader.api.MappingResolver;
 import net.fabricmc.mappingio.tree.MappingTree;
 
 class MappingResolverImpl implements MappingResolver {

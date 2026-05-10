@@ -42,9 +42,9 @@ import org.spongepowered.asm.service.ITransformer;
 import org.spongepowered.asm.service.ITransformerProvider;
 import org.spongepowered.asm.util.ReEntranceLock;
 
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.launch.FabricMixinVersions;
-import net.fabricmc.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.FabricMixinVersions;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
 
 public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBytecodeProvider, ITransformerProvider, IClassTracker {
 	static IMixinTransformer transformer;

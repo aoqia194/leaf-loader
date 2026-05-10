@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.impl.discovery;
 
-import net.fabricmc.loader.api.Version;
+import dev.aoqia.leaf.loader.api.Version;
 
 interface DomainObject {
 	String getId();

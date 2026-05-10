@@ -16,9 +16,9 @@
 
 package dev.aoqia.leaf.loader.impl.entrypoint;
 
-import net.fabricmc.loader.api.EntrypointException;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
+import dev.aoqia.leaf.loader.api.EntrypointException;
+import dev.aoqia.leaf.loader.api.ModContainer;
+import dev.aoqia.leaf.loader.api.entrypoint.EntrypointContainer;
 
 public final class EntrypointContainerImpl<T> implements EntrypointContainer<T> {
 	private final String key;

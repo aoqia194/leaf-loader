@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionInterval;
 
 public final class VersionIntervalImpl implements VersionInterval {
 	private final Version min;

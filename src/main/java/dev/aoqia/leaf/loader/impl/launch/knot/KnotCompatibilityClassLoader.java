@@ -21,8 +21,8 @@ import java.net.URLClassLoader;
 import java.security.CodeSource;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.game.GameProvider;
-import net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
+import dev.aoqia.leaf.loader.impl.game.GameProvider;
+import dev.aoqia.leaf.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
 
 class KnotCompatibilityClassLoader extends URLClassLoader implements ClassLoaderAccess {
 	private final KnotClassDelegate<KnotCompatibilityClassLoader> delegate;

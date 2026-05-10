@@ -24,9 +24,9 @@ import java.lang.reflect.InvocationTargetException;
 import org.objectweb.asm.ClassReader;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.api.FabricLoader;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 
 @Deprecated
 public class JavaLanguageAdapter implements LanguageAdapter {

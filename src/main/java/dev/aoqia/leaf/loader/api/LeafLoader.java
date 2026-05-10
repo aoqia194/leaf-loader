@@ -24,8 +24,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.api.entrypoint.EntrypointContainer;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
 
 /**
  * The public-facing FabricLoader instance.

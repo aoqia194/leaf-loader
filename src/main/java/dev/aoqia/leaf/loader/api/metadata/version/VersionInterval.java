@@ -19,9 +19,9 @@ package dev.aoqia.leaf.loader.api.metadata.version;
 import java.util.Collection;
 import java.util.List;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.impl.util.version.VersionIntervalImpl;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.impl.util.version.VersionIntervalImpl;
 
 /**
  * Representation of a version interval, closed or open.

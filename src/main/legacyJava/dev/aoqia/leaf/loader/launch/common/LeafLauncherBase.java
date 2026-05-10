@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.List;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.api.FabricLoader;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
 
 /**
  * @deprecated Internal API, do not use

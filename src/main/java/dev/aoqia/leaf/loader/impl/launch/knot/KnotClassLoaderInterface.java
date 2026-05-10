@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.jar.Manifest;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.game.GameProvider;
+import dev.aoqia.leaf.loader.impl.game.GameProvider;
 
 interface KnotClassLoaderInterface {
 	@SuppressWarnings("resource")

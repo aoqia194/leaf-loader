@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-import net.fabricmc.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
 
 /**
  * The main class for mod loading operations.

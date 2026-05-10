@@ -30,8 +30,8 @@ import org.spongepowered.asm.launch.MixinBootstrap;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.classtweaker.api.ClassTweaker;
-import net.fabricmc.loader.impl.util.UrlConversionException;
-import net.fabricmc.loader.impl.util.UrlUtil;
+import dev.aoqia.leaf.loader.impl.util.UrlConversionException;
+import dev.aoqia.leaf.loader.impl.util.UrlUtil;
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.tinyremapper.TinyRemapper;
 

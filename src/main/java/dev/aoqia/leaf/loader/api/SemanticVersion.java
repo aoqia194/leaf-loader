@@ -18,7 +18,7 @@ package dev.aoqia.leaf.loader.api;
 
 import java.util.Optional;
 
-import net.fabricmc.loader.impl.util.version.VersionParser;
+import dev.aoqia.leaf.loader.impl.util.version.VersionParser;
 
 /**
  * Represents a <a href="https://semver.org/">Sematic Version</a>.

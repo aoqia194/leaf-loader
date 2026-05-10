@@ -27,8 +27,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.fabricmc.loader.impl.game.minecraft.Hooks;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.game.minecraft.Hooks;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
 
 /**
  * PLEASE NOTE:

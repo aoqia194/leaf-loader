@@ -16,9 +16,9 @@
 
 package dev.aoqia.leaf.loader.api.metadata.version;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.impl.util.version.SemanticVersionImpl;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.impl.util.version.SemanticVersionImpl;
 
 public enum VersionComparisonOperator {
 	// order is important to match the longest substring (e.g. try >= before >)

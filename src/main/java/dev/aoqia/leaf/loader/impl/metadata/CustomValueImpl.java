@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.leaf.loader.api.metadata.CustomValue;
+import dev.aoqia.leaf.loader.impl.lib.gson.JsonReader;
 
 abstract class CustomValueImpl implements CustomValue {
 	static final CustomValue BOOLEAN_TRUE = new BooleanImpl(true);

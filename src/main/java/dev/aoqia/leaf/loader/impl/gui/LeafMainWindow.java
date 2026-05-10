@@ -65,12 +65,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricBasicButtonType;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricStatusButton;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricStatusNode;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricStatusTab;
-import net.fabricmc.loader.impl.gui.FabricStatusTree.FabricTreeWarningLevel;
-import net.fabricmc.loader.impl.util.StringUtil;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricBasicButtonType;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusButton;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusNode;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusTab;
+import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricTreeWarningLevel;
+import dev.aoqia.leaf.loader.impl.util.StringUtil;
 
 class FabricMainWindow {
 	static Icon missingIcon = null;

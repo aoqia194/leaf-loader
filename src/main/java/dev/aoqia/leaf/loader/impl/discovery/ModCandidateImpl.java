@@ -33,13 +33,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.impl.game.GameProvider.BuiltinMod;
-import net.fabricmc.loader.impl.metadata.AbstractModMetadata;
-import net.fabricmc.loader.impl.metadata.DependencyOverrides;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.VersionOverrides;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinMod;
+import dev.aoqia.leaf.loader.impl.metadata.AbstractModMetadata;
+import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
+import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.leaf.loader.impl.metadata.VersionOverrides;
 
 public final class ModCandidateImpl implements DomainObject.Mod {
 	static final Comparator<ModCandidateImpl> ID_VERSION_COMPARATOR = new Comparator<ModCandidateImpl>() {

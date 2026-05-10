@@ -23,9 +23,9 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.game.GameProvider.BuiltinTransform;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinTransform;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
 
 public final class FabricTransformer {
 	public static byte[] transform(boolean isDevelopment, EnvType envType, String name, byte[] bytes) {

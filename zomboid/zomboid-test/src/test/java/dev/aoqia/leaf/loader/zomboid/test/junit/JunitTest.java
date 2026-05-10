@@ -32,7 +32,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.loader.api.FabricLoader;
+import dev.aoqia.leaf.loader.api.FabricLoader;
 
 public class JunitTest {
 	@BeforeAll

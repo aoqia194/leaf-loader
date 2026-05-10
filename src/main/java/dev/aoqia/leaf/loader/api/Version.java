@@ -16,8 +16,8 @@
 
 package dev.aoqia.leaf.loader.api;
 
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.impl.util.version.VersionParser;
+import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
+import dev.aoqia.leaf.loader.impl.util.version.VersionParser;
 
 /**
  * Represents a version of a mod.

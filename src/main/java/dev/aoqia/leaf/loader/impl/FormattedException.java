@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.impl;
 
-import net.fabricmc.loader.impl.util.Localization;
+import dev.aoqia.leaf.loader.impl.util.Localization;
 
 @SuppressWarnings("serial")
 public final class FormattedException extends RuntimeException {

@@ -28,14 +28,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.ModOrigin;
-import net.fabricmc.loader.impl.discovery.ModCandidateImpl;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.ModOriginImpl;
-import net.fabricmc.loader.impl.util.FileSystemUtil;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.api.ModContainer;
+import dev.aoqia.leaf.loader.api.metadata.ModOrigin;
+import dev.aoqia.leaf.loader.impl.discovery.ModCandidateImpl;
+import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.leaf.loader.impl.metadata.ModOriginImpl;
+import dev.aoqia.leaf.loader.impl.util.FileSystemUtil;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 @SuppressWarnings("deprecation")
 public class ModContainerImpl extends net.fabricmc.loader.ModContainer {

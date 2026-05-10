@@ -36,16 +36,16 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
-import net.fabricmc.loader.impl.lib.gson.JsonReader;
-import net.fabricmc.loader.impl.lib.gson.JsonToken;
-import net.fabricmc.loader.impl.util.ExceptionUtil;
-import net.fabricmc.loader.impl.util.LoaderUtil;
-import net.fabricmc.loader.impl.util.SimpleClassPath;
-import net.fabricmc.loader.impl.util.SimpleClassPath.CpEntry;
-import net.fabricmc.loader.impl.util.version.SemanticVersionImpl;
-import net.fabricmc.loader.impl.util.version.VersionPredicateParser;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.lib.gson.JsonReader;
+import dev.aoqia.leaf.loader.impl.lib.gson.JsonToken;
+import dev.aoqia.leaf.loader.impl.util.ExceptionUtil;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.util.SimpleClassPath;
+import dev.aoqia.leaf.loader.impl.util.SimpleClassPath.CpEntry;
+import dev.aoqia.leaf.loader.impl.util.version.SemanticVersionImpl;
+import dev.aoqia.leaf.loader.impl.util.version.VersionPredicateParser;
 
 public final class McVersionLookup {
 	private static final Pattern DATE_BASED_PATTERN = Pattern.compile("(\\d{2}\\.\\d+(?:\\.\\d+)?)(?:-(snapshot|pre|rc)-(\\d+))?");

@@ -16,9 +16,9 @@
 
 package dev.aoqia.leaf.loader.impl.util.version;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
 
 public final class VersionParser {
 	public static Version parse(String s, boolean storeX) throws VersionParsingException {

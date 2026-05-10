@@ -16,8 +16,8 @@
 
 package dev.aoqia.leaf.loader.impl.metadata;
 
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModMetadata;
+import dev.aoqia.leaf.loader.api.metadata.CustomValue;
+import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 
 public abstract class AbstractModMetadata implements ModMetadata {
 	public static final String TYPE_BUILTIN = "builtin";

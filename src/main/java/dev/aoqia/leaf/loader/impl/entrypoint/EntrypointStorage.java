@@ -23,15 +23,15 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.loader.api.EntrypointException;
-import net.fabricmc.loader.api.LanguageAdapter;
-import net.fabricmc.loader.api.LanguageAdapterException;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.impl.ModContainerImpl;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.metadata.EntrypointMetadata;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.api.EntrypointException;
+import dev.aoqia.leaf.loader.api.LanguageAdapter;
+import dev.aoqia.leaf.loader.api.LanguageAdapterException;
+import dev.aoqia.leaf.loader.api.entrypoint.EntrypointContainer;
+import dev.aoqia.leaf.loader.impl.ModContainerImpl;
+import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
+import dev.aoqia.leaf.loader.impl.util.log.Log;
+import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public final class EntrypointStorage {
 	interface Entry {

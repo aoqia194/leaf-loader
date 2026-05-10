@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.api;
 
-import net.fabricmc.loader.impl.util.DefaultLanguageAdapter;
+import dev.aoqia.leaf.loader.impl.util.DefaultLanguageAdapter;
 
 /**
  * Creates instances of objects from custom notations.

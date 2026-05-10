@@ -19,9 +19,9 @@ package dev.aoqia.leaf.loader.api.metadata.version;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.impl.util.version.VersionPredicateParser;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.impl.util.version.VersionPredicateParser;
 
 public interface VersionPredicate extends Predicate<Version> {
 	/**

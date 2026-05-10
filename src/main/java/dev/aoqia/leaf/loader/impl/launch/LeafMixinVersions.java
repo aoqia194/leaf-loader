@@ -23,8 +23,8 @@ import java.util.Map;
 
 import org.spongepowered.asm.mixin.FabricUtil;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
 
 public class FabricMixinVersions {
 	private static final List<LoaderMixinVersionEntry> versions = new ArrayList<>();

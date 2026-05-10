@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.api.entrypoint;
 
-import net.fabricmc.loader.api.ModContainer;
+import dev.aoqia.leaf.loader.api.ModContainer;
 
 /**
  * A container holding both an entrypoint instance and the {@link ModContainer} which has provided the entrypoint.

@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.fabricmc.loader.api.Version;
+import dev.aoqia.leaf.loader.api.Version;
 
 final class ModPrioSorter {
 	/**

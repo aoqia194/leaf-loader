@@ -23,17 +23,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.ContactInformation;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.ModEnvironment;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.api.metadata.Person;
-import net.fabricmc.loader.impl.metadata.AbstractModMetadata;
-import net.fabricmc.loader.impl.metadata.EntrypointMetadata;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.NestedJarEntry;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.metadata.ContactInformation;
+import dev.aoqia.leaf.loader.api.metadata.CustomValue;
+import dev.aoqia.leaf.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.api.metadata.ModEnvironment;
+import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
+import dev.aoqia.leaf.loader.api.metadata.Person;
+import dev.aoqia.leaf.loader.impl.metadata.AbstractModMetadata;
+import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
+import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.leaf.loader.impl.metadata.NestedJarEntry;
 
 class BuiltinMetadataWrapper extends AbstractModMetadata implements LoaderModMetadata {
 	private final ModMetadata parent;

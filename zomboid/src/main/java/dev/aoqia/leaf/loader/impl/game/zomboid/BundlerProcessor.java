@@ -25,8 +25,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import net.fabricmc.loader.impl.game.LibClassifier;
-import net.fabricmc.loader.impl.util.LoaderUtil;
+import dev.aoqia.leaf.loader.impl.game.LibClassifier;
+import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 
 final class BundlerProcessor {
 	private static final String MAIN_CLASS_PROPERTY = "bundlerMainClass";

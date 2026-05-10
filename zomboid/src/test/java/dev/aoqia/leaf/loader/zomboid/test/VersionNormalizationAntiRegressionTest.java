@@ -55,10 +55,10 @@ import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.impl.game.minecraft.McVersionLookup;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.impl.game.minecraft.McVersionLookup;
 
 public class VersionNormalizationAntiRegressionTest {
 	private static final String MINECRAFT_VERSIONS_RESOURCE = "minecraft_versions.json";

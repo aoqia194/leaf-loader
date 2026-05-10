@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
-import net.fabricmc.loader.api.metadata.version.VersionComparisonOperator;
-import net.fabricmc.loader.api.metadata.version.VersionInterval;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate;
-import net.fabricmc.loader.api.metadata.version.VersionPredicate.PredicateTerm;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.Version;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionComparisonOperator;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionInterval;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionPredicate;
+import dev.aoqia.leaf.loader.api.metadata.version.VersionPredicate.PredicateTerm;
 
 public final class VersionPredicateParser {
 	private static final VersionComparisonOperator[] OPERATORS = VersionComparisonOperator.values();

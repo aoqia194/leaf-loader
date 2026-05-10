@@ -35,13 +35,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.impl.metadata.DependencyOverrides;
-import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.metadata.ModMetadataParser;
-import net.fabricmc.loader.impl.metadata.ParseMetadataException;
-import net.fabricmc.loader.impl.metadata.VersionOverrides;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.metadata.CustomValue;
+import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
+import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
+import dev.aoqia.leaf.loader.impl.metadata.ModMetadataParser;
+import dev.aoqia.leaf.loader.impl.metadata.ParseMetadataException;
+import dev.aoqia.leaf.loader.impl.metadata.VersionOverrides;
 
 final class V1ModJsonParsingTests {
 	private static Path testLocation;
