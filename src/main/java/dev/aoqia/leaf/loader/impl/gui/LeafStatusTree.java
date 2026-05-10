@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.gui;
+package dev.aoqia.leaf.loader.impl.gui;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

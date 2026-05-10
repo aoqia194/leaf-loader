@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.minecraft.launchwrapper;
+package dev.aoqia.leaf.loader.impl.game.minecraft.launchwrapper;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 

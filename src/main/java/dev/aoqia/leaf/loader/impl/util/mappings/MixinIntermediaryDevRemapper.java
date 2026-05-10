@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.mappings;
+package dev.aoqia.leaf.loader.impl.util.mappings;
 
 import java.util.ArrayDeque;
 import java.util.Collection;

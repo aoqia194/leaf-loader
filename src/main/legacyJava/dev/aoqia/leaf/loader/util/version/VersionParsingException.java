@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.util.version;
+package dev.aoqia.leaf.loader.util.version;
 
 /** @deprecated Replaced by {@link net.fabricmc.loader.api.VersionParsingException} */
 @SuppressWarnings("serial")

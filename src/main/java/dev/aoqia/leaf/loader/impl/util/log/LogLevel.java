@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.log;
+package dev.aoqia.leaf.loader.impl.util.log;
 
 import java.util.Locale;
 

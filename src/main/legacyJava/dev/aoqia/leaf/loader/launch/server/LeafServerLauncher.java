@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.launch.server;
+package dev.aoqia.leaf.loader.launch.server;
 
 /**
  * @deprecated Use {@link net.fabricmc.loader.impl.launch.server.FabricServerLauncher} instead

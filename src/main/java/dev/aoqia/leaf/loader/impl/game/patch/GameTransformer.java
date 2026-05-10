@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.patch;
+package dev.aoqia.leaf.loader.impl.game.patch;
 
 import java.io.IOException;
 import java.io.InputStream;

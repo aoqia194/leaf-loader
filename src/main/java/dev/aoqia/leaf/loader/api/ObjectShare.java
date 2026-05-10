@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package dev.aoqia.leaf.loader.api;
 
 import java.util.function.BiConsumer;
 

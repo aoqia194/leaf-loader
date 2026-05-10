@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.entrypoint;
+package dev.aoqia.leaf.loader.impl.entrypoint;
 
 import java.util.ArrayList;
 import java.util.Collections;

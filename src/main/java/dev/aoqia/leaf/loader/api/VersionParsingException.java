@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package dev.aoqia.leaf.loader.api;
 
 @SuppressWarnings({ "deprecation", "serial" }) //Extending the deprecated one for backwards compatibility
 public class VersionParsingException extends net.fabricmc.loader.util.version.VersionParsingException {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata.version;
+package dev.aoqia.leaf.loader.api.metadata.version;
 
 import java.util.Collection;
 import java.util.List;

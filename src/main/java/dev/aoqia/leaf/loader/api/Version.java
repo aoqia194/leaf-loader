@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package dev.aoqia.leaf.loader.api;
 
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.impl.util.version.VersionParser;

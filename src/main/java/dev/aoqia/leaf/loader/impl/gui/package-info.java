@@ -19,4 +19,4 @@
  *
  * <p>This could potentially be useful for showing an tree-like structure while in-game, however this usecase is rather
  * limited. */
-package net.fabricmc.loader.impl.gui;
+package dev.aoqia.leaf.loader.impl.gui;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.entrypoint;
+package dev.aoqia.leaf.loader.api.entrypoint;
 
 import net.fabricmc.loader.api.ModContainer;
 

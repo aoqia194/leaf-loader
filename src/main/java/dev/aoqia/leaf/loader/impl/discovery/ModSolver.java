@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package dev.aoqia.leaf.loader.impl.discovery;
 
 import java.math.BigInteger;
 import java.util.AbstractMap;

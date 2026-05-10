@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api;
+package dev.aoqia.leaf.loader.api;
 
 /**
  * Represents an exception that arises when obtaining entrypoints.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch;
+package dev.aoqia.leaf.loader.impl.launch;
 
 import java.util.ArrayList;
 import java.util.HashMap;

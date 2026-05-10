@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.knot;
+package dev.aoqia.leaf.loader.impl.launch.knot;
 
 import java.net.URL;
 import java.net.URLClassLoader;

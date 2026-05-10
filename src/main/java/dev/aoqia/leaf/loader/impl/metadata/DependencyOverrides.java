@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package dev.aoqia.leaf.loader.impl.metadata;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

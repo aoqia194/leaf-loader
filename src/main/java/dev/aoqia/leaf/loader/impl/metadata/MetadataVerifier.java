@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package dev.aoqia.leaf.loader.impl.metadata;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

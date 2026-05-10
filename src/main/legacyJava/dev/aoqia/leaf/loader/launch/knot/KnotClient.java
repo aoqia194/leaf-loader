@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.launch.knot;
+package dev.aoqia.leaf.loader.launch.knot;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.impl.launch.knot.Knot;

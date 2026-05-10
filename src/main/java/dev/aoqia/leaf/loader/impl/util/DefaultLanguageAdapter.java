@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util;
+package dev.aoqia.leaf.loader.impl.util;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandleProxies;

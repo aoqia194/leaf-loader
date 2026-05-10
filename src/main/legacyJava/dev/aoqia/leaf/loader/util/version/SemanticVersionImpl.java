@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.util.version;
+package dev.aoqia.leaf.loader.util.version;
 
 import java.util.Optional;
 

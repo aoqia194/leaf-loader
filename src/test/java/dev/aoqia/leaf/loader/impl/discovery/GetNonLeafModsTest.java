@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.discovery;
+package dev.aoqia.leaf.loader.impl.discovery;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

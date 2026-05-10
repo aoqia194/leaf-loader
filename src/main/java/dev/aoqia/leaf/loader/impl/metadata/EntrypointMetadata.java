@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.metadata;
+package dev.aoqia.leaf.loader.impl.metadata;
 
 @SuppressWarnings("deprecation")
 public interface EntrypointMetadata extends net.fabricmc.loader.metadata.EntrypointMetadata {

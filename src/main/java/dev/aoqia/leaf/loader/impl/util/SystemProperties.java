@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util;
+package dev.aoqia.leaf.loader.impl.util;
 
 public final class SystemProperties {
 	// whether fabric loader is running in a development environment / mode, affects class path mod discovery, remapping, logging, ...

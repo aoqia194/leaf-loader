@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.launch.server;
+package dev.aoqia.leaf.loader.impl.launch.server;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

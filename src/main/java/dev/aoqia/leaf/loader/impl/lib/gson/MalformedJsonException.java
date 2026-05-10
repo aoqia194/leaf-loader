@@ -17,7 +17,7 @@
  * This file has been modified by the Fabric project (repackage, minor changes).
  */
 
-package net.fabricmc.loader.impl.lib.gson;
+package dev.aoqia.leaf.loader.impl.lib.gson;
 
 import java.io.IOException;
 

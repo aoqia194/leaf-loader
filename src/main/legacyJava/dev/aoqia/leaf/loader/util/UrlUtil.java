@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.util;
+package dev.aoqia.leaf.loader.util;
 
 import java.net.URL;
 import java.nio.file.Path;

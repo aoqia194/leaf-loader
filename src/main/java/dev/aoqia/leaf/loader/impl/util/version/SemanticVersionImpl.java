@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.util.version;
+package dev.aoqia.leaf.loader.impl.util.version;
 
 import java.util.Arrays;
 import java.util.Objects;

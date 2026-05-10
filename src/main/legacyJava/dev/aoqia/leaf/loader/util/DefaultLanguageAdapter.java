@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.util;
+package dev.aoqia.leaf.loader.util;
 
 import net.fabricmc.loader.api.LanguageAdapter;
 import net.fabricmc.loader.api.LanguageAdapterException;

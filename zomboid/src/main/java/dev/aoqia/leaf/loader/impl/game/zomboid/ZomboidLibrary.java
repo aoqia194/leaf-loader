@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.impl.game.minecraft;
+package dev.aoqia.leaf.loader.impl.game.minecraft;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.impl.game.LibClassifier.LibraryType;

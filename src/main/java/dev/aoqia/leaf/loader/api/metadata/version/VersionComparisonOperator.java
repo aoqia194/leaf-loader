@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.loader.api.metadata.version;
+package dev.aoqia.leaf.loader.api.metadata.version;
 
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
