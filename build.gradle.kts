@@ -33,7 +33,7 @@ plugins {
     eclipse
 
     // checkstyle
-    alias(libs.plugins.spotless)
+//    alias(libs.plugins.spotless)
 
     alias(libs.plugins.shadow)
     alias(libs.plugins.loom) apply false
@@ -52,7 +52,7 @@ base {
 allprojects {
     apply(plugin = "java-library")
     apply(plugin = "eclipse")
-    apply(plugin = "com.diffplug.spotless")
+//    apply(plugin = "com.diffplug.spotless")
 
     val constantsSource =
         rootProject.file("src/main/java/${groupUrl}/${rootProject.name}/impl/LeafLoaderImpl.java").readText()
@@ -78,12 +78,12 @@ allprojects {
         compileOnly("org.jetbrains:annotations:23.0.0")
     }
 
-    spotless {
-        java {
-            licenseHeaderFile(rootProject.file("HEADER"))
-            targetExclude("**/lib/gson/*.java")
-        }
-    }
+//    spotless {
+//        java {
+//            licenseHeaderFile(rootProject.file("HEADER"))
+//            targetExclude("**/lib/gson/*.java")
+//        }
+//    }
 }
 
 // FIXME(leaf): Uncomment after loom is sorted
