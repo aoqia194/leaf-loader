@@ -1,69 +1,88 @@
-apply plugin: 'maven-publish'
-apply plugin: 'me.modmuss50.remotesign'
+plugins {
+    `maven-publish`
+}
 
 base {
-	archivesName = "fabric-loader-junit"
+    archivesName = "${rootProject.name}-junit"
 }
 
 version = rootProject.version
 group = rootProject.group
 
-def ENV = System.getenv()
-def signingEnabled = ENV.SIGNING_SERVER
-
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	api project(":")
+    api(project(":"))
 
-	api platform("org.junit:junit-bom:5.10.0")
-	api "org.junit.jupiter:junit-jupiter-engine"
-	implementation "org.junit.platform:junit-platform-launcher"
+    api(platform(libs.junit.bom))
+    api(libs.junit.jupiter.engine)
+    implementation(libs.junit.platformlauncher)
 }
 
 java {
-	withSourcesJar()
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-jar {
-	manifest {
-		attributes 'Automatic-Module-Name': 'net.fabricmc.loader.junit'
-	}
-}
-
-if (signingEnabled) {
-	remoteSign {
-		requestUrl = ENV.SIGNING_SERVER
-		pgpAuthKey = ENV.SIGNING_PGP_KEY
-		jarAuthKey = ENV.SIGNING_JAR_KEY
-
-		afterEvaluate {
-			sign publishing.publications.maven
-		}
-	}
+tasks.jar {
+    manifest {
+        attributes("Automatic-Module-Name" to "${project.group}.loader.junit")
+    }
 }
 
 publishing {
-	publications {
-		maven(MavenPublication) {
-			artifactId = project.base.archivesName.get()
-			from components.java
-		}
-	}
+    publications {
+        register<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = project.base.archivesName.get()
+            version = project.version.toString()
 
-	repositories {
-		if (ENV.MAVEN_URL) {
-			maven {
-				url ENV.MAVEN_URL
-				credentials {
-					username ENV.MAVEN_USERNAME
-					password ENV.MAVEN_PASSWORD
-				}
-			}
-		}
-	}
+            pom {
+                name = rootProject.name
+                group = rootProject.group.toString()
+                description = rootProject.description
+                url = property("url").toString()
+                inceptionYear = "2024"
+
+                developers {
+                    developer {
+                        id = "aoqia"
+                        name = "aoqia"
+                    }
+                }
+
+                issueManagement {
+                    system = "GitHub"
+                    url = "${property("url")}/issues"
+                }
+
+                licenses {
+                    license {
+                        name = "Apache-2.0"
+                        url = "https://spdx.org/licenses/Apache-2.0.html"
+                    }
+                }
+
+                scm {
+                    connection = "scm:git:${property("url").toString()}.git"
+                    developerConnection = "scm:git:${property("url").toString().replace("https", "ssh")}.git"
+                    url = rootProject.property("url").toString()
+                }
+            }
+
+            artifact(tasks.jar)
+            artifact(tasks.named("sourcesJar"))
+            artifact(tasks.named("javadocJar"))
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri(rootProject.layout.buildDirectory.dir("staging-deploy"))
+        }
+    }
 }

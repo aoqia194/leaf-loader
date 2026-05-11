@@ -1,0 +1,77 @@
+[versions]
+
+annotations = "23.0.0"
+asm = "9.9"
+clazztweaker = "0.3.0-beta.2"
+gson = "2.2.4"
+jreleaser = "1.17.0"
+junit-bom = "5.10.0"
+junit-jupiter = "5.9.2"
+# TODO(leaf): Maybe not needed?
+log4j = "2.25.1"
+# TODO(leaf): Update local version
+loom = "0.6.2.local"
+mappingio = "0.7.1"
+mixin = "0.17.2+mixin.0.8.7"
+mixinextras = "0.5.4"
+mockito-core = "5.20.0"
+sat4j = "2.3.6"
+shadow = "9.2.2"
+# TODO(leaf): Maybe not needed?
+slf4j-api = "2.0.17"
+spotless = "8.0.0"
+tinyremapper = "0.13.0"
+
+[libraries]
+
+annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
+
+asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
+asm-analysis = { module = "org.ow2.asm:asm-analysis", version.ref = "asm" }
+asm-commons = { module = "org.ow2.asm:asm-commons", version.ref = "asm" }
+asm-tree = { module = "org.ow2.asm:asm-tree", version.ref = "asm" }
+asm-util = { module = "org.ow2.asm:asm-util", version.ref = "asm" }
+
+clazztweaker = { module = "net.fabricmc:class-tweaker", version.ref = "clazztweaker" }
+
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-platformlauncher = { module = "org.junit.platform:junit-platform-launcher" }
+
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
+
+mappingio = { module = "net.fabricmc:mapping-io", version.ref = "mappingio" }
+
+mixin = { module = "net.fabricmc:sponge-mixin", version.ref = "mixin" }
+
+# MixinExtras common for subproject
+# TODO(leaf): Not needed anymore after fabric.mod.json compat is added?
+mixinextras = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinextras" }
+
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
+
+sat4j-core = { module = "org.ow2.sat4j:org.ow2.sat4j.core", version.ref = "sat4j" }
+sat4j-pb = { module = "org.ow2.sat4j:org.ow2.sat4j.pb", version.ref = "sat4j" }
+
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
+
+tinyremapper = { module = "net.fabricmc:tiny-remapper", version.ref = "tinyremapper" }
+
+[bundles]
+
+asm = ["asm", "asm-analysis", "asm-commons", "asm-tree", "asm-util"]
+log4j = ["log4j-api", "log4j-core", "log4j-slf4j2-impl"]
+sat4j = ["sat4j-core", "sat4j-pb"]
+
+[plugins]
+
+loom = { id = "dev.aoqia.leaf.loom", version.ref = "loom" }
+
+jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

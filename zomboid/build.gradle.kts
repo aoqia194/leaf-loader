@@ -1,54 +1,61 @@
-repositories {
-	maven {
-		name = 'Mojang'
-		url = 'https://libraries.minecraft.net/'
-	}
+val mainSourceSetOutput by configurations.registering {
+    isCanBeConsumed = true
+    isCanBeResolved = false
 }
 
 dependencies {
-	api project(":")
+    api(project(":"))
 
-	// log4j wrapper
-	compileOnly 'org.apache.logging.log4j:log4j-api:2.8.1'
-	// slf4j wrapper
-	compileOnly 'org.slf4j:slf4j-api:1.8.0-beta4'
+    // Logger wrapper
+    compileOnly(libs.log4j.api)
+    compileOnly(libs.slf4j.api)
 
-	// launchwrapper + dependencies
-	compileOnly ('net.minecraft:launchwrapper:1.12') {
-		transitive = false
-	}
-	//implementation 'net.sf.jopt-simple:jopt-simple:5.0.3'
+    // implementation("net.sf.jopt-simple:jopt-simple:5.0.3")
 
-	// Unit testing for semver
-	implementation project(":").sourceSets.main.output
-	testImplementation('org.junit.jupiter:junit-jupiter:5.9.2')
-	testRuntimeOnly('org.junit.platform:junit-platform-launcher')
-	testImplementation('com.google.code.gson:gson:2.2.4')
+    // Unit testing for semver
+    implementation(rootProject.sourceSets.main.get().output)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platformlauncher)
+    testImplementation(libs.gson)
 }
 
 sourceSets {
-	main {
-		java.srcDirs = ['src/main/java', 'src/main/legacyJava']
-	}
+    main {
+        java.srcDirs("src/main/java", "src/main/legacyJava")
+    }
 }
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = "UTF-8"
-
-	if (JavaVersion.current().isJava9Compatible()) {
-		it.options.release = 8
-	}
-}
-
-jar {
-	enabled = false
-}
-
-test {
-	useJUnitPlatform()
+artifacts {
+    val main = sourceSets.main.get()
+    main.output.classesDirs.forEach {
+        println("Adding dir (${it}) to mainSourceSetOutput!")
+        add(mainSourceSetOutput.name, it) {
+            builtBy(tasks.compileJava)
+        }
+    }
+    println("Adding dir (${main.output.resourcesDir}) to mainSourceSetOutput!")
+    add(mainSourceSetOutput.name, main.output.resourcesDir!!) {
+        builtBy(tasks.processResources)
+    }
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+
+    if (JavaVersion.current().isJava9Compatible) {
+        options.release = 8
+    }
+}
+
+tasks.jar {
+    enabled = false
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

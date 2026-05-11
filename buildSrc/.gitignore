@@ -1,0 +1,6 @@
+# Ignore everything
+/*
+
+!/src
+!/.gitignore
+!/build.gradle.kts
