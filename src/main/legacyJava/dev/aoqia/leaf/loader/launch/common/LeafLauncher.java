@@ -27,7 +27,7 @@ import net.fabricmc.api.EnvType;
  * @deprecated Internal API, do not use
  */
 @Deprecated
-public interface FabricLauncher {
+public interface LeafLauncher {
 	void propose(URL url);
 	EnvType getEnvironmentType();
 	boolean isClassLoaded(String name);

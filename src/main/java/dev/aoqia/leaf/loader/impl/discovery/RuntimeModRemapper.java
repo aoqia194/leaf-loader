@@ -43,10 +43,10 @@ import net.fabricmc.classtweaker.api.ClassTweaker;
 import net.fabricmc.classtweaker.api.ClassTweakerReader;
 import net.fabricmc.classtweaker.api.ClassTweakerWriter;
 import net.fabricmc.classtweaker.visitors.ClassTweakerRemapperVisitor;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.util.FileSystemUtil;
 import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
@@ -78,7 +78,7 @@ public final class RuntimeModRemapper {
 
 		if (modsToRemap.isEmpty()) return;
 
-		MappingConfiguration config = FabricLauncherBase.getLauncher().getMappingConfiguration();
+		MappingConfiguration config = LeafLauncherBase.getLauncher().getMappingConfiguration();
 		String modNs = config.getDefaultModDistributionNamespace();
 		String runtimeNs = config.getRuntimeNamespace();
 		if (modNs.equals(runtimeNs) || !config.hasAnyMappings()) return;
@@ -88,7 +88,7 @@ public final class RuntimeModRemapper {
 		TinyRemapper remapper = null;
 
 		try {
-			FabricLauncher launcher = FabricLauncherBase.getLauncher();
+			LeafLauncher launcher = LeafLauncherBase.getLauncher();
 
 			ClassTweaker mergedClassTweaker = ClassTweaker.newInstance();
 			mergedClassTweaker.visitHeader(modNs);
@@ -131,7 +131,7 @@ public final class RuntimeModRemapper {
 					.renameInvalidLocals(false)
 					.extension(new MixinExtension(remapMixins::contains))
 					.extraAnalyzeVisitor((mrjVersion, className, next) ->
-					mergedClassTweaker.createClassVisitor(FabricLoaderImpl.ASM_VERSION, next, null))
+					mergedClassTweaker.createClassVisitor(LeafLoaderImpl.ASM_VERSION, next, null))
 					.build();
 
 			try {

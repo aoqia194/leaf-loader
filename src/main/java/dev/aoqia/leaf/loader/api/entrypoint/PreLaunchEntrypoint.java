@@ -16,6 +16,8 @@
 
 package dev.aoqia.leaf.loader.api.entrypoint;
 
+import dev.aoqia.leaf.loader.api.LeafLoader;
+
 /**
  * Entrypoint getting invoked just before launching the game.
  *
@@ -27,7 +29,7 @@ package dev.aoqia.leaf.loader.api.entrypoint;
  * <p>The entrypoint is exposed with {@code preLaunch} key in the mod json and runs for any environment. It usually
  * executes several seconds before the {@code main}/{@code client}/{@code server} entrypoints.
  *
- * @see dev.aoqia.leaf.loader.api.FabricLoader#getEntrypointContainers(String, Class)
+ * @see LeafLoader#getEntrypointContainers(String, Class)
  */
 @FunctionalInterface
 public interface PreLaunchEntrypoint {

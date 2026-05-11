@@ -17,11 +17,11 @@
 package dev.aoqia.leaf.loader.launch.server;
 
 /**
- * @deprecated Use {@link dev.aoqia.leaf.loader.impl.launch.server.FabricServerLauncher} instead
+ * @deprecated Use {@link dev.aoqia.leaf.loader.impl.launch.server.LeafServerLauncher} instead
  */
 @Deprecated
-public final class FabricServerLauncher {
+public final class LeafServerLauncher {
 	public static void main(String[] args) {
-		dev.aoqia.leaf.loader.impl.launch.server.FabricServerLauncher.main(args);
+		dev.aoqia.leaf.loader.impl.launch.server.LeafServerLauncher.main(args);
 	}
 }

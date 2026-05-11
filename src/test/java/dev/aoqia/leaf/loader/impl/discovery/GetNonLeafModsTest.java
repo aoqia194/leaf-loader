@@ -34,16 +34,16 @@ import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
 import net.fabricmc.api.EnvType;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 
 public class GetNonFabricModsTest {
-	private FabricLoaderImpl loader;
+	private LeafLoaderImpl loader;
 	private ModDiscoverer discoverer;
-	private MockedConstruction<FabricLoaderImpl> loaderConstruction;
+	private MockedConstruction<LeafLoaderImpl> loaderConstruction;
 
 	/*
 	 * Set up the mock loader and discoverer
@@ -53,15 +53,15 @@ public class GetNonFabricModsTest {
 		GameProvider provider = mock();
 		when(provider.getBuiltinMods()).thenReturn(Collections.emptyList());
 
-		FabricLauncher launcher = mock();
+		LeafLauncher launcher = mock();
 		when(launcher.getEnvironmentType()).thenReturn(EnvType.CLIENT);
 		when(launcher.isDevelopment()).thenReturn(false);
-		FabricLauncherBase.setLauncher(launcher);
+		LeafLauncherBase.setLauncher(launcher);
 		loader = mock();
 		when(loader.getGameProvider()).thenReturn(provider);
 		when(loader.isDevelopmentEnvironment()).thenReturn(false);
 
-		loaderConstruction = Mockito.mockConstructionWithAnswer(FabricLoaderImpl.class, invocation -> loader);
+		loaderConstruction = Mockito.mockConstructionWithAnswer(LeafLoaderImpl.class, invocation -> loader);
 
 		discoverer = new ModDiscoverer(mock(), mock());
 		discoverer.addCandidateFinder(new MockCandidateFinder());

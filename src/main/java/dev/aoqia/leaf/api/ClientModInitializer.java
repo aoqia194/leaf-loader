@@ -16,6 +16,8 @@
 
 package net.fabricmc.api;
 
+import dev.aoqia.leaf.loader.api.LeafLoader;
+
 /**
  * A mod initializer ran only on {@link EnvType#CLIENT}.
  *
@@ -26,7 +28,7 @@ package net.fabricmc.api;
  *
  * @see ModInitializer
  * @see DedicatedServerModInitializer
- * @see dev.aoqia.leaf.loader.api.FabricLoader#getEntrypointContainers(String, Class)
+ * @see LeafLoader#getEntrypointContainers(String, Class)
  */
 @FunctionalInterface
 public interface ClientModInitializer {

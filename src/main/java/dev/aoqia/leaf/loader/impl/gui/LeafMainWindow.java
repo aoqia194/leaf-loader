@@ -65,17 +65,17 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricBasicButtonType;
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusButton;
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusNode;
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusTab;
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricTreeWarningLevel;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafBasicButtonType;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafStatusButton;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafStatusNode;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafStatusTab;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
 import dev.aoqia.leaf.loader.impl.util.StringUtil;
 
 class FabricMainWindow {
 	static Icon missingIcon = null;
 
-	static void open(FabricStatusTree tree, boolean shouldWait) throws Exception {
+	static void open(LeafStatusTree tree, boolean shouldWait) throws Exception {
 		if (GraphicsEnvironment.isHeadless()) {
 			throw new HeadlessException();
 		}
@@ -88,7 +88,7 @@ class FabricMainWindow {
 		open0(tree, shouldWait);
 	}
 
-	private static void open0(FabricStatusTree tree, boolean shouldWait) throws Exception {
+	private static void open0(LeafStatusTree tree, boolean shouldWait) throws Exception {
 		CountDownLatch guiTerminatedLatch = new CountDownLatch(1);
 
 		SwingUtilities.invokeAndWait(() -> {
@@ -100,7 +100,7 @@ class FabricMainWindow {
 		}
 	}
 
-	private static void createUi(CountDownLatch onCloseLatch, FabricStatusTree tree) {
+	private static void createUi(CountDownLatch onCloseLatch, LeafStatusTree tree) {
 		JFrame window = new JFrame();
 		window.setVisible(false);
 		window.setTitle(tree.title);
@@ -137,17 +137,17 @@ class FabricMainWindow {
 		IconSet icons = new IconSet();
 
 		if (tree.tabs.isEmpty()) {
-			FabricStatusTab tab = new FabricStatusTab("Opening Errors");
+			LeafStatusTab tab = new LeafStatusTab("Opening Errors");
 			tab.addChild("No tabs provided! (Something is very broken)").setError();
 			contentPane.add(createTreePanel(tab.node, tab.filterLevel, icons), BorderLayout.CENTER);
 		} else if (tree.tabs.size() == 1) {
-			FabricStatusTab tab = tree.tabs.get(0);
+			LeafStatusTab tab = tree.tabs.get(0);
 			contentPane.add(createTreePanel(tab.node, tab.filterLevel, icons), BorderLayout.CENTER);
 		} else {
 			JTabbedPane tabs = new JTabbedPane();
 			contentPane.add(tabs, BorderLayout.CENTER);
 
-			for (FabricStatusTab tab : tree.tabs) {
+			for (LeafStatusTab tab : tree.tabs) {
 				tabs.addTab(tab.node.name, createTreePanel(tab.node, tab.filterLevel, icons));
 			}
 		}
@@ -157,11 +157,11 @@ class FabricMainWindow {
 			contentPane.add(buttons, BorderLayout.SOUTH);
 			buttons.setLayout(new FlowLayout(FlowLayout.TRAILING));
 
-			for (FabricStatusButton button : tree.buttons) {
+			for (LeafStatusButton button : tree.buttons) {
 				JButton btn = new JButton(button.text);
 				buttons.add(btn);
 				btn.addActionListener(event -> {
-					if (button.type == FabricBasicButtonType.CLICK_ONCE) btn.setEnabled(false);
+					if (button.type == LeafBasicButtonType.CLICK_ONCE) btn.setEnabled(false);
 
 					if (button.clipboard != null) {
 						try {
@@ -188,8 +188,8 @@ class FabricMainWindow {
 		window.requestFocus();
 	}
 
-	private static JPanel createTreePanel(FabricStatusNode rootNode, FabricTreeWarningLevel minimumWarningLevel,
-			IconSet iconSet) {
+	private static JPanel createTreePanel(LeafStatusNode rootNode, LeafTreeWarningLevel minimumWarningLevel,
+	                                      IconSet iconSet) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -358,7 +358,7 @@ class FabricMainWindow {
 			}
 		}
 
-		public static IconInfo fromNode(FabricStatusNode node) {
+		public static IconInfo fromNode(LeafStatusNode node) {
 			String[] split = node.iconType.split("\\+");
 
 			if (split.length == 1 && split[0].isEmpty()) {
@@ -367,11 +367,11 @@ class FabricMainWindow {
 
 			final String main;
 			List<String> decors = new ArrayList<>();
-			FabricTreeWarningLevel warnLevel = node.getMaximumWarningLevel();
+			LeafTreeWarningLevel warnLevel = node.getMaximumWarningLevel();
 
 			if (split.length == 0) {
 				// Empty string, but we might replace it with a warning
-				if (warnLevel == FabricTreeWarningLevel.NONE) {
+				if (warnLevel == LeafTreeWarningLevel.NONE) {
 					main = "missing";
 				} else {
 					main = "level_" + warnLevel.lowerCaseName;
@@ -379,7 +379,7 @@ class FabricMainWindow {
 			} else {
 				main = split[0];
 
-				if (warnLevel == FabricTreeWarningLevel.NONE) {
+				if (warnLevel == LeafTreeWarningLevel.NONE) {
 					// Just to add a gap
 					decors.add(null);
 				} else {
@@ -461,15 +461,15 @@ class FabricMainWindow {
 
 	static class CustomTreeNode implements TreeNode {
 		public final TreeNode parent;
-		public final FabricStatusNode node;
+		public final LeafStatusNode node;
 		public final List<CustomTreeNode> displayedChildren = new ArrayList<>();
 		private IconInfo iconInfo;
 
-		CustomTreeNode(TreeNode parent, FabricStatusNode node, FabricTreeWarningLevel minimumWarningLevel) {
+		CustomTreeNode(TreeNode parent, LeafStatusNode node, LeafTreeWarningLevel minimumWarningLevel) {
 			this.parent = parent;
 			this.node = node;
 
-			for (FabricStatusNode c : node.children) {
+			for (LeafStatusNode c : node.children) {
 				if (minimumWarningLevel.isHigherThan(c.getMaximumWarningLevel())) {
 					continue;
 				}

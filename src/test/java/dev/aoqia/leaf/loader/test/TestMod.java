@@ -21,9 +21,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.fabricmc.api.ModInitializer;
-import dev.aoqia.leaf.loader.api.FabricLoader;
+import dev.aoqia.leaf.loader.api.LeafLoader;
 import dev.aoqia.leaf.loader.api.entrypoint.PreLaunchEntrypoint;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
@@ -36,7 +36,7 @@ public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 	 */
 	@Override
 	public void onPreLaunch() {
-		if (TestMod.class.getClassLoader() != FabricLauncherBase.getLauncher().getTargetClassLoader()) {
+		if (TestMod.class.getClassLoader() != LeafLauncherBase.getLauncher().getTargetClassLoader()) {
 			throw new IllegalStateException("invalid class loader: "+TestMod.class.getClassLoader());
 		}
 
@@ -45,7 +45,7 @@ public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (TestMod.class.getClassLoader() != FabricLauncherBase.getLauncher().getTargetClassLoader()) {
+		if (TestMod.class.getClassLoader() != LeafLauncherBase.getLauncher().getTargetClassLoader()) {
 			throw new IllegalStateException("invalid class loader: "+TestMod.class.getClassLoader());
 		}
 
@@ -53,7 +53,7 @@ public class TestMod implements PreLaunchEntrypoint, ModInitializer {
 		Log.info(LogCategory.TEST, "Hello from Fabric");
 		Log.info(LogCategory.TEST, "**************************");
 
-		Set<CustomEntry> testingInits = new LinkedHashSet<>(FabricLoader.getInstance().getEntrypoints("test:testing", CustomEntry.class));
+		Set<CustomEntry> testingInits = new LinkedHashSet<>(LeafLoader.getInstance().getEntrypoints("test:testing", CustomEntry.class));
 		Log.info(LogCategory.TEST, "Found %d testing inits", testingInits.size());
 		Log.info(LogCategory.TEST, testingInits.stream().map(CustomEntry::describe).collect(Collectors.joining(", ")));
 	}

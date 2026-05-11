@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.FabricUtil;
 import dev.aoqia.leaf.loader.api.SemanticVersion;
 import dev.aoqia.leaf.loader.api.VersionParsingException;
 
-public class FabricMixinVersions {
+public class LeafMixinVersions {
 	private static final List<LoaderMixinVersionEntry> versions = new ArrayList<>();
 	private static final Map<Integer, String> minLoaderVersions = new HashMap<>();
 

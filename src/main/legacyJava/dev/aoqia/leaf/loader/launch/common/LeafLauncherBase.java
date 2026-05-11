@@ -26,22 +26,22 @@ import java.util.Collection;
 import java.util.List;
 
 import net.fabricmc.api.EnvType;
-import dev.aoqia.leaf.loader.api.FabricLoader;
+import dev.aoqia.leaf.loader.api.LeafLoader;
 import dev.aoqia.leaf.loader.impl.util.UrlUtil;
 
 /**
  * @deprecated Internal API, do not use
  */
 @Deprecated
-public class FabricLauncherBase implements FabricLauncher {
-	private final dev.aoqia.leaf.loader.impl.launch.FabricLauncher parent = dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase.getLauncher();
+public class LeafLauncherBase implements LeafLauncher {
+	private final dev.aoqia.leaf.loader.impl.launch.LeafLauncher parent = dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase.getLauncher();
 
 	public static Class<?> getClass(String className) throws ClassNotFoundException {
 		return Class.forName(className, true, getLauncher().getTargetClassLoader());
 	}
 
-	public static FabricLauncher getLauncher() {
-		return new FabricLauncherBase();
+	public static LeafLauncher getLauncher() {
+		return new LeafLauncherBase();
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class FabricLauncherBase implements FabricLauncher {
 
 	@Override
 	public EnvType getEnvironmentType() {
-		return FabricLoader.getInstance().getEnvironmentType();
+		return LeafLoader.getInstance().getEnvironmentType();
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class FabricLauncherBase implements FabricLauncher {
 
 	@Override
 	public boolean isDevelopment() {
-		return FabricLoader.getInstance().isDevelopmentEnvironment();
+		return LeafLoader.getInstance().isDevelopmentEnvironment();
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 
 import net.fabricmc.api.EnvType;
 import dev.aoqia.leaf.loader.api.entrypoint.EntrypointContainer;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 
 /**
  * The public-facing FabricLoader instance.
@@ -34,12 +34,12 @@ import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
  *
  * @since 0.4.0
  */
-public interface FabricLoader {
+public interface LeafLoader {
 	/**
 	 * Returns the public-facing Fabric Loader instance.
 	 */
-	static FabricLoader getInstance() {
-		FabricLoader ret = FabricLoaderImpl.INSTANCE;
+	static LeafLoader getInstance() {
+		LeafLoader ret = LeafLoaderImpl.INSTANCE;
 
 		if (ret == null) {
 			throw new RuntimeException("Accessed FabricLoader too early!");

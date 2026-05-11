@@ -33,8 +33,8 @@ import dev.aoqia.leaf.loader.impl.launch.knot.KnotServer;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
-public class FabricServerLauncher {
-	private static final ClassLoader parentLoader = FabricServerLauncher.class.getClassLoader();
+public class LeafServerLauncher {
+	private static final ClassLoader parentLoader = LeafServerLauncher.class.getClassLoader();
 	private static String mainClass = KnotServer.class.getName();
 
 	public static void main(String[] args) {

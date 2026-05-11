@@ -16,13 +16,14 @@
 
 package dev.aoqia.leaf.loader.api.entrypoint;
 
+import dev.aoqia.leaf.loader.api.LeafLoader;
 import dev.aoqia.leaf.loader.api.ModContainer;
 
 /**
  * A container holding both an entrypoint instance and the {@link ModContainer} which has provided the entrypoint.
  *
  * @param <T> The type of the entrypoint
- * @see dev.aoqia.leaf.loader.api.FabricLoader#getEntrypointContainers(String, Class)
+ * @see LeafLoader#getEntrypointContainers(String, Class)
  */
 public interface EntrypointContainer<T> {
 	/**

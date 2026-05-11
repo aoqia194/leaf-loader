@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
 
@@ -58,7 +58,7 @@ public class LogNonFabricModsTest {
 		nonFabricMods.add(Paths.get("mods/non_fabric_mod2.jar"));
 		nonFabricMods.add(Paths.get("mods/non_fabric_mod3.jar"));
 
-		FabricLoaderImpl.INSTANCE.dumpNonFabricMods(nonFabricMods);
+		LeafLoaderImpl.INSTANCE.dumpNonFabricMods(nonFabricMods);
 
 		String expectedLog = "Found 3 non-fabric mods:"
 				+ "\n\t- non_fabric_mod1.jar"

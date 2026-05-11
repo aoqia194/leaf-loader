@@ -19,7 +19,7 @@ package dev.aoqia.leaf.loader.api;
 import java.util.function.BiConsumer;
 
 /**
- * Object share for inter-mod communication, obtainable through {@link FabricLoader#getObjectShare}.
+ * Object share for inter-mod communication, obtainable through {@link LeafLoader#getObjectShare}.
  *
  * <p>The share allows mods to exchange data without directly referencing each other. This makes simple interaction
  * easier by eliminating any compile- or run-time dependencies if the shared value type is independent of the mod

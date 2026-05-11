@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import dev.aoqia.leaf.loader.LeafLoader;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
 
@@ -56,7 +57,7 @@ import dev.aoqia.leaf.loader.impl.discovery.ModResolver;
 import dev.aoqia.leaf.loader.impl.discovery.RuntimeModRemapper;
 import dev.aoqia.leaf.loader.impl.entrypoint.EntrypointStorage;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
 import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
@@ -71,8 +72,8 @@ import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 @SuppressWarnings("deprecation")
-public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
-	public static final FabricLoaderImpl INSTANCE = InitHelper.get();
+public final class LeafLoaderImpl extends LeafLoader {
+	public static final LeafLoaderImpl INSTANCE = InitHelper.get();
 
 	public static final int ASM_VERSION = Opcodes.ASM9;
 
@@ -103,7 +104,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 	private Path gameDir;
 	private Path configDir;
 
-	private FabricLoaderImpl() { }
+	private LeafLoaderImpl() { }
 
 	/**
 	 * Freeze the FabricLoader, preventing additional mods from being loaded.
@@ -150,7 +151,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 
 	@Override
 	public EnvType getEnvironmentType() {
-		return FabricLauncherBase.getLauncher().getEnvironmentType();
+		return LeafLauncherBase.getLauncher().getEnvironmentType();
 	}
 
 	/**
@@ -365,7 +366,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 		for (ModContainerImpl mod : mods) {
 			if (!mod.getMetadata().getId().equals(MOD_ID) && !mod.getMetadata().getType().equals("builtin")) {
 				for (Path path : mod.getCodeSourcePaths()) {
-					FabricLauncherBase.getLauncher().addToClassPath(path);
+					LeafLauncherBase.getLauncher().addToClassPath(path);
 				}
 			}
 		}
@@ -396,7 +397,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 		}
 
 		RuntimeException exception = null;
-		Collection<EntrypointContainer<T>> entrypoints = FabricLoaderImpl.INSTANCE.getEntrypointContainers(key, type);
+		Collection<EntrypointContainer<T>> entrypoints = LeafLoaderImpl.INSTANCE.getEntrypointContainers(key, type);
 
 		Log.debug(LogCategory.ENTRYPOINT, "Iterating over entrypoint '%s'", key);
 
@@ -420,7 +421,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 	@Override
 	public MappingResolver getMappingResolver() {
 		if (mappingResolver == null) {
-			MappingConfiguration config = FabricLauncherBase.getLauncher().getMappingConfiguration();
+			MappingConfiguration config = LeafLauncherBase.getLauncher().getMappingConfiguration();
 			String runtimeNamespace = config.getRuntimeNamespace();
 
 			mappingResolver = new LazyMappingResolver(() -> new MappingResolverImpl(config.getMappings(), runtimeNamespace),
@@ -466,7 +467,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 
 	@Override
 	public boolean isDevelopmentEnvironment() {
-		return FabricLauncherBase.getLauncher().isDevelopment();
+		return LeafLauncherBase.getLauncher().isDevelopment();
 	}
 
 	private void addMod(ModCandidateImpl candidate) throws ModResolutionException {
@@ -490,7 +491,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 				}
 
 				try {
-					adapterMap.put(laEntry.getKey(), (LanguageAdapter) Class.forName(laEntry.getValue(), true, FabricLauncherBase.getLauncher().getTargetClassLoader()).getDeclaredConstructor().newInstance());
+					adapterMap.put(laEntry.getKey(), (LanguageAdapter) Class.forName(laEntry.getValue(), true, LeafLauncherBase.getLauncher().getTargetClassLoader()).getDeclaredConstructor().newInstance());
 				} catch (Exception e) {
 					throw new RuntimeException("Failed to instantiate language adapter: " + laEntry.getKey(), e);
 				}
@@ -529,7 +530,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 			if (path == null) throw new RuntimeException(String.format("Missing classTweaker file %s from mod %s", location, modContainer.getMetadata().getId()));
 
 			try (BufferedReader reader = Files.newBufferedReader(path)) {
-				ctReader.read(reader, FabricLauncherBase.getLauncher().getMappingConfiguration().getRuntimeNamespace());
+				ctReader.read(reader, LeafLauncherBase.getLauncher().getMappingConfiguration().getRuntimeNamespace());
 			} catch (Exception e) {
 				throw new RuntimeException("Failed to read classTweaker file from mod " + modMetadata.getId(), e);
 			}
@@ -541,9 +542,9 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 			throw new RuntimeException("Cannot instantiate mods when not frozen!");
 		}
 
-		if (gameInstance != null && FabricLauncherBase.getLauncher() instanceof Knot) {
+		if (gameInstance != null && LeafLauncherBase.getLauncher() instanceof Knot) {
 			ClassLoader gameClassLoader = gameInstance.getClass().getClassLoader();
-			ClassLoader targetClassLoader = FabricLauncherBase.getLauncher().getTargetClassLoader();
+			ClassLoader targetClassLoader = LeafLauncherBase.getLauncher().getTargetClassLoader();
 			boolean matchesKnot = (gameClassLoader == targetClassLoader);
 			boolean containsKnot = false;
 
@@ -569,7 +570,7 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 							+ " - Expected game class loader: %s\n"
 							+ " - Actual game class loader: %s\n"
 							+ "Could not find the expected class loader in game class loader parents!\n",
-							FabricLauncherBase.getLauncher().getTargetClassLoader(), gameClassLoader);
+							LeafLauncherBase.getLauncher().getTargetClassLoader(), gameClassLoader);
 				}
 			}
 		}
@@ -626,16 +627,16 @@ public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 	 * Provides singleton for static init assignment regardless of load order.
 	 */
 	public static class InitHelper {
-		private static FabricLoaderImpl instance;
+		private static LeafLoaderImpl instance;
 
-		public static FabricLoaderImpl get() {
-			if (instance == null) instance = new FabricLoaderImpl();
+		public static LeafLoaderImpl get() {
+			if (instance == null) instance = new LeafLoaderImpl();
 
 			return instance;
 		}
 	}
 
 	static {
-		LoaderUtil.verifyNotInTargetCl(FabricLoaderImpl.class);
+		LoaderUtil.verifyNotInTargetCl(LeafLoaderImpl.class);
 	}
 }

@@ -38,18 +38,18 @@ import java.util.zip.ZipFile;
 
 import net.fabricmc.api.EnvType;
 import dev.aoqia.leaf.loader.api.entrypoint.PreLaunchEntrypoint;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
-import dev.aoqia.leaf.loader.impl.launch.FabricMixinBootstrap;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.LeafMixinBootstrap;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.UrlUtil;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
-public final class Knot extends FabricLauncherBase {
+public final class Knot extends LeafLauncherBase {
 	protected Map<String, Object> properties = new HashMap<>();
 
 	private KnotClassLoaderInterface classLoader;
@@ -127,7 +127,7 @@ public final class Knot extends FabricLauncherBase {
 
 		provider = createGameProvider(args);
 		Log.finishBuiltinConfig();
-		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Fabric Loader %s", provider.getGameName(), provider.getRawGameVersion(), FabricLoaderImpl.VERSION);
+		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Fabric Loader %s", provider.getGameName(), provider.getRawGameVersion(), LeafLoaderImpl.VERSION);
 
 		// Setup classloader
 		// TODO: Provide KnotCompatibilityClassLoader in non-exclusive-Fabric pre-1.13 environments?
@@ -136,16 +136,16 @@ public final class Knot extends FabricLauncherBase {
 		ClassLoader cl = classLoader.getClassLoader();
 		Thread.currentThread().setContextClassLoader(cl);
 
-		FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
+		LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
 		loader.setGameProvider(provider);
 		provider.initialize(this);
 		loader.load();
 		loader.freeze();
 
-		FabricLoaderImpl.INSTANCE.loadClassTweakers();
+		LeafLoaderImpl.INSTANCE.loadClassTweakers();
 
-		FabricMixinBootstrap.init(getEnvironmentType(), loader);
-		FabricLauncherBase.finishMixinBootstrapping();
+		LeafMixinBootstrap.init(getEnvironmentType(), loader);
+		LeafLauncherBase.finishMixinBootstrapping();
 
 		classLoader.initializeTransformers();
 

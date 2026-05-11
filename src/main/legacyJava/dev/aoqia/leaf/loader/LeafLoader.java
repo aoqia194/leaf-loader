@@ -21,21 +21,21 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 
 /**
  * The main class for mod loading operations.
  *
- * @deprecated Use {@link dev.aoqia.leaf.loader.api.FabricLoader}
+ * @deprecated Use {@link dev.aoqia.leaf.loader.api.LeafLoader}
  */
 @Deprecated
-public abstract class FabricLoader implements dev.aoqia.leaf.loader.api.FabricLoader {
+public abstract class LeafLoader implements dev.aoqia.leaf.loader.api.LeafLoader {
 	/**
-	 * @deprecated Use {@link dev.aoqia.leaf.loader.api.FabricLoader#getInstance()} where possible,
+	 * @deprecated Use {@link dev.aoqia.leaf.loader.api.LeafLoader#getInstance()} where possible,
 	 * report missing areas as an issue.
 	 */
 	@Deprecated
-	public static final FabricLoader INSTANCE = FabricLoaderImpl.InitHelper.get();
+	public static final LeafLoader INSTANCE = LeafLoaderImpl.InitHelper.get();
 
 	public File getModsDirectory() {
 		return getModsDirectory0().toFile();

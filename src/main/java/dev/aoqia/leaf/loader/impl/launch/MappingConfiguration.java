@@ -38,7 +38,7 @@ import java.util.zip.ZipFile;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.util.ManifestUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
@@ -141,11 +141,11 @@ public final class MappingConfiguration {
 		ret = OFFICIAL_NAMESPACE; // default
 
 		if (hasAnyMappings()) { // switch to named or intermediary if they are supplied
-			String newNs = FabricLauncherBase.getLauncher().isDevelopment() ? NAMED_NAMESPACE : INTERMEDIARY_NAMESPACE;
+			String newNs = LeafLauncherBase.getLauncher().isDevelopment() ? NAMED_NAMESPACE : INTERMEDIARY_NAMESPACE;
 			if (getNamespaces().contains(newNs)) ret = newNs;
 		}
 
-		return FabricLoaderImpl.INSTANCE.getGameProvider().getRuntimeNamespace(ret);
+		return LeafLoaderImpl.INSTANCE.getGameProvider().getRuntimeNamespace(ret);
 	}
 
 	public String getDefaultModDistributionNamespace() {
@@ -156,7 +156,7 @@ public final class MappingConfiguration {
 
 		if (!ret.equals(OFFICIAL_NAMESPACE)) ret = INTERMEDIARY_NAMESPACE;
 
-		return FabricLoaderImpl.INSTANCE.getGameProvider().getDefaultModDistributionNamespace(ret);
+		return LeafLoaderImpl.INSTANCE.getGameProvider().getDefaultModDistributionNamespace(ret);
 	}
 
 	public boolean requiresPackageAccessHack() {

@@ -25,23 +25,23 @@ import java.util.Map;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
-import dev.aoqia.leaf.loader.impl.gui.FabricGuiEntry;
+import dev.aoqia.leaf.loader.impl.gui.LeafGuiEntry;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
-public abstract class FabricLauncherBase implements FabricLauncher {
+public abstract class LeafLauncherBase implements LeafLauncher {
 	protected static final boolean IS_DEVELOPMENT = SystemProperties.isSet(SystemProperties.DEVELOPMENT);
 
 	private static boolean mixinReady;
 	private static Map<String, Object> properties;
-	private static FabricLauncher launcher;
+	private static LeafLauncher launcher;
 	private static MappingConfiguration mappingConfiguration = new MappingConfiguration();
 
-	protected FabricLauncherBase() {
+	protected LeafLauncherBase() {
 		setLauncher(this);
 	}
 
@@ -68,7 +68,7 @@ public abstract class FabricLauncherBase implements FabricLauncher {
 	}
 
 	@VisibleForTesting
-	public static void setLauncher(FabricLauncher launcherA) {
+	public static void setLauncher(LeafLauncher launcherA) {
 		if (launcher != null && launcher != launcherA) {
 			throw new RuntimeException("Duplicate setLauncher call!");
 		}
@@ -76,7 +76,7 @@ public abstract class FabricLauncherBase implements FabricLauncher {
 		launcher = launcherA;
 	}
 
-	public static FabricLauncher getLauncher() {
+	public static LeafLauncher getLauncher() {
 		return launcher;
 	}
 
@@ -88,10 +88,10 @@ public abstract class FabricLauncherBase implements FabricLauncher {
 		Throwable actualExc = exc.getMessage() != null ? exc : exc.getCause();
 		Log.error(LogCategory.GENERAL, exc.getMainText(), actualExc);
 
-		GameProvider gameProvider = FabricLoaderImpl.INSTANCE.tryGetGameProvider();
+		GameProvider gameProvider = LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (gameProvider == null || !gameProvider.displayCrash(actualExc, exc.getDisplayedText())) {
-			FabricGuiEntry.displayError(exc.getDisplayedText(), actualExc, true);
+			LeafGuiEntry.displayError(exc.getDisplayedText(), actualExc, true);
 		} else {
 			System.exit(1);
 		}
@@ -111,11 +111,11 @@ public abstract class FabricLauncherBase implements FabricLauncher {
 						String mainText = String.format("Uncaught exception in thread \"%s\"", t.getName());
 						Log.error(LogCategory.GENERAL, mainText, e);
 
-						GameProvider gameProvider = FabricLoaderImpl.INSTANCE.tryGetGameProvider();
+						GameProvider gameProvider = LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 						if (Thread.currentThread() == mainThread
 								&& (gameProvider == null || !gameProvider.displayCrash(e, mainText))) {
-							FabricGuiEntry.displayError(mainText, e, false);
+							LeafGuiEntry.displayError(mainText, e, false);
 						}
 					}
 				} catch (Throwable e2) { // just in case

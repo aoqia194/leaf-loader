@@ -28,7 +28,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.util.Arguments;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
@@ -47,7 +47,7 @@ public class ArgumentModCandidateFinder implements ModCandidateFinder {
 		String list = System.getProperty(SystemProperties.ADD_MODS);
 		if (list != null) addMods(list, "system property", out);
 
-		list = FabricLoaderImpl.INSTANCE.getGameProvider().getArguments().remove(Arguments.ADD_MODS);
+		list = LeafLoaderImpl.INSTANCE.getGameProvider().getArguments().remove(Arguments.ADD_MODS);
 		if (list != null) addMods(list, "argument", out);
 	}
 

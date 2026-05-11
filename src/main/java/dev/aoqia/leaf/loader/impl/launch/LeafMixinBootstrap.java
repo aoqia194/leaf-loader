@@ -34,7 +34,7 @@ import dev.aoqia.leaf.loader.api.Version;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency.Kind;
 import dev.aoqia.leaf.loader.api.metadata.version.VersionInterval;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.ModContainerImpl;
 import dev.aoqia.leaf.loader.impl.launch.knot.MixinServiceKnot;
 import dev.aoqia.leaf.loader.impl.launch.knot.MixinServiceKnotBootstrap;
@@ -43,12 +43,12 @@ import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 import dev.aoqia.leaf.loader.impl.util.mappings.MixinIntermediaryDevRemapper;
 import net.fabricmc.mappingio.tree.MappingTree;
 
-public final class FabricMixinBootstrap {
-	private FabricMixinBootstrap() { }
+public final class LeafMixinBootstrap {
+	private LeafMixinBootstrap() { }
 
 	private static boolean initialized = false;
 
-	public static void init(EnvType side, FabricLoaderImpl loader) {
+	public static void init(EnvType side, LeafLoaderImpl loader) {
 		if (initialized) {
 			throw new RuntimeException("FabricMixinBootstrap has already been initialized!");
 		}
@@ -58,8 +58,8 @@ public final class FabricMixinBootstrap {
 
 		MixinBootstrap.init();
 
-		if (FabricLauncherBase.getLauncher().isDevelopment()) {
-			MappingConfiguration config = FabricLauncherBase.getLauncher().getMappingConfiguration();
+		if (LeafLauncherBase.getLauncher().isDevelopment()) {
+			MappingConfiguration config = LeafLauncherBase.getLauncher().getMappingConfiguration();
 			MappingTree mappings = config.getMappings();
 			final String modNs = config.getDefaultModDistributionNamespace();
 			String runtimeNs = config.getRuntimeNamespace();
@@ -145,7 +145,7 @@ public final class FabricMixinBootstrap {
 			Version minLoaderVersion = reqIntervals.get(0).getMin(); // it is sorted, to 0 has the absolute lower bound
 
 			if (minLoaderVersion != null) { // has a lower bound
-				for (FabricMixinVersions.LoaderMixinVersionEntry version : FabricMixinVersions.getVersions()) {
+				for (LeafMixinVersions.LoaderMixinVersionEntry version : LeafMixinVersions.getVersions()) {
 					if (minLoaderVersion.compareTo(version.loaderVersion) >= 0) { // lower bound is >= current version
 						return version.mixinVersion;
 					}

@@ -49,11 +49,11 @@ import java.util.zip.ZipFile;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
 import net.fabricmc.api.EnvType;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
-import dev.aoqia.leaf.loader.impl.transformer.FabricTransformer;
+import dev.aoqia.leaf.loader.impl.transformer.LeafTransformer;
 import dev.aoqia.leaf.loader.impl.util.ExceptionUtil;
 import dev.aoqia.leaf.loader.impl.util.FileSystemUtil;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
@@ -407,7 +407,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 					} */
 				}
 			} catch (IOException | FileSystemNotFoundException e) {
-				if (FabricLauncherBase.getLauncher().isDevelopment()) {
+				if (LeafLauncherBase.getLauncher().isDevelopment()) {
 					Log.warn(LogCategory.KNOT, "Failed to load manifest", e);
 				}
 			}
@@ -472,7 +472,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 		}
 
 		if (input != null) {
-			return FabricTransformer.transform(isDevelopment, envType, name, input);
+			return LeafTransformer.transform(isDevelopment, envType, name, input);
 		}
 
 		return null;
@@ -621,7 +621,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 			Path cacheDir = null;
 
 			try {
-				cacheDir = FabricLoaderImpl.INSTANCE.getGameDir().resolve(FabricLoaderImpl.CACHE_DIR_NAME).resolve("natives");
+				cacheDir = LeafLoaderImpl.INSTANCE.getGameDir().resolve(LeafLoaderImpl.CACHE_DIR_NAME).resolve("natives");
 				assert cacheDir.isAbsolute();
 				Files.createDirectories(cacheDir);
 			} catch (IllegalStateException e) { // too early access

@@ -83,7 +83,7 @@ public class ModContainerImpl extends dev.aoqia.leaf.loader.ModContainer {
 		List<Path> paths = getRootPaths();
 
 		if (paths.size() != 1 && !warnedMultiPath) {
-			if (!FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedMultiPath = true;
+			if (!LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedMultiPath = true;
 			Log.warn(LogCategory.GENERAL, "getRootPath access for %s with multiple paths, returning only one which may incur unexpected behavior!", this);
 		}
 
@@ -108,7 +108,7 @@ public class ModContainerImpl extends dev.aoqia.leaf.loader.ModContainer {
 			if (path.getFileSystem().isOpen()) continue;
 
 			if (!warnedClose) {
-				if (!FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedClose = true;
+				if (!LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) warnedClose = true;
 				Log.warn(LogCategory.GENERAL, "FileSystem for %s has been closed unexpectedly, existing root path references may break!", this);
 			}
 
@@ -184,7 +184,7 @@ public class ModContainerImpl extends dev.aoqia.leaf.loader.ModContainer {
 
 	@Override
 	public Optional<ModContainer> getContainingMod() {
-		return parentModId != null ? FabricLoaderImpl.INSTANCE.getModContainer(parentModId) : Optional.empty();
+		return parentModId != null ? LeafLoaderImpl.INSTANCE.getModContainer(parentModId) : Optional.empty();
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public class ModContainerImpl extends dev.aoqia.leaf.loader.ModContainer {
 		List<ModContainer> ret = new ArrayList<>(childModIds.size());
 
 		for (String id : childModIds) {
-			ModContainer mod = FabricLoaderImpl.INSTANCE.getModContainer(id).orElse(null);
+			ModContainer mod = LeafLoaderImpl.INSTANCE.getModContainer(id).orElse(null);
 			if (mod != null) ret.add(mod);
 		}
 

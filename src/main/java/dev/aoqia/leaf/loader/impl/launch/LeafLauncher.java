@@ -25,7 +25,7 @@ import java.util.jar.Manifest;
 
 import net.fabricmc.api.EnvType;
 
-public interface FabricLauncher {
+public interface LeafLauncher {
 	MappingConfiguration getMappingConfiguration();
 
 	void addToClassPath(Path path, String... allowedPrefixes);

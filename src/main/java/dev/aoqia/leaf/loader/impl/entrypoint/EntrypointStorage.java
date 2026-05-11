@@ -28,7 +28,7 @@ import dev.aoqia.leaf.loader.api.LanguageAdapter;
 import dev.aoqia.leaf.loader.api.LanguageAdapterException;
 import dev.aoqia.leaf.loader.api.entrypoint.EntrypointContainer;
 import dev.aoqia.leaf.loader.impl.ModContainerImpl;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
@@ -69,7 +69,7 @@ public final class EntrypointStorage {
 		@Override
 		public synchronized <T> T getOrCreate(Class<T> type) throws Exception {
 			if (object == null) {
-				dev.aoqia.leaf.loader.language.LanguageAdapter adapter = (dev.aoqia.leaf.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, FabricLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
+				dev.aoqia.leaf.loader.language.LanguageAdapter adapter = (dev.aoqia.leaf.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, LeafLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
 				object = adapter.createInstance(value, options);
 			}
 

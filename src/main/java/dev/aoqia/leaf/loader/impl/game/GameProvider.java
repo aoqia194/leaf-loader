@@ -25,7 +25,7 @@ import java.util.Set;
 import net.fabricmc.api.Environment;
 import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.util.Arguments;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
@@ -60,10 +60,10 @@ public interface GameProvider { // name directly referenced in dev.aoqia.leaf.lo
 	}
 
 	boolean isEnabled();
-	boolean locateGame(FabricLauncher launcher, String[] args);
-	void initialize(FabricLauncher launcher);
+	boolean locateGame(LeafLauncher launcher, String[] args);
+	void initialize(LeafLauncher launcher);
 	GameTransformer getEntrypointTransformer();
-	void unlockClassPath(FabricLauncher launcher);
+	void unlockClassPath(LeafLauncher launcher);
 	void launch(ClassLoader loader);
 
 	default boolean displayCrash(Throwable exception, String context) {

@@ -27,11 +27,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricBasicButtonType;
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricStatusTab;
-import dev.aoqia.leaf.loader.impl.gui.FabricStatusTree.FabricTreeWarningLevel;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafBasicButtonType;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafStatusTab;
+import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.Localization;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
@@ -40,12 +40,12 @@ import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 /** The main entry point for all fabric-based stuff. */
-public final class FabricGuiEntry {
-	/** Opens the given {@link FabricStatusTree} in a new swing window.
+public final class LeafGuiEntry {
+	/** Opens the given {@link LeafStatusTree} in a new swing window.
 	 *
 	 * @throws Exception if something went wrong while opening the window. */
-	public static void open(FabricStatusTree tree) throws Exception {
-		GameProvider provider = FabricLoaderImpl.INSTANCE.tryGetGameProvider();
+	public static void open(LeafStatusTree tree) throws Exception {
+		GameProvider provider = LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (provider == null && LoaderUtil.hasAwtSupport()
 				|| provider != null && provider.hasAwtSupport()) {
@@ -55,7 +55,7 @@ public final class FabricGuiEntry {
 		}
 	}
 
-	private static void openForked(FabricStatusTree tree) throws IOException, InterruptedException {
+	private static void openForked(LeafStatusTree tree) throws IOException, InterruptedException {
 		Path javaBinDir = LoaderUtil.normalizePath(Paths.get(System.getProperty("java.home"), "bin"));
 		String[] executables = { "javaw.exe", "java.exe", "java" };
 		Path javaPath = null;
@@ -71,7 +71,7 @@ public final class FabricGuiEntry {
 
 		if (javaPath == null) throw new RuntimeException("can't find java executable in "+javaBinDir);
 
-		Process process = new ProcessBuilder(javaPath.toString(), "-Xmx100M", "-cp", UrlUtil.LOADER_CODE_SOURCE.toString(), FabricGuiEntry.class.getName())
+		Process process = new ProcessBuilder(javaPath.toString(), "-Xmx100M", "-cp", UrlUtil.LOADER_CODE_SOURCE.toString(), LeafGuiEntry.class.getName())
 				.redirectOutput(ProcessBuilder.Redirect.INHERIT)
 				.redirectError(ProcessBuilder.Redirect.INHERIT)
 				.start();
@@ -92,7 +92,7 @@ public final class FabricGuiEntry {
 	}
 
 	public static void main(String[] args) throws Exception {
-		FabricStatusTree tree = new FabricStatusTree(new DataInputStream(System.in));
+		LeafStatusTree tree = new LeafStatusTree(new DataInputStream(System.in));
 		FabricMainWindow.open(tree, true);
 		System.exit(0);
 	}
@@ -115,30 +115,30 @@ public final class FabricGuiEntry {
 				exception.printStackTrace(new PrintWriter(error));
 			}
 
-			tree.addButton(Localization.format("gui.button.copyError"), FabricBasicButtonType.CLICK_MANY).withClipboard(error.toString());
+			tree.addButton(Localization.format("gui.button.copyError"), LeafBasicButtonType.CLICK_MANY).withClipboard(error.toString());
 		}, exitAfter);
 	}
 
-	public static void displayError(String mainText, Throwable exception, Consumer<FabricStatusTree> treeCustomiser, boolean exitAfter) {
+	public static void displayError(String mainText, Throwable exception, Consumer<LeafStatusTree> treeCustomiser, boolean exitAfter) {
 		boolean isCI = System.getenv("CI") != null;
 		boolean isNoGui = SystemProperties.isSet(SystemProperties.NO_GUI);
 
-		GameProvider provider = FabricLoaderImpl.INSTANCE.tryGetGameProvider();
+		GameProvider provider = LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (!isCI && !isNoGui && !GraphicsEnvironment.isHeadless() && (provider == null || provider.canOpenErrorGui())) {
-			String title = "Fabric Loader " + FabricLoaderImpl.VERSION;
-			FabricStatusTree tree = new FabricStatusTree(title, mainText);
-			FabricStatusTab crashTab = tree.addTab(Localization.format("gui.tab.crash"));
+			String title = "Fabric Loader " + LeafLoaderImpl.VERSION;
+			LeafStatusTree tree = new LeafStatusTree(title, mainText);
+			LeafStatusTab crashTab = tree.addTab(Localization.format("gui.tab.crash"));
 
 			if (exception != null) {
 				crashTab.node.addCleanedException(exception);
 			} else {
-				crashTab.node.addMessage(Localization.format("gui.error.missingException"), FabricTreeWarningLevel.NONE);
+				crashTab.node.addMessage(Localization.format("gui.error.missingException"), LeafTreeWarningLevel.NONE);
 			}
 
 			// Maybe add an "open mods folder" button?
 			// or should that be part of the main tree's right-click menu?
-			tree.addButton(Localization.format("gui.button.exit"), FabricBasicButtonType.CLICK_ONCE).makeClose();
+			tree.addButton(Localization.format("gui.button.exit"), LeafBasicButtonType.CLICK_ONCE).makeClose();
 			treeCustomiser.accept(tree);
 
 			try {
