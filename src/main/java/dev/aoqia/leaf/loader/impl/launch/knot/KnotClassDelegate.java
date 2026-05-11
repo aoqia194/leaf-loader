@@ -481,7 +481,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 	private static boolean canTransformClass(String name) {
 		name = name.replace('/', '.');
 		// Blocking Fabric Loader classes is no longer necessary here as they don't exist on the modding class loader
-		return /* !"net.fabricmc.api.EnvType".equals(name) && !name.startsWith("net.fabricmc.loader.") && */ !name.startsWith("org.apache.logging.log4j");
+		return /* !"net.fabricmc.api.EnvType".equals(name) && !name.startsWith("dev.aoqia.leaf.loader.") && */ !name.startsWith("org.apache.logging.log4j");
 	}
 
 	@Override

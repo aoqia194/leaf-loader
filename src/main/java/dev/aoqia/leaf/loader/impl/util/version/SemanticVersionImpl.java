@@ -36,7 +36,7 @@ import dev.aoqia.leaf.loader.api.VersionParsingException;
  * </ul>
  */
 @SuppressWarnings("deprecation")
-public class SemanticVersionImpl extends net.fabricmc.loader.util.version.SemanticVersionImpl implements SemanticVersion {
+public class SemanticVersionImpl extends dev.aoqia.leaf.loader.util.version.SemanticVersionImpl implements SemanticVersion {
 	private static final Pattern DOT_SEPARATED_ID = Pattern.compile("|[-0-9A-Za-z]+(\\.[-0-9A-Za-z]+)*");
 	private static final Pattern UNSIGNED_INTEGER = Pattern.compile("0|[1-9][0-9]*");
 	private final int[] components;

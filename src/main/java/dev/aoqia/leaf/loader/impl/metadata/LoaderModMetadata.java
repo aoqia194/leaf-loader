@@ -28,11 +28,11 @@ import dev.aoqia.leaf.loader.api.metadata.ModDependency;
  * Internal variant of the ModMetadata interface.
  */
 @SuppressWarnings("deprecation")
-public interface LoaderModMetadata extends net.fabricmc.loader.metadata.LoaderModMetadata {
+public interface LoaderModMetadata extends dev.aoqia.leaf.loader.metadata.LoaderModMetadata {
 	int getSchemaVersion();
 
 	default String getOldStyleLanguageAdapter() {
-		return "net.fabricmc.loader.language.JavaLanguageAdapter";
+		return "dev.aoqia.leaf.loader.language.JavaLanguageAdapter";
 	}
 
 	Map<String, String> getLanguageAdapterDefinitions();

@@ -38,7 +38,7 @@ import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 @SuppressWarnings("deprecation")
-public class ModContainerImpl extends net.fabricmc.loader.ModContainer {
+public class ModContainerImpl extends dev.aoqia.leaf.loader.ModContainer {
 	private final LoaderModMetadata info;
 	private final ModOrigin origin;
 	private final List<Path> codeSourcePaths;

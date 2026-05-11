@@ -17,7 +17,7 @@
 package dev.aoqia.leaf.loader.impl.metadata;
 
 @SuppressWarnings("deprecation")
-public interface EntrypointMetadata extends net.fabricmc.loader.metadata.EntrypointMetadata {
+public interface EntrypointMetadata extends dev.aoqia.leaf.loader.metadata.EntrypointMetadata {
 	@Override
 	String getAdapter();
 	@Override

@@ -26,7 +26,7 @@ public class MixinServiceKnotBootstrap implements IMixinServiceBootstrap {
 
 	@Override
 	public String getServiceClassName() {
-		return "net.fabricmc.loader.impl.launch.knot.MixinServiceKnot";
+		return "dev.aoqia.leaf.loader.impl.launch.knot.MixinServiceKnot";
 	}
 
 	@Override

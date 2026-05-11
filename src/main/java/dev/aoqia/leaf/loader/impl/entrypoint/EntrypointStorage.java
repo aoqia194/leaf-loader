@@ -45,8 +45,8 @@ public final class EntrypointStorage {
 
 	@SuppressWarnings("deprecation")
 	private static class OldEntry implements Entry {
-		private static final net.fabricmc.loader.language.LanguageAdapter.Options options = net.fabricmc.loader.language.LanguageAdapter.Options.Builder.create()
-				.missingSuperclassBehaviour(net.fabricmc.loader.language.LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
+		private static final dev.aoqia.leaf.loader.language.LanguageAdapter.Options options = dev.aoqia.leaf.loader.language.LanguageAdapter.Options.Builder.create()
+				.missingSuperclassBehaviour(dev.aoqia.leaf.loader.language.LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
 				.build();
 
 		private final ModContainerImpl mod;
@@ -69,7 +69,7 @@ public final class EntrypointStorage {
 		@Override
 		public synchronized <T> T getOrCreate(Class<T> type) throws Exception {
 			if (object == null) {
-				net.fabricmc.loader.language.LanguageAdapter adapter = (net.fabricmc.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, FabricLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
+				dev.aoqia.leaf.loader.language.LanguageAdapter adapter = (dev.aoqia.leaf.loader.language.LanguageAdapter) Class.forName(languageAdapter, true, FabricLauncherBase.getLauncher().getTargetClassLoader()).getConstructor().newInstance();
 				object = adapter.createInstance(value, options);
 			}
 

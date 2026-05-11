@@ -25,10 +25,10 @@ import dev.aoqia.leaf.loader.impl.util.UrlUtil;
 import dev.aoqia.leaf.loader.metadata.LoaderModMetadata;
 
 /**
- * @deprecated Use {@link net.fabricmc.loader.api.ModContainer} instead
+ * @deprecated Use {@link dev.aoqia.leaf.loader.api.ModContainer} instead
  */
 @Deprecated
-public abstract class ModContainer implements net.fabricmc.loader.api.ModContainer {
+public abstract class ModContainer implements dev.aoqia.leaf.loader.api.ModContainer {
 	public abstract LoaderModMetadata getInfo();
 	protected abstract List<Path> getCodeSourcePaths();
 

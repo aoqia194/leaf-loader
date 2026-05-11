@@ -26,7 +26,7 @@ package net.fabricmc.api;
  *
  * @see ModInitializer
  * @see DedicatedServerModInitializer
- * @see net.fabricmc.loader.api.FabricLoader#getEntrypointContainers(String, Class)
+ * @see dev.aoqia.leaf.loader.api.FabricLoader#getEntrypointContainers(String, Class)
  */
 @FunctionalInterface
 public interface ClientModInitializer {

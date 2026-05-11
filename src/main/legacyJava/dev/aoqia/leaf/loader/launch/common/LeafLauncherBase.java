@@ -34,7 +34,7 @@ import dev.aoqia.leaf.loader.impl.util.UrlUtil;
  */
 @Deprecated
 public class FabricLauncherBase implements FabricLauncher {
-	private final net.fabricmc.loader.impl.launch.FabricLauncher parent = net.fabricmc.loader.impl.launch.FabricLauncherBase.getLauncher();
+	private final dev.aoqia.leaf.loader.impl.launch.FabricLauncher parent = dev.aoqia.leaf.loader.impl.launch.FabricLauncherBase.getLauncher();
 
 	public static Class<?> getClass(String className) throws ClassNotFoundException {
 		return Class.forName(className, true, getLauncher().getTargetClassLoader());

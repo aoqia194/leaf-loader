@@ -30,7 +30,7 @@ public final class UrlUtil {
 
 	public static Path asPath(URL url) throws UrlConversionException {
 		try {
-			return net.fabricmc.loader.impl.util.UrlUtil.asPath(url);
+			return dev.aoqia.leaf.loader.impl.util.UrlUtil.asPath(url);
 		} catch (WrappedException e) {
 			throw new UrlConversionException(e.getCause());
 		}

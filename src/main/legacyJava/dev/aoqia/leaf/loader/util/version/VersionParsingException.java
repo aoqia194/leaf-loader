@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.util.version;
 
-/** @deprecated Replaced by {@link net.fabricmc.loader.api.VersionParsingException} */
+/** @deprecated Replaced by {@link dev.aoqia.leaf.loader.api.VersionParsingException} */
 @SuppressWarnings("serial")
 @Deprecated
 public class VersionParsingException extends Exception {

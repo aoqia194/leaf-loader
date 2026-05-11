@@ -29,7 +29,7 @@ import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
 import dev.aoqia.leaf.loader.impl.mrj.AbstractSecureClassLoader;
 
-// class name referenced by string constant in net.fabricmc.loader.impl.util.LoaderUtil.verifyNotInTargetCl
+// class name referenced by string constant in dev.aoqia.leaf.loader.impl.util.LoaderUtil.verifyNotInTargetCl
 final class KnotClassLoader extends AbstractSecureClassLoader implements ClassLoaderAccess {
 	private static final class DynamicURLClassLoader extends URLClassLoader {
 		private DynamicURLClassLoader(URL[] urls) {

@@ -71,7 +71,7 @@ import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 @SuppressWarnings("deprecation")
-public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
+public final class FabricLoaderImpl extends dev.aoqia.leaf.loader.FabricLoader {
 	public static final FabricLoaderImpl INSTANCE = InitHelper.get();
 
 	public static final int ASM_VERSION = Opcodes.ASM9;
@@ -446,7 +446,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	}
 
 	@Override
-	public Optional<net.fabricmc.loader.api.ModContainer> getModContainer(String id) {
+	public Optional<dev.aoqia.leaf.loader.api.ModContainer> getModContainer(String id) {
 		return Optional.ofNullable(modMap.get(id));
 	}
 
@@ -520,7 +520,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	public void loadClassTweakers() {
 		ClassTweakerReader ctReader = ClassTweakerReader.create(classTweaker);
 
-		for (net.fabricmc.loader.api.ModContainer modContainer : getAllMods()) {
+		for (dev.aoqia.leaf.loader.api.ModContainer modContainer : getAllMods()) {
 			LoaderModMetadata modMetadata = (LoaderModMetadata) modContainer.getMetadata();
 			String location = modMetadata.getClassTweaker();
 			if (location == null) continue;

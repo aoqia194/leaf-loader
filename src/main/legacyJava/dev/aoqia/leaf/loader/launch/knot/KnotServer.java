@@ -20,7 +20,7 @@ import net.fabricmc.api.EnvType;
 import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
 
 /**
- * @deprecated Use {@link net.fabricmc.loader.impl.launch.knot.KnotServer} instead
+ * @deprecated Use {@link dev.aoqia.leaf.loader.impl.launch.knot.KnotServer} instead
  */
 @Deprecated
 public final class KnotServer {

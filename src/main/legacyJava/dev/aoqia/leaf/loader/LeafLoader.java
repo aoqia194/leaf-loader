@@ -26,12 +26,12 @@ import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
 /**
  * The main class for mod loading operations.
  *
- * @deprecated Use {@link net.fabricmc.loader.api.FabricLoader}
+ * @deprecated Use {@link dev.aoqia.leaf.loader.api.FabricLoader}
  */
 @Deprecated
-public abstract class FabricLoader implements net.fabricmc.loader.api.FabricLoader {
+public abstract class FabricLoader implements dev.aoqia.leaf.loader.api.FabricLoader {
 	/**
-	 * @deprecated Use {@link net.fabricmc.loader.api.FabricLoader#getInstance()} where possible,
+	 * @deprecated Use {@link dev.aoqia.leaf.loader.api.FabricLoader#getInstance()} where possible,
 	 * report missing areas as an issue.
 	 */
 	@Deprecated
