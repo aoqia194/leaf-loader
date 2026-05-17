@@ -19,7 +19,7 @@ package dev.aoqia.leaf.loader.api.metadata;
 import java.util.Map;
 
 /**
- * Represents a custom value in the {@code fabric.mod.json}.
+ * Represents a custom value in the {@code leaf.mod.json}.
  */
 public interface CustomValue {
 	/**

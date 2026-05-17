@@ -79,7 +79,7 @@ public interface ModDependency {
 		}
 
 		/**
-		 * Get the key for the dependency as used by fabric.mod.json (v1+) and dependency overrides.
+		 * Get the key for the dependency as used by leaf.mod.json (v1+) and dependency overrides.
 		 */
 		public String getKey() {
 			return key;

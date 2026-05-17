@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.api.metadata;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 
 public enum ModEnvironment {
 	CLIENT,
