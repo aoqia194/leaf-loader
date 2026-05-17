@@ -87,7 +87,7 @@ allprojects {
 }
 
 // FIXME(leaf): Uncomment after loom is sorted
-// Disable zomboid-test Java code from compiling if CI and ignoreMissingFiles.
+//// Disable zomboid-test Java code from compiling if CI and ignoreMissingFiles.
 //project(":zomboid:zomboid-test") {
 //    tasks.compileJava {
 //        onlyIf {
@@ -117,7 +117,6 @@ val installer by configurations.registering {
 
 val development by configurations.registering {
     isTransitive = false
-    isVisible = false
 }
 
 configurations.implementation {
@@ -185,8 +184,7 @@ java {
 
 tasks {
     build {
-        // FIXME(leaf)
-//        dependsOn(finalJar)
+        dependsOn(finalJar)
         dependsOn(javadocJar)
     }
 
@@ -196,7 +194,7 @@ tasks {
         inputs.property("version", project.version)
 
         filesMatching("leaf.mod.json") {
-            expand("version" to project.version.toString().replace(".local", ""))
+            expand("version" to inputs.properties["version"].toString().replace(".local", ""))
         }
     }
 
@@ -267,10 +265,12 @@ val fatJar by tasks.registering(ShadowJar::class) {
     dependsOn(getSat4jAbout)
 
     from(sourceSets.main.get().output)
-//    from(project(":zomboid").sourceSets.main.get().output)
+    from(project(":zomboid").sourceSets.main.get().output)
     from(getSat4jAbout.map { it.outputs.files })
+
+    inputs.property("archivesName", project.base.archivesName.get())
     from("LICENSE") {
-        rename { "${it}_${project.base.archivesName.get()}" }
+        rename { "${it}_${inputs.properties["archivesName"]}" }
     }
 
     manifest {
@@ -286,7 +286,7 @@ val fatJar by tasks.registering(ShadowJar::class) {
     configurations = listOf(include.get())
 
     relocate("org.sat4j", "${project.group}.${project.name}.impl.lib.sat4j")
-    relocate("net.fabricmc.accesswidener", "${project.group}.${project.name}.impl.lib.accesswidener")
+    relocate("net.fabricmc.classtweaker", "${project.group}.${project.name}.impl.lib.classtweaker")
     relocate("net.fabricmc.tinyremapper", "${project.group}.${project.name}.impl.lib.tinyremapper")
     relocate("net.fabricmc.mappingio", "${project.group}.${project.name}.impl.lib.mappingio")
 
@@ -296,54 +296,51 @@ val fatJar by tasks.registering(ShadowJar::class) {
     exclude("META-INF/*.RSA")
     exclude("META-INF/*.SF")
 
+    inputs.files(development.get())
+    val devFiles = development.get().files
+
     doLast {
-        JarNester.nestJars(
-            development.get().files,
-            archiveFile.get().asFile,
-            LoggerFactory.getLogger("JiJ")
-        )
+        JarNester.nestJars(devFiles, archiveFile.get().asFile, LoggerFactory.getLogger("JiJ"))
     }
 
     outputs.upToDateWhen { false }
 }
 
-// FIXME(leaf): Uncomment after loom is sorted
-//val proguardJar by tasks.registering(ProGuardTask::class) {
-//    dependsOn(fatJar)
-//
-//    val classpath = project(":zomboid").configurations.compileClasspath.get()
-//
-//    inputs.files(fatJar, classpath)
-//    outputs.files(proguardTmpFile)
-//
-//    doFirst {
-//        classpath.resolve().forEach {
-//            libraryjars(it)
-//        }
-//    }
-//
-//    val java8 = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }.get()
-//    libraryjars(java8.metadata.installationPath.file("jre/lib/rt.jar"))
-//
-//    injars(fatJar.get().archiveFile.get())
-//    outjars(proguardTmpFile)
-//    configuration(file("proguard.conf"))
-//}
+val proguardJar by tasks.registering(ProGuardTask::class) {
+    dependsOn(fatJar)
+
+    val classpath = project(":zomboid").configurations.compileClasspath.get()
+
+    inputs.files(fatJar, classpath)
+    outputs.files(proguardTmpFile)
+
+    doFirst {
+        classpath.resolve().forEach {
+            libraryjars(it)
+        }
+    }
+
+    val java8 = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8) }.get()
+    libraryjars(java8.metadata.installationPath.file("jre/lib/rt.jar"))
+
+    injars(fatJar.get().archiveFile.get())
+    outjars(proguardTmpFile)
+    configuration(file("proguard.conf"))
+}
 
 // As proguard does not support MRJ's we must add the MRJ classes to the final jar
 // Use a Zip task to not alter the manifest
-// FIXME(leaf): Uncomment after loom is fixed
-//val finalJar by tasks.registering(Zip::class) {
-//    dependsOn(proguardJar)
-//
-//    destinationDirectory = file("build/libs")
-//    archiveExtension = "jar"
-//
-//    from(zipTree(proguardTmpFile))
-//    into("META-INF/versions/17") {
-//        from(sourceSets.named("java17").get().output)
-//    }
-//}
+val finalJar by tasks.registering(Zip::class) {
+    dependsOn(proguardJar)
+
+    destinationDirectory = file("build/libs")
+    archiveExtension = "jar"
+
+    from(zipTree(proguardTmpFile))
+    into("META-INF/versions/17") {
+        from(sourceSets.named("java17").get().output)
+    }
+}
 
 val sourcesJar by tasks.named<Jar>("sourcesJar") {
     description = "Creates the sources jar"
@@ -352,8 +349,7 @@ val sourcesJar by tasks.named<Jar>("sourcesJar") {
     dependsOn(tasks.jar)
 
     from(sourceSets.main.get().allSource)
-    // FIXME(leaf): Uncomment after loom is sorted
-//    from(project(":zomboid").sourceSets.main.get().allSource)
+    from(project(":zomboid").sourceSets.main.get().allSource)
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
@@ -472,8 +468,7 @@ publishing {
                 }
             }
 
-            // FIXME(leaf)
-//            artifact(finalJar)
+            artifact(finalJar)
             artifact(sourcesJar)
             artifact(javadocJar)
 

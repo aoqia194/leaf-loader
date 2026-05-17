@@ -22,8 +22,8 @@ if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21)) {
 val name: String by settings
 rootProject.name = name
 
-// NOTE(leaf): Add back mixinextras subproject if needed.
+// FIXME(leaf): Add back mixinextras subproject if needed.
 include("junit")
-// FIXME(leaf): Uncomment after loom is sorted
-//include("zomboid")
+include("zomboid")
+// FIXME(leaf): Uncomment when loom is ready
 //include("zomboid:zomboid-test")
