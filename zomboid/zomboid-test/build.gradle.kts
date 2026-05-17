@@ -20,13 +20,10 @@ repositories {
     mavenCentral()
 }
 
-//val productionRuntimeMods by configurations.registering {
-//    isTransitive = false
-//}
-
 dependencies {
     "zomboid"("com.theindiestone:zomboid:${zomboidVersion}")
-    "mappings"("dev.aoqia.leaf:yarn:${zomboidMappings}:v2")
+    // Don't include any mappings because they aren't needed as of current.
+//    "mappings"("dev.aoqia.leaf:yarn:${zomboidMappings}:v2")
 
     implementation(project(":zomboid"))
     implementation(project(":zomboid", "mainSourceSetOutput"))
@@ -64,10 +61,6 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release = 17
 }
-
-//var runProductionAutoTestClient by tasks.registering(ClientProductionRunTask::class) {
-//
-//}
 
 tasks.test {
     useJUnitPlatform()

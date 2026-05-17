@@ -37,36 +37,24 @@ import dev.aoqia.leaf.loader.api.FabricLoader;
 public class JunitTest {
 	@BeforeAll
 	public static void setup() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
-	}
-
-	@Test
-	public void testItems() {
-		Identifier id = Registries.ITEM.getId(Items.DIAMOND);
-		assertEquals(id.toString(), "minecraft:diamond");
-
-		System.out.println(id);
 	}
 
 	@Test
 	public void testMixin() {
-		// MixinGrassBlock sets canGrow to false
-		GrassBlock grassBlock = (GrassBlock) Blocks.GRASS_BLOCK;
-		boolean canGrow = grassBlock.canGrow(null, null, null, null);
-		assertFalse(canGrow);
+		// TODO(leaf): Write better test
+		final String gameVersion = Core.getInstance().getVersion();
+		assertEquals("43.69.0", gameVersion);
 	}
 
 	@Test
 	public void testMixinExtras() {
-		// MixinGrassBlock sets isFertilizable to true
-		GrassBlock grassBlock = (GrassBlock) Blocks.GRASS_BLOCK;
-		boolean isFertilizable = grassBlock.isFertilizable(null, BlockPos.ORIGIN, null);
-		assertTrue(isFertilizable);
+		// TODO(leaf): Write better test
+//		 final String gameVersion = Core.getInstance().getVersion();
+//		 assertEquals("43.69.0", gameVersion);
 	}
 
 	@Test
 	public void testAccessLoader() {
-		FabricLoader.getInstance().getAllMods();
+		LeafLoader.getInstance().getAllMods();
 	}
 }

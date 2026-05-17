@@ -1,9 +1,9 @@
 {
     "required": true,
-    "package": "net.fabricmc.minecraft.test.mixin",
-    "compatibilityLevel": "JAVA_8",
+    "package": "dev.aoqia.leaf.loader.zomboid.test.mixin",
+    "compatibilityLevel": "JAVA_25",
     "mixins": [
-      "MixinGrassBlock"
+        "CoreMixin"
     ],
     "injectors": {
         "defaultRequire": 1
