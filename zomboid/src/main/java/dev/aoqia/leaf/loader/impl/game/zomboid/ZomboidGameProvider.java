@@ -194,10 +194,6 @@ public class ZomboidGameProvider implements GameProvider {
 
 			classifier.process(launcher.getClassPath());
 
-			if (classifier.has(ZomboidLibrary.MC_BUNDLER)) {
-				BundlerProcessor.process(classifier);
-			}
-
 			envGameJar = classifier.getOrigin(envGameLib);
 			if (envGameJar == null) return false;
 
@@ -211,12 +207,6 @@ public class ZomboidGameProvider implements GameProvider {
 
 			if (commonGameJar != null && !commonGameJar.equals(envGameJar)) {
 				gameJars.add(commonGameJar);
-			}
-
-			Path assetsJar = classifier.getOrigin(ZomboidLibrary.MC_ASSETS_ROOT);
-
-			if (assetsJar != null && !assetsJar.equals(commonGameJar) && !assetsJar.equals(envGameJar)) {
-				gameJars.add(assetsJar);
 			}
 
 			entrypoint = classifier.getClassName(envGameLib);
