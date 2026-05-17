@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.api;
+package dev.aoqia.leaf.api;
 
 import dev.aoqia.leaf.loader.api.LeafLoader;
 
@@ -24,7 +24,7 @@ import dev.aoqia.leaf.loader.api.LeafLoader;
  * <p>This entrypoint is suitable for setting up client-specific logic, such as rendering
  * or integrated server tweaks.</p>
  *
- * <p>In {@code fabric.mod.json}, the entrypoint is defined with {@code client} key.</p>
+ * <p>In {@code leaf.mod.json}, the entrypoint is defined with {@code client} key.</p>
  *
  * @see ModInitializer
  * @see DedicatedServerModInitializer

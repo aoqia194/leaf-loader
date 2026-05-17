@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.api;
+package dev.aoqia.leaf.api;
 
 import dev.aoqia.leaf.loader.api.LeafLoader;
 
 /**
  * A mod initializer.
  *
- * <p>In {@code fabric.mod.json}, the entrypoint is defined with {@code main} key.</p>
+ * <p>In {@code leaf.mod.json}, the entrypoint is defined with {@code main} key.</p>
  *
  * @see ClientModInitializer
  * @see DedicatedServerModInitializer
