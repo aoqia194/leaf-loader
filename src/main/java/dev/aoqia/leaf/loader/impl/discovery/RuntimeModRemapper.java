@@ -62,7 +62,7 @@ import net.fabricmc.tinyremapper.TinyUtils;
 import net.fabricmc.tinyremapper.extension.mixin.MixinExtension;
 
 public final class RuntimeModRemapper {
-	private static final String REMAP_TYPE_MANIFEST_KEY = "Fabric-Loom-Mixin-Remap-Type";
+	private static final String REMAP_TYPE_MANIFEST_KEY = "Leaf-Loom-Mixin-Remap-Type";
 	private static final String REMAP_TYPE_MIXIN = "mixin";
 	private static final String REMAP_TYPE_STATIC = "static";
 

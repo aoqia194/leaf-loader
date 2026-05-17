@@ -36,7 +36,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipError;
 import java.util.zip.ZipFile;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.game.LibClassifier.LibraryType;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.ManifestUtil;

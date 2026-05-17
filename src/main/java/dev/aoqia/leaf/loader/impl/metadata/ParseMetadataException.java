@@ -48,7 +48,7 @@ public class ParseMetadataException extends Exception {
 
 	@Override
 	public String getMessage() {
-		String ret = "Error reading fabric.mod.json file for mod at ";
+		String ret = "Error reading leaf.mod.json file for mod at ";
 
 		if (modPaths == null) {
 			ret += "unknown location";

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.Version;
 import dev.aoqia.leaf.loader.api.metadata.ContactInformation;
 import dev.aoqia.leaf.loader.api.metadata.CustomValue;
@@ -276,7 +276,7 @@ final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetada
 	@Override
 	public void emitFormatWarnings() {
 		if (hasRequires) {
-			Log.warn(LogCategory.METADATA, "Mod `%s` (%s) uses 'requires' key in fabric.mod.json, which is not supported - use 'depends'", this.id, this.version);
+			Log.warn(LogCategory.METADATA, "Mod `%s` (%s) uses 'requires' key in leaf.mod.json, which is not supported - use 'depends'", this.id, this.version);
 		}
 	}
 

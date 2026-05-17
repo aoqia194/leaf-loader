@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import dev.aoqia.leaf.loader.LeafLoader;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import net.fabricmc.classtweaker.api.ClassTweaker;
 import net.fabricmc.classtweaker.api.ClassTweakerReader;
 import dev.aoqia.leaf.loader.api.LanguageAdapter;
@@ -77,13 +78,15 @@ public final class LeafLoaderImpl extends LeafLoader {
 
 	public static final int ASM_VERSION = Opcodes.ASM9;
 
-	public static final String VERSION = "0.19.2";
-	public static final String MOD_ID = "fabricloader";
+    public static final String VERSION = "1.6.0";
+    public static final String MOD_ID = "leafloader";
 
-	public static final String CACHE_DIR_NAME = ".fabric"; // relative to game dir
-	private static final String PROCESSED_MODS_DIR_NAME = "processedMods"; // relative to cache dir
-	public static final String REMAPPED_JARS_DIR_NAME = "remappedJars"; // relative to cache dir
-	private static final String TMP_DIR_NAME = "tmp"; // relative to cache dir
+    // Relative to game dir.
+    public static final String CACHE_DIR_NAME = ".leaf";
+    // Relative to cache dir.
+    private static final String PROCESSED_MODS_DIR_NAME = "processedMods";
+    public static final String REMAPPED_JARS_DIR_NAME = "remappedJars";
+    private static final String TMP_DIR_NAME = "tmp";
 
 	protected final Map<String, ModContainerImpl> modMap = new HashMap<>();
 	private List<ModCandidateImpl> modCandidates;
@@ -119,7 +122,9 @@ public final class LeafLoaderImpl extends LeafLoader {
 	}
 
 	public GameProvider getGameProvider() {
-		if (provider == null) throw new IllegalStateException("game provider not set (yet)");
+		if (provider == null) {
+			throw new IllegalStateException("game provider not set (yet)");
+		}
 
 		return provider;
 	}
@@ -159,7 +164,9 @@ public final class LeafLoaderImpl extends LeafLoader {
 	 */
 	@Override
 	public Path getGameDir() {
-		if (gameDir == null) throw new IllegalStateException("invoked too early?");
+		if (gameDir == null) {
+			throw new IllegalStateException("invoked too early?");
+		}
 
 		return gameDir;
 	}
@@ -193,8 +200,13 @@ public final class LeafLoaderImpl extends LeafLoader {
 	}
 
 	public void load() {
-		if (provider == null) throw new IllegalStateException("game provider not set");
-		if (frozen) throw new IllegalStateException("Frozen - cannot load additional mods!");
+		if (provider == null) {
+			throw new IllegalStateException("game provider not set");
+		}
+
+		if (frozen) {
+			throw new IllegalStateException("Frozen - cannot load additional mods!");
+		}
 
 		try {
 			setup();
@@ -208,6 +220,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 	}
 
 	private void setup() throws ModResolutionException {
+		// TODO(leaf): Do we ever need to remap mods?
 		boolean remapRegularMods = isDevelopmentEnvironment();
 		VersionOverrides versionOverrides = new VersionOverrides();
 		DependencyOverrides depOverrides = new DependencyOverrides(configDir);
@@ -216,8 +229,24 @@ public final class LeafLoaderImpl extends LeafLoader {
 
 		ModDiscoverer discoverer = new ModDiscoverer(versionOverrides, depOverrides);
 		discoverer.addCandidateFinder(new ClasspathModCandidateFinder());
-		discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(), remapRegularMods));
 		discoverer.addCandidateFinder(new ArgumentModCandidateFinder(remapRegularMods));
+
+        // Zomboid-specific directories to discover mods from.
+        final Path modSubpath = Paths.get("leaf/mods");
+        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(),
+            remapRegularMods, 4, modSubpath));
+
+        // Only load mods from workshop folders if:
+		// - Not in development environment
+		// - `disableWorkshopMods` is false
+		// - `zomboid.steam` is not 1
+        if (System.getProperty(SystemProperties.DEVELOPMENT) == null
+			&& System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null
+			&& "1".equals(System.getProperty(SystemProperties.ZOMBOID_STEAM))
+		) {
+            discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getZomboidWorkshopPath(),
+                remapRegularMods, 6, modSubpath));
+        }
 
 		Map<String, Set<ModCandidateImpl>> envDisabledMods = new HashMap<>();
 		modCandidates = discoverer.discoverMods(this, envDisabledMods);
@@ -237,7 +266,12 @@ public final class LeafLoaderImpl extends LeafLoader {
 		modCandidates = ModResolver.resolve(modCandidates, getEnvironmentType(), envDisabledMods);
 
 		dumpModList(modCandidates);
-		dumpNonFabricMods(discoverer.getNonFabricMods());
+        dumpNonLeafMods(discoverer.getNonLeafMods());
+
+        if (SystemProperties.isSet(SystemProperties.DRY_RUN_MOD_DISCOVERY)) {
+            throw new FormattedException("Dry run mod discovery",
+                "Stopping before mod init due to dry run mod discovery");
+        }
 
 		Path cacheDir = gameDir.resolve(CACHE_DIR_NAME);
 		Path outputdir = cacheDir.resolve(PROCESSED_MODS_DIR_NAME);
@@ -291,17 +325,51 @@ public final class LeafLoaderImpl extends LeafLoader {
 		modCandidates = null;
 	}
 
-	@VisibleForTesting
-	public void dumpNonFabricMods(List<Path> nonFabricMods) {
-		if (nonFabricMods.isEmpty()) return;
-		StringBuilder outputText = new StringBuilder();
-
-		for (Path nonFabricMod : nonFabricMods) {
-			outputText.append("\n\t- ").append(nonFabricMod.getFileName());
+	private Path getZomboidGamePath() {
+		String dir = System.getProperty(SystemProperties.GAME_INSTALL_PATH);
+		if (dir != null) {
+			return Paths.get(dir);
 		}
 
-		int modsCount = nonFabricMods.size();
-		Log.warn(LogCategory.GENERAL, "Found %d non-fabric mod%s:%s", modsCount, modsCount != 1 ? "s" : "", outputText);
+		// TODO(leaf): Make platform-agnostic. Maybe we can use MirrorUtil from loom?
+		//     Maybe this can even be dynamic, if we have access to the game jvm workingDir path at this point in time.
+		try {
+			return Paths.get("C:\\Program Files (x86)\\Steam\\steamapps\\common\\ProjectZomboid");
+		} catch (InvalidPathException e) {
+			throw new RuntimeException("Failed to find the game directory for Project Zomboid."
+				+ " This could happen if Steam is not installed at the default location,"
+				+ " or if the game is in a different Steam library from the default library."
+				+ " Please manually set it via the launch option 'leaf.gameInstallPath'.");
+		}
+	}
+
+	private Path getZomboidWorkshopPath() {
+		String dir = System.getProperty(SystemProperties.GAME_WORKSHOP_PATH);
+		if (dir != null) {
+			return Paths.get(dir);
+		}
+
+		try {
+			return getZomboidGamePath().getParent().getParent().resolve("workshop/content/108600");
+		} catch (InvalidPathException e) {
+			throw new RuntimeException("Failed to find Steam workshop directory for Project Zomboid."
+				+ " This could happen if your workshop folder is separate from the Steam library folder."
+				+ " Please manually specify the workshop path (workshop/content/108600) via"
+					+ " the 'leaf.workshopFolder' system property.");
+		}
+	}
+
+	@VisibleForTesting
+	public void dumpNonLeafMods(List<Path> mods) {
+		if (mods.isEmpty()) return;
+		StringBuilder outputText = new StringBuilder();
+
+		for (Path mod : mods) {
+			outputText.append("\n\t- ").append(mod.getFileName());
+		}
+
+		int modsCount = mods.size();
+		Log.warn(LogCategory.GENERAL, "Found %d non-leaf mod%s:%s", modsCount, modsCount != 1 ? "s" : "", outputText);
 	}
 
 	private void dumpModList(List<ModCandidateImpl> mods) {
@@ -316,7 +384,9 @@ public final class LeafLoaderImpl extends LeafLoader {
 		for (int i = 0; i < topLevelModsCount; i++) {
 			boolean lastItem = i == topLevelModsCount - 1;
 
-			if (lastItem) lastItemOfNestLevel[0] = true;
+            if (lastItem) {
+                lastItemOfNestLevel[0] = true;
+            }
 
 			dumpModList0(topLevelMods.get(i), modListText, 0, lastItemOfNestLevel);
 		}
@@ -326,7 +396,9 @@ public final class LeafLoaderImpl extends LeafLoader {
 	}
 
 	private void dumpModList0(ModCandidateImpl mod, StringBuilder log, int nestLevel, boolean[] lastItemOfNestLevel) {
-		if (log.length() > 0) log.append('\n');
+        if (log.length() > 0) {
+            log.append('\n');
+        }
 
 		for (int depth = 0; depth < nestLevel; depth++) {
 			log.append(depth == 0 ? "\t" : lastItemOfNestLevel[depth] ? "     " : "   | ");
@@ -351,11 +423,15 @@ public final class LeafLoaderImpl extends LeafLoader {
 				nestedMod = iterator.next();
 				lastItem = !iterator.hasNext();
 
-				if (lastItem) lastItemOfNestLevel[nestLevel+1] = true;
+                if (lastItem) {
+                    lastItemOfNestLevel[nestLevel + 1] = true;
+                }
 
 				dumpModList0(nestedMod, log, nestLevel + 1, lastItemOfNestLevel);
 
-				if (lastItem) lastItemOfNestLevel[nestLevel+1] = false;
+                if (lastItem) {
+                    lastItemOfNestLevel[nestLevel + 1] = false;
+                }
 			}
 		}
 	}
@@ -619,7 +695,6 @@ public final class LeafLoaderImpl extends LeafLoader {
 	@Override
 	protected Path getModsDirectory0() {
 		String directory = System.getProperty(SystemProperties.MODS_FOLDER);
-
 		return directory != null ? Paths.get(directory) : gameDir.resolve("mods");
 	}
 
@@ -630,7 +705,9 @@ public final class LeafLoaderImpl extends LeafLoader {
 		private static LeafLoaderImpl instance;
 
 		public static LeafLoaderImpl get() {
-			if (instance == null) instance = new LeafLoaderImpl();
+			if (instance == null) {
+				instance = new LeafLoaderImpl();
+			}
 
 			return instance;
 		}

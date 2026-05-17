@@ -111,7 +111,7 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
 
 	@Override
 	public String getName() {
-		return LeafLauncherBase.getLauncher() instanceof Knot ? "Knot/Fabric" : "Launchwrapper/Fabric";
+		return LeafLauncherBase.getLauncher() instanceof Knot ? "Knot/Leaf" : "Launchwrapper/Leaf";
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class MixinServiceKnot implements IMixinService, IClassProvider, IClassBy
 		return new IAdviceProvider() {
 			@Override
 			public String higherCompatibilityNeeded(int requiredCompatibility, String requiredCompatibilityString) {
-				return "Increase your Fabric Loader dependency to at least " + LeafMixinVersions.getMinLoaderVersion(requiredCompatibility);
+				return "Increase your Leaf Loader dependency to at least " + LeafMixinVersions.getMinLoaderVersion(requiredCompatibility);
 			}
 		};
 	}

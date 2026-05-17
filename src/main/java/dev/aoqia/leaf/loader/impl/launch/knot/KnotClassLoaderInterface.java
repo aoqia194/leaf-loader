@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.jar.Manifest;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 
 interface KnotClassLoaderInterface {

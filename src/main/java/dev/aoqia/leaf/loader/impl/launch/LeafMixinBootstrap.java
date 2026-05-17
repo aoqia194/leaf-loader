@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfig;
 import org.spongepowered.asm.mixin.transformer.Config;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.Version;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency.Kind;
@@ -50,7 +50,7 @@ public final class LeafMixinBootstrap {
 
 	public static void init(EnvType side, LeafLoaderImpl loader) {
 		if (initialized) {
-			throw new RuntimeException("FabricMixinBootstrap has already been initialized!");
+			throw new RuntimeException("LeafMixinBootstrap has already been initialized!");
 		}
 
 		System.setProperty("mixin.bootstrapService", MixinServiceKnotBootstrap.class.getName());
@@ -74,9 +74,9 @@ public final class LeafMixinBootstrap {
 					try {
 						MixinIntermediaryDevRemapper remapper = new MixinIntermediaryDevRemapper(mappings, modNs, runtimeNs);
 						MixinEnvironment.getDefaultEnvironment().getRemappers().add(remapper);
-						Log.info(LogCategory.MIXIN, "Loaded Fabric development mappings for mixin remapper!");
+						Log.info(LogCategory.MIXIN, "Loaded Leaf development mappings for mixin remapper!");
 					} catch (Exception e) {
-						Log.error(LogCategory.MIXIN, "Fabric development environment setup error - the game will probably crash soon!", e);
+						Log.error(LogCategory.MIXIN, "Leaf development environment setup error - the game will probably crash soon!", e);
 					}
 				}
 			}
@@ -131,7 +131,7 @@ public final class LeafMixinBootstrap {
 			List<VersionInterval> reqIntervals = Collections.singletonList(VersionInterval.INFINITE);
 
 			for (ModDependency dep : mod.getMetadata().getDependencies()) {
-				if (dep.getModId().equals("fabricloader") || dep.getModId().equals("fabric-loader")) {
+				if (dep.getModId().equals("leafloader") || dep.getModId().equals("leaf-loader")) {
 					if (dep.getKind() == Kind.DEPENDS) {
 						reqIntervals = VersionInterval.and(reqIntervals, dep.getVersionIntervals());
 					} else if (dep.getKind() == Kind.BREAKS) {

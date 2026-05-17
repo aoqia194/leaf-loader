@@ -48,7 +48,7 @@ import java.util.zip.ZipFile;
 
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;

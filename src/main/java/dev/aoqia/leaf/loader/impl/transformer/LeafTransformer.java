@@ -22,7 +22,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinTransform;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;

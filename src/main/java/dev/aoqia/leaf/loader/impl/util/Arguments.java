@@ -16,6 +16,9 @@
 
 package dev.aoqia.leaf.loader.impl.util;
 
+import dev.aoqia.leaf.loader.impl.FormattedException;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,40 +33,50 @@ public final class Arguments {
 	// additional mods to load (path separator separated paths, @ prefix for meta-file with each line referencing an actual file)
 	public static final String ADD_MODS = SystemProperties.ADD_MODS;
 
-	private final Map<String, String> values;
-	private final List<String> extraArgs;
+    // Single args are like -arg1 -arg2 -arg3
+    private final List<String> singleArgs;
+    // Value args are like -arg1=somevalue -arg2=C:\folder\file.png
+    // Also contains args that have no delimiter like Steam's `+connect 127.0.0.1`
+    private final Map<String, String> valueArgs;
 
 	public Arguments() {
-		values = new LinkedHashMap<>();
-		extraArgs = new ArrayList<>();
+        singleArgs = new ArrayList<>();
+        valueArgs = new LinkedHashMap<>();
 	}
 
-	public Collection<String> keys() {
-		return values.keySet();
-	}
-
-	public List<String> getExtraArgs() {
-		return Collections.unmodifiableList(extraArgs);
+    public Map<String, String> getValueArgs() {
+        return Collections.unmodifiableMap(valueArgs);
 	}
 
 	public boolean containsKey(String key) {
-		return values.containsKey(key);
+        return valueArgs.containsKey(key);
 	}
 
+    @Nullable
 	public String get(String key) {
-		return values.get(key);
+        return valueArgs.get(key);
 	}
 
 	public String getOrDefault(String key, String value) {
-		return values.getOrDefault(key, value);
+        return valueArgs.getOrDefault(key, value);
+    }
+
+    public void add(String value) {
+        singleArgs.add(value);
+    }
+
+    public boolean contains(String value) {
+        return singleArgs.contains(value);
 	}
 
 	public void put(String key, String value) {
-		values.put(key, value);
+        valueArgs.put(key, value);
 	}
 
-	public void addExtraArg(String value) {
-		extraArgs.add(value);
+    public void putIfNotExists(String key, String value) {
+        if (!containsKey(key)) {
+            put(key, value);
+        }
 	}
 
 	public void parse(String[] args) {
@@ -72,35 +85,62 @@ public final class Arguments {
 
 	public void parse(List<String> args) {
 		for (int i = 0; i < args.size(); i++) {
-			String arg = args.get(i);
+            final String arg = args.get(i);
 
-			if (arg.startsWith("--") && i < args.size() - 1) {
-				String value = args.get(i + 1);
+            // If it has an equals, it's a true value arg.
+            // If it starts with a plus, it's a steam arg (fake value arg).
+            // Otherwise, it's a normal arg.
+            if (arg.contains("=")) {
+                final String[] pair = arg.split("=", 2);
+                if (pair.length <= 1) {
+                    throw new FormattedException("Failed to parse argument",
+                        "Argument contains '=' but couldn't split.");
+                }
 
-				if (value.startsWith("--")) {
-					// Give arguments that have no value an empty string.
-					value = "";
-				} else {
-					i += 1;
+                // Set it to nothing if the value is nothing.
+                if (pair[1] == null) {
+                    pair[1] = "";
 				}
 
-				values.put(arg.substring(2), value);
+                valueArgs.put(pair[0].substring(1), pair[1]);
 			} else {
-				extraArgs.add(arg);
+                // Special handling for value args that look like solo args where i+1 is the value.
+
+                // Check the next value and if it's an arg, set the value to blank.
+                String value = i + 1 >= args.size() ? null : args.get(i + 1);
+                if (value == null || value.startsWith("-") || value.startsWith("+")) {
+                    if (arg.startsWith("-")) {
+                        singleArgs.add(arg);
+                        continue;
+                    }
+
+                    value = "";
+                }
+
+                // If it's a steam arg using +, dont remove it.
+                // This is to explicitly differentiate between Steam and normal value args.
+                // It can also be the case for args starting with - that use a space delimiter,
+                // but the only such args in this game currently are bootstrapper-specific
+                valueArgs.put(arg.startsWith("+") ? arg : arg.substring(1), value);
 			}
 		}
 	}
 
 	public String[] toArray() {
-		String[] newArgs = new String[values.size() * 2 + extraArgs.size()];
+        String[] newArgs = new String[singleArgs.size() + valueArgs.size()];
 		int i = 0;
 
-		for (String s : values.keySet()) {
-			newArgs[i++] = "--" + s;
-			newArgs[i++] = values.get(s);
+        for (String s : valueArgs.keySet()) {
+            if (s.startsWith("+")) {
+                newArgs[i++] = s;
+                newArgs[i++] = valueArgs.get(s);
+                continue;
+            }
+
+            newArgs[i++] = "-" + s + "=" + valueArgs.get(s);
 		}
 
-		for (String s : extraArgs) {
+        for (String s : singleArgs) {
 			newArgs[i++] = s;
 		}
 
@@ -108,6 +148,6 @@ public final class Arguments {
 	}
 
 	public String remove(String s) {
-		return values.remove(s);
+        return valueArgs.remove(s);
 	}
 }

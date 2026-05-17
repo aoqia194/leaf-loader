@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.jar.Manifest;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 
 public interface LeafLauncher {
 	MappingConfiguration getMappingConfiguration();

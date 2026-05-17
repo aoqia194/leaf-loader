@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import org.sat4j.specs.ContradictionException;
 import org.sat4j.specs.TimeoutException;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency.Kind;
 import dev.aoqia.leaf.loader.impl.discovery.ModSolver.InactiveReason;

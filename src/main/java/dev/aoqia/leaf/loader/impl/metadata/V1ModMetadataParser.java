@@ -39,7 +39,7 @@ import dev.aoqia.leaf.loader.impl.util.version.VersionParser;
 
 final class V1ModMetadataParser {
 	/**
-	 * Reads a {@code fabric.mod.json} file of schema version {@code 1}.
+	 * Reads a {@code leaf.mod.json} file of schema version {@code 1}.
 	 *
 	 * @param logger the logger to print warnings to
 	 * @param reader the json reader to read the file with
@@ -49,7 +49,7 @@ final class V1ModMetadataParser {
 	static LoaderModMetadata parse(JsonReader reader) throws IOException, ParseMetadataException {
 		List<ParseWarning> warnings = new ArrayList<>();
 
-		// All the values the `fabric.mod.json` may contain:
+		// All the values the `leaf.mod.json` may contain:
 		// Required
 		String id = null;
 		Version version = null;

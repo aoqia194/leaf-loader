@@ -20,7 +20,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
 

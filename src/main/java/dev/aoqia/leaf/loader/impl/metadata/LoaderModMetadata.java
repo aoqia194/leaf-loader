@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.Version;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency;
 

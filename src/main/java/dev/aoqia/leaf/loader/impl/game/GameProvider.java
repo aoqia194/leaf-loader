@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import net.fabricmc.api.Environment;
+import dev.aoqia.leaf.api.Environment;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.api.VersionParsingException;
 import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
@@ -30,11 +32,21 @@ import dev.aoqia.leaf.loader.impl.util.Arguments;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
-public interface GameProvider { // name directly referenced in dev.aoqia.leaf.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader records
+// name directly referenced in dev.aoqia.leaf.loader.impl.launch.knot.Knot.findEmbedddedGameProvider() and service loader records
+public interface GameProvider {
 	String getGameId();
 	String getGameName();
 	String getRawGameVersion();
 	String getNormalizedGameVersion();
+
+	default SemanticVersion getSemverGameVersion() {
+		try {
+			return SemanticVersion.parse(getNormalizedGameVersion());
+		} catch (VersionParsingException e) {
+			throw new RuntimeException("Failed to get normalized game version as SemanticVersion");
+		}
+	}
+
 	Collection<BuiltinMod> getBuiltinMods();
 
 	String getEntrypoint();

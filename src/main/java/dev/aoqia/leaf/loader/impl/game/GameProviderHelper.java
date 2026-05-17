@@ -39,7 +39,7 @@ import java.util.zip.ZipFile;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
@@ -262,7 +262,7 @@ public final class GameProviderHelper {
 			Path tmpFile = deobfJarDir.resolve(deobfJarFilename + ".tmp");
 
 			if (Files.exists(tmpFile)) { // previous unfinished remap attempt
-				Log.warn(LogCategory.GAME_REMAP, "Incomplete remapped file found! This means that the remapping process failed on the previous launch. If this persists, make sure to let us at Fabric know!");
+				Log.warn(LogCategory.GAME_REMAP, "Incomplete remapped file found! This means that the remapping process failed on the previous launch. If this persists, make sure to raise an issue!");
 
 				try {
 					Files.deleteIfExists(outputFile);
@@ -287,10 +287,10 @@ public final class GameProviderHelper {
 			return ret;
 		}
 
-		Log.debug(LogCategory.GAME_REMAP, "Fabric mapping file detected, applying...");
+        Log.debug(LogCategory.GAME_REMAP, "Leaf mapping file detected, applying...");
 
 		if (!emittedInfo) {
-			Log.info(LogCategory.GAME_REMAP, "Fabric is preparing JARs on first launch, this may take a few seconds...");
+            Log.info(LogCategory.GAME_REMAP, "Leaf is preparing JARs on first launch, this may take a few seconds...");
 			emittedInfo = true;
 		}
 

@@ -28,7 +28,7 @@ import org.sat4j.pb.SolverFactory;
 import org.sat4j.specs.ContradictionException;
 import org.spongepowered.asm.launch.MixinBootstrap;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import net.fabricmc.classtweaker.api.ClassTweaker;
 import dev.aoqia.leaf.loader.impl.util.UrlConversionException;
 import dev.aoqia.leaf.loader.impl.util.UrlUtil;
@@ -36,7 +36,7 @@ import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.tinyremapper.TinyRemapper;
 
 enum LoaderLibrary {
-	FABRIC_LOADER(UrlUtil.LOADER_CODE_SOURCE),
+	LEAF_LOADER(UrlUtil.LOADER_CODE_SOURCE),
 	MAPPING_IO(MappingTree.class),
 	SPONGE_MIXIN(MixinBootstrap.class),
 	TINY_REMAPPER(TinyRemapper.class),
@@ -48,13 +48,13 @@ enum LoaderLibrary {
 	ASM_UTIL(CheckClassAdapter.class),
 	SAT4J_CORE(ContradictionException.class),
 	SAT4J_PB(SolverFactory.class),
-	SERVER_LAUNCH("fabric-server-launch.properties", EnvType.SERVER), // installer generated jar to run setup loader's class path
-	SERVER_LAUNCHER("net/fabricmc/installer/ServerLauncher.class", EnvType.SERVER), // installer based launch-through method
+	SERVER_LAUNCH("leaf-server-launch.properties", EnvType.SERVER), // installer generated jar to run setup loader's class path
+	SERVER_LAUNCHER("dev/aoqia/leaf/installer/ServerLauncher.class", EnvType.SERVER), // installer based launch-through method
 	JUNIT_API("org/junit/jupiter/api/Test.class", null),
 	JUNIT_PLATFORM_ENGINE("org/junit/platform/engine/TestEngine.class", null),
 	JUNIT_PLATFORM_LAUNCHER("org/junit/platform/launcher/core/LauncherFactory.class", null),
 	JUNIT_JUPITER("org/junit/jupiter/engine/JupiterTestEngine.class", null),
-	FABRIC_LOADER_JUNIT("dev.aoqia.leaf.loader.impl/junit/FabricLoaderLauncherSessionListener.class", null),
+	LEAF_LOADER_JUNIT("dev/aoqia/leaf/loader/impl/junit/LeafLoaderLauncherSessionListener.class", null),
 
 	// Logging libraries are only loaded from the platform CL when running as a unit test.
 	LOG4J_API("org/apache/logging/log4j/LogManager.class", true),

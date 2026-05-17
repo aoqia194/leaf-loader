@@ -24,7 +24,7 @@ import java.security.CodeSource;
 import java.util.Enumeration;
 import java.util.Objects;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
 import dev.aoqia.leaf.loader.impl.mrj.AbstractSecureClassLoader;

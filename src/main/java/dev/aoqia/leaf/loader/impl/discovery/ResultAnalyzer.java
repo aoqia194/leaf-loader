@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.SemanticVersion;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency;
 import dev.aoqia.leaf.loader.api.metadata.version.VersionInterval;

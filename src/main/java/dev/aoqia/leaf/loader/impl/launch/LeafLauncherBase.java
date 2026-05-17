@@ -135,7 +135,7 @@ public abstract class LeafLauncherBase implements LeafLauncher {
 
 	protected static void finishMixinBootstrapping() {
 		if (mixinReady) {
-			throw new RuntimeException("Must not call FabricLauncherBase.finishMixinBootstrapping() twice!");
+			throw new RuntimeException("Must not call LeafLauncherBase.finishMixinBootstrapping() twice!");
 		}
 
 		try {

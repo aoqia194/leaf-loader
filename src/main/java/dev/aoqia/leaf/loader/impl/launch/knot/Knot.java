@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.entrypoint.PreLaunchEntrypoint;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
@@ -127,7 +127,7 @@ public final class Knot extends LeafLauncherBase {
 
 		provider = createGameProvider(args);
 		Log.finishBuiltinConfig();
-		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Fabric Loader %s", provider.getGameName(), provider.getRawGameVersion(), LeafLoaderImpl.VERSION);
+		Log.info(LogCategory.GAME_PROVIDER, "Loading %s %s with Leaf Loader %s", provider.getGameName(), provider.getRawGameVersion(), LeafLoaderImpl.VERSION);
 
 		// Setup classloader
 		// TODO: Provide KnotCompatibilityClassLoader in non-exclusive-Fabric pre-1.13 environments?

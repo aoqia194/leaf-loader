@@ -46,15 +46,15 @@ public class ClasspathModCandidateFinder implements ModCandidateFinder {
 		if (LeafLauncherBase.getLauncher().isDevelopment()) {
 			Map<Path, List<Path>> pathGroups = getPathGroups();
 
-			// Search for URLs which point to 'fabric.mod.json' entries, to be considered as mods.
+			// Search for URLs which point to 'leaf.mod.json' entries, to be considered as mods.
 			try {
-				Enumeration<URL> mods = LeafLauncherBase.getLauncher().getTargetClassLoader().getResources("fabric.mod.json");
+				Enumeration<URL> mods = LeafLauncherBase.getLauncher().getTargetClassLoader().getResources("leaf.mod.json");
 
 				while (mods.hasMoreElements()) {
 					URL url = mods.nextElement();
 
 					try {
-						Path path = LoaderUtil.normalizeExistingPath(UrlUtil.getCodeSource(url, "fabric.mod.json")); // code source may not be normalized if from app cl
+						Path path = LoaderUtil.normalizeExistingPath(UrlUtil.getCodeSource(url, "leaf.mod.json")); // code source may not be normalized if from app cl
 						List<Path> paths = pathGroups.get(path);
 
 						if (paths == null) {
@@ -63,7 +63,7 @@ public class ClasspathModCandidateFinder implements ModCandidateFinder {
 							out.accept(paths, false);
 						}
 					} catch (UrlConversionException e) {
-						Log.debug(LogCategory.DISCOVERY, "Error determining location for fabric.mod.json from %s", url, e);
+						Log.debug(LogCategory.DISCOVERY, "Error determining location for leaf.mod.json from %s", url, e);
 					}
 				}
 			} catch (IOException e) {

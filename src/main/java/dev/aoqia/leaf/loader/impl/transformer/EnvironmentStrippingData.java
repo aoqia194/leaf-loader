@@ -25,9 +25,9 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.api.EnvironmentInterfaces;
+import dev.aoqia.leaf.api.Environment;
+import dev.aoqia.leaf.api.EnvironmentInterface;
+import dev.aoqia.leaf.api.EnvironmentInterfaces;
 
 /**
  * Scans a class for Environment and EnvironmentInterface annotations to figure out what needs to be stripped.

@@ -46,7 +46,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.SemanticVersion;
 import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
@@ -74,7 +74,7 @@ public final class ModDiscoverer {
 	private final EnvType envType = LeafLoaderImpl.INSTANCE.getEnvironmentType();
 	private final Map<Long, ModScanTask> jijDedupMap = new ConcurrentHashMap<>(); // avoids reading the same jar twice
 	private final List<NestedModInitData> nestedModInitDatas = Collections.synchronizedList(new ArrayList<>()); // breaks potential cycles from deduplication
-	private final List<Path> nonFabricMods = Collections.synchronizedList(new ArrayList<>());
+	private final List<Path> nonLeafMods = Collections.synchronizedList(new ArrayList<>());
 
 	public ModDiscoverer(VersionOverrides versionOverrides, DependencyOverrides depOverrides) {
 		this.versionOverrides = versionOverrides;
@@ -116,7 +116,7 @@ public final class ModDiscoverer {
 		// add builtin mods
 		for (BuiltinMod mod : loader.getGameProvider().getBuiltinMods()) {
 			if (!(mod.metadata.getVersion() instanceof SemanticVersion)) {
-				String error = String.format("%s uses the non-semantic version %s, which doesn't support range comparisons and may cause mod dependencies against it to fail unexpectedly. Consider updating Fabric Loader or explicitly specifying the game version with the fabric.gameVersion system property.",
+				String error = String.format("%s uses the non-semantic version %s, which doesn't support range comparisons and may cause mod dependencies against it to fail unexpectedly. Consider updating Leaf Loader or explicitly specifying the game version with the `leaf.gameVersion` system property.",
 						mod.metadata.getId(), mod.metadata.getVersion());
 
 				if (loader.isDevelopmentEnvironment()) { // fail hard in-dev
@@ -217,8 +217,8 @@ public final class ModDiscoverer {
 		return new ArrayList<>(ret);
 	}
 
-	public List<Path> getNonFabricMods() {
-		return Collections.unmodifiableList(nonFabricMods);
+	public List<Path> getNonLeafMods() {
+		return Collections.unmodifiableList(nonLeafMods);
 	}
 
 	// retrieve set of disabled mod ids from system property
@@ -305,7 +305,7 @@ public final class ModDiscoverer {
 		}
 
 		private ModCandidateImpl computeDir(Path path) throws IOException, ParseMetadataException {
-			Path modJson = path.resolve("fabric.mod.json");
+			Path modJson = path.resolve("leaf.mod.json");
 			if (!Files.exists(modJson)) return null;
 
 			LoaderModMetadata metadata;
@@ -319,10 +319,10 @@ public final class ModDiscoverer {
 
 		private ModCandidateImpl computeJarFile(Path path) throws IOException, ParseMetadataException {
 			try (ZipFile zf = new ZipFile(path.toFile())) {
-				ZipEntry entry = zf.getEntry("fabric.mod.json");
+				ZipEntry entry = zf.getEntry("leaf.mod.json");
 
 				if (entry == null) {
-					nonFabricMods.add(path);
+					nonLeafMods.add(path);
 					return null;
 				}
 
@@ -396,7 +396,7 @@ public final class ModDiscoverer {
 
 			try (ZipInputStream zis = new ZipInputStream(is)) {
 				while ((entry = zis.getNextEntry()) != null) {
-					if (entry.getName().equals("fabric.mod.json")) {
+					if (entry.getName().equals("leaf.mod.json")) {
 						metadata = parseMetadata(zis, localPath);
 						break;
 					}

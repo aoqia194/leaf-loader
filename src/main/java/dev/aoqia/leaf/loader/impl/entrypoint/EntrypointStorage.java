@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import dev.aoqia.leaf.loader.api.EntrypointException;
-import dev.aoqia.leaf.loader.api.LanguageAdapter;
 import dev.aoqia.leaf.loader.api.LanguageAdapterException;
 import dev.aoqia.leaf.loader.api.entrypoint.EntrypointContainer;
 import dev.aoqia.leaf.loader.impl.ModContainerImpl;
@@ -32,6 +31,7 @@ import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+import dev.aoqia.leaf.loader.language.LanguageAdapter;
 
 public final class EntrypointStorage {
 	interface Entry {
@@ -45,8 +45,8 @@ public final class EntrypointStorage {
 
 	@SuppressWarnings("deprecation")
 	private static class OldEntry implements Entry {
-		private static final dev.aoqia.leaf.loader.language.LanguageAdapter.Options options = dev.aoqia.leaf.loader.language.LanguageAdapter.Options.Builder.create()
-				.missingSuperclassBehaviour(dev.aoqia.leaf.loader.language.LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
+		private static final LanguageAdapter.Options options = LanguageAdapter.Options.Builder.create()
+				.missingSuperclassBehaviour(LanguageAdapter.MissingSuperclassBehavior.RETURN_NULL)
 				.build();
 
 		private final ModContainerImpl mod;
@@ -98,11 +98,11 @@ public final class EntrypointStorage {
 
 	private static final class NewEntry implements Entry {
 		private final ModContainerImpl mod;
-		private final LanguageAdapter adapter;
+		private final dev.aoqia.leaf.loader.api.LanguageAdapter adapter;
 		private final String value;
 		private final Map<Class<?>, Object> instanceMap;
 
-		NewEntry(ModContainerImpl mod, LanguageAdapter adapter, String value) {
+		NewEntry(ModContainerImpl mod, dev.aoqia.leaf.loader.api.LanguageAdapter adapter, String value) {
 			this.mod = mod;
 			this.adapter = adapter;
 			this.value = value;
@@ -160,7 +160,7 @@ public final class EntrypointStorage {
 		getOrCreateEntries("server").add(oe);
 	}
 
-	public void add(ModContainerImpl modContainer, String key, EntrypointMetadata metadata, Map<String, LanguageAdapter> adapterMap) throws Exception {
+	public void add(ModContainerImpl modContainer, String key, EntrypointMetadata metadata, Map<String, dev.aoqia.leaf.loader.api.LanguageAdapter> adapterMap) throws Exception {
 		if (!adapterMap.containsKey(metadata.getAdapter())) {
 			throw new Exception("Could not find adapter '" + metadata.getAdapter() + "' (mod " + modContainer.getMetadata().getId() + "!)");
 		}

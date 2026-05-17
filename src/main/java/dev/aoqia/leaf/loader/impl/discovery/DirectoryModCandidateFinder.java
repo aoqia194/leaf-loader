@@ -28,14 +28,26 @@ import java.util.EnumSet;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+import org.jetbrains.annotations.NotNull;
 
 public class DirectoryModCandidateFinder implements ModCandidateFinder {
 	private final Path path;
 	private final boolean requiresRemap;
+	private final int depth;
+	private final Path subpath;
 
-	public DirectoryModCandidateFinder(Path path, boolean requiresRemap) {
+	public DirectoryModCandidateFinder(Path path, boolean requiresRemap, int depth) {
 		this.path = LoaderUtil.normalizePath(path);
 		this.requiresRemap = requiresRemap;
+		this.depth = depth;
+		this.subpath = null;
+	}
+
+	public DirectoryModCandidateFinder(Path path, boolean requiresRemap, int depth, Path subpath) {
+		this.path = LoaderUtil.normalizePath(path);
+		this.requiresRemap = requiresRemap;
+		this.depth = depth;
+		this.subpath = subpath;
 	}
 
 	@Override
@@ -54,10 +66,10 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
 		}
 
 		try {
-			Files.walkFileTree(this.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, new SimpleFileVisitor<Path>() {
+			Files.walkFileTree(this.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), depth, new SimpleFileVisitor<Path>() {
 				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					if (isValidFile(file)) {
+				public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) {
+					if (isValidFile(file) && file.getParent().endsWith(subpath)) {
 						out.accept(file, requiresRemap);
 					}
 
@@ -79,10 +91,14 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
 		 * MacOS: Exclude hidden + startsWith "." since Mac OS names their metadata files in the form of `.mod.jar`
 		 */
 
-		if (!Files.isRegularFile(path)) return false;
+		if (!Files.isRegularFile(path)) {
+			return false;
+		}
 
 		try {
-			if (Files.isHidden(path)) return false;
+			if (Files.isHidden(path)) {
+				return false;
+			}
 		} catch (IOException e) {
 			Log.warn(LogCategory.DISCOVERY, "Error checking if file %s is hidden", path, e);
 			return false;

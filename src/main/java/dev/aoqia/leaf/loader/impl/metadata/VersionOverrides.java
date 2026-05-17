@@ -40,6 +40,11 @@ public final class VersionOverrides {
 			String rawVersion = entry.substring(pos + 1);
 			Version version;
 
+			// Small patch to fix development versions not launching in IDE.
+			if (id.equals("leafloader") && rawVersion.contains(".local")) {
+				rawVersion = rawVersion.replace(".local", "");
+			}
+
 			try {
 				version = VersionParser.parse(rawVersion, false);
 			} catch (VersionParsingException e) {

@@ -126,7 +126,7 @@ public final class LeafGuiEntry {
 		GameProvider provider = LeafLoaderImpl.INSTANCE.tryGetGameProvider();
 
 		if (!isCI && !isNoGui && !GraphicsEnvironment.isHeadless() && (provider == null || provider.canOpenErrorGui())) {
-			String title = "Fabric Loader " + LeafLoaderImpl.VERSION;
+			String title = "Leaf Loader " + LeafLoaderImpl.VERSION;
 			LeafStatusTree tree = new LeafStatusTree(title, mainText);
 			LeafStatusTab crashTab = tree.addTab(Localization.format("gui.tab.crash"));
 

@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.impl.launch.knot;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 
 public class KnotServer {
 	public static void main(String[] args) {

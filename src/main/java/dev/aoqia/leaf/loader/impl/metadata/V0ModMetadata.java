@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.Version;
 import dev.aoqia.leaf.loader.api.metadata.ContactInformation;
 import dev.aoqia.leaf.loader.api.metadata.CustomValue;
