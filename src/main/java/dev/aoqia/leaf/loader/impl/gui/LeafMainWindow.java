@@ -72,7 +72,7 @@ import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafStatusTab;
 import dev.aoqia.leaf.loader.impl.gui.LeafStatusTree.LeafTreeWarningLevel;
 import dev.aoqia.leaf.loader.impl.util.StringUtil;
 
-class FabricMainWindow {
+class LeafMainWindow {
 	static Icon missingIcon = null;
 
 	static void open(LeafStatusTree tree, boolean shouldWait) throws Exception {
@@ -226,7 +226,7 @@ class FabricMainWindow {
 	}
 
 	private static InputStream loadStream(String str) throws FileNotFoundException {
-		InputStream stream = FabricMainWindow.class.getResourceAsStream(str);
+		InputStream stream = LeafMainWindow.class.getResourceAsStream(str);
 
 		if (stream == null) {
 			throw new FileNotFoundException(str);

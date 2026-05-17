@@ -49,7 +49,7 @@ public final class LeafGuiEntry {
 
 		if (provider == null && LoaderUtil.hasAwtSupport()
 				|| provider != null && provider.hasAwtSupport()) {
-			FabricMainWindow.open(tree, true);
+			LeafMainWindow.open(tree, true);
 		} else {
 			openForked(tree);
 		}
@@ -93,7 +93,7 @@ public final class LeafGuiEntry {
 
 	public static void main(String[] args) throws Exception {
 		LeafStatusTree tree = new LeafStatusTree(new DataInputStream(System.in));
-		FabricMainWindow.open(tree, true);
+		LeafMainWindow.open(tree, true);
 		System.exit(0);
 	}
 
