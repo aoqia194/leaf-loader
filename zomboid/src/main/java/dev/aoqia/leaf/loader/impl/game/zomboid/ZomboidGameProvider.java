@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.aoqia.leaf.loader.impl.game.minecraft;
+package dev.aoqia.leaf.loader.impl.game.zomboid;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
@@ -34,21 +34,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.ObjectShare;
 import dev.aoqia.leaf.loader.api.VersionParsingException;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.game.GameProviderHelper;
 import dev.aoqia.leaf.loader.impl.game.LibClassifier;
-import dev.aoqia.leaf.loader.impl.game.minecraft.patch.BrandingPatch;
-import dev.aoqia.leaf.loader.impl.game.minecraft.patch.EntrypointPatch;
-import dev.aoqia.leaf.loader.impl.game.minecraft.patch.EntrypointPatchFML125;
-import dev.aoqia.leaf.loader.impl.game.minecraft.patch.TinyFDPatch;
 import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
-import dev.aoqia.leaf.loader.impl.launch.FabricLauncher;
+import dev.aoqia.leaf.loader.impl.game.zomboid.patch.BrandingPatch;
+import dev.aoqia.leaf.loader.impl.game.zomboid.patch.EntrypointPatch;
+import dev.aoqia.leaf.loader.impl.game.zomboid.patch.LoggerPatch;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.metadata.BuiltinModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.ModDependencyImpl;
@@ -60,58 +59,46 @@ import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
 
-public class MinecraftGameProvider implements GameProvider {
-	private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = { "org.apache.logging.log4j.", "com.mojang.util." };
+public class ZomboidGameProvider implements GameProvider {
+	private static final String[] ALLOWED_EARLY_CLASS_PREFIXES = { "org.apache.logging.log4j." };
 
-	private static final Set<String> SENSITIVE_ARGS = new HashSet<>(Arrays.asList(
-			// all lowercase without --
-			"accesstoken",
-			"clientid",
-			"profileproperties",
-			"proxypass",
-			"proxyuser",
-			"username",
-			"userproperties",
-			"uuid",
-			"xuid"));
+	private static final Set<String> SENSITIVE_ARGS = new HashSet<>();
 
 	private EnvType envType;
 	private String entrypoint;
 	private Arguments arguments;
 	private final List<Path> gameJars = new ArrayList<>(2); // env game jar and potentially common game jar
-	private Path realmsJar;
 	private final Set<Path> logJars = new HashSet<>();
 	private boolean log4jAvailable;
 	private boolean slf4jAvailable;
 	private final List<Path> miscGameLibraries = new ArrayList<>(); // libraries not relevant for loader's uses
 	private Collection<Path> validParentClassPath; // computed parent class path restriction (loader+deps)
-	private McVersion versionData;
+	private ZomboidVersion versionData;
 	private boolean hasModLoader = false;
 
 	private final GameTransformer transformer = new GameTransformer(
-			new EntrypointPatch(this),
-			new BrandingPatch(),
-			new EntrypointPatchFML125(),
-			new TinyFDPatch());
+			new LoggerPatch(),
+			new EntrypointPatch(),
+			new BrandingPatch());
 
 	@Override
 	public String getGameId() {
-		return "minecraft";
+        return "zomboid";
 	}
 
 	@Override
 	public String getGameName() {
-		return "Minecraft";
+        return "Project Zomboid";
 	}
 
 	@Override
 	public String getRawGameVersion() {
-		return versionData.getRaw();
+        return versionData.getId();
 	}
 
 	@Override
 	public String getNormalizedGameVersion() {
-		return versionData.getNormalized();
+		return getRawGameVersion();
 	}
 
 	@Override
@@ -157,21 +144,19 @@ public class MinecraftGameProvider implements GameProvider {
 
 	@Override
 	public Set<BuiltinTransform> getBuiltinTransforms(String className) {
-		boolean isMinecraftClass = className.startsWith("net.minecraft.") // unobf classes in indev and later
-				|| className.startsWith("com.mojang.minecraft.") // unobf classes in classic
-				|| className.startsWith("com.mojang.rubydung.") // unobf classes in pre-classic
-				|| className.startsWith("com.mojang.blaze3d.") // unobf blaze3d classes
-				|| className.indexOf('.') < 0; // obf classes
-
-		if (isMinecraftClass) {
-			if (FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) { // combined client+server jar, strip back down to production equivalent
-				return TRANSFORM_WIDENALL_STRIPENV_CLASSTWEAKS;
-			} else { // environment specific jar, inherently env stripped
-				return TRANSFORM_WIDENALL_CLASSTWEAKS;
-			}
-		} else { // mod class TODO: exclude game libs
+		final boolean isZomboidClass = className.startsWith("zombie.");
+		if (!isZomboidClass) {
+			// mod class TODO: exclude game libs
 			return TRANSFORM_STRIPENV;
 		}
+
+		// Combined client+server JAR, strip back down to production equivalent.
+		if (LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+			return TRANSFORM_WIDENALL_STRIPENV_CLASSTWEAKS;
+		}
+
+		// Environment-specific JAR, inherently env stripped.
+		return TRANSFORM_WIDENALL_CLASSTWEAKS;
 	}
 
 	private static final Set<BuiltinTransform> TRANSFORM_WIDENALL_STRIPENV_CLASSTWEAKS = EnumSet.of(BuiltinTransform.WIDEN_ALL_PACKAGE_ACCESS, BuiltinTransform.STRIP_ENVIRONMENT, BuiltinTransform.CLASS_TWEAKS);
@@ -180,25 +165,26 @@ public class MinecraftGameProvider implements GameProvider {
 
 	@Override
 	public boolean isEnabled() {
-		return !SystemProperties.isSet(SystemProperties.SKIP_MC_PROVIDER);
+        return !SystemProperties.isSet(SystemProperties.SKIP_ZOMBOID_PROVIDER);
 	}
 
 	@Override
-	public boolean locateGame(FabricLauncher launcher, String[] args) {
+	public boolean locateGame(LeafLauncher launcher, String[] args) {
 		this.envType = launcher.getEnvironmentType();
 		this.arguments = new Arguments();
 		arguments.parse(args);
 
 		try {
-			LibClassifier<McLibrary> classifier = new LibClassifier<>(McLibrary.class, envType, this);
-			McLibrary envGameLib = envType == EnvType.CLIENT ? McLibrary.MC_CLIENT : McLibrary.MC_SERVER;
+			LibClassifier<ZomboidLibrary> classifier = new LibClassifier<>(ZomboidLibrary.class, envType, this);
+            ZomboidLibrary envGameLib = envType == EnvType.CLIENT
+                ? ZomboidLibrary.ZOMBOID_CLIENT : ZomboidLibrary.ZOMBOID_SERVER;
 			Path commonGameJar = GameProviderHelper.getCommonGameJar();
 			Path envGameJar = GameProviderHelper.getEnvGameJar(envType);
 			boolean commonGameJarDeclared = commonGameJar != null;
 
 			if (commonGameJarDeclared) {
 				if (envGameJar != null) {
-					classifier.process(envGameJar, McLibrary.MC_COMMON);
+                    classifier.process(envGameJar, ZomboidLibrary.ZOMBOID_COMMON);
 				}
 
 				classifier.process(commonGameJar);
@@ -208,14 +194,14 @@ public class MinecraftGameProvider implements GameProvider {
 
 			classifier.process(launcher.getClassPath());
 
-			if (classifier.has(McLibrary.MC_BUNDLER)) {
+			if (classifier.has(ZomboidLibrary.MC_BUNDLER)) {
 				BundlerProcessor.process(classifier);
 			}
 
 			envGameJar = classifier.getOrigin(envGameLib);
 			if (envGameJar == null) return false;
 
-			commonGameJar = classifier.getOrigin(McLibrary.MC_COMMON);
+            commonGameJar = classifier.getOrigin(ZomboidLibrary.ZOMBOID_COMMON);
 
 			if (commonGameJarDeclared && commonGameJar == null) {
 				Log.warn(LogCategory.GAME_PROVIDER, "The declared common game jar didn't contain any of the expected classes!");
@@ -227,22 +213,20 @@ public class MinecraftGameProvider implements GameProvider {
 				gameJars.add(commonGameJar);
 			}
 
-			Path assetsJar = classifier.getOrigin(McLibrary.MC_ASSETS_ROOT);
+			Path assetsJar = classifier.getOrigin(ZomboidLibrary.MC_ASSETS_ROOT);
 
 			if (assetsJar != null && !assetsJar.equals(commonGameJar) && !assetsJar.equals(envGameJar)) {
 				gameJars.add(assetsJar);
 			}
 
 			entrypoint = classifier.getClassName(envGameLib);
-			realmsJar = classifier.getOrigin(McLibrary.REALMS);
-			hasModLoader = classifier.has(McLibrary.MODLOADER);
-			log4jAvailable = classifier.has(McLibrary.LOG4J_API) && classifier.has(McLibrary.LOG4J_CORE);
-			slf4jAvailable = classifier.has(McLibrary.SLF4J_API) && classifier.has(McLibrary.SLF4J_CORE);
+			hasModLoader = classifier.has(ZomboidLibrary.MODLOADER);
+			log4jAvailable = classifier.has(ZomboidLibrary.LOG4J_API) && classifier.has(ZomboidLibrary.LOG4J_CORE);
+			slf4jAvailable = classifier.has(ZomboidLibrary.SLF4J_API) && classifier.has(ZomboidLibrary.SLF4J_CORE);
 			boolean hasLogLib = log4jAvailable || slf4jAvailable;
+            Log.configureBuiltin(true, false);
 
-			Log.configureBuiltin(hasLogLib, !hasLogLib);
-
-			for (McLibrary lib : McLibrary.LOGGING) {
+			for (ZomboidLibrary lib : ZomboidLibrary.LOGGING) {
 				Path path = classifier.getOrigin(lib);
 
 				if (path != null) {
@@ -261,14 +245,14 @@ public class MinecraftGameProvider implements GameProvider {
 		}
 
 		// expose obfuscated jar locations for mods to more easily remap code from obfuscated to intermediary
-		ObjectShare share = FabricLoaderImpl.INSTANCE.getObjectShare();
-		share.put("fabric-loader:inputGameJar", gameJars.get(0)); // deprecated
-		share.put("fabric-loader:inputGameJars", Collections.unmodifiableList(new ArrayList<>(gameJars))); // need to make copy as gameJars is later mutated to hold the remapped jars
-		if (realmsJar != null) share.put("fabric-loader:inputRealmsJar", realmsJar);
+		ObjectShare share = LeafLoaderImpl.INSTANCE.getObjectShare();
+		share.put("leaf-loader:inputGameJar", gameJars.get(0)); // deprecated
+		// need to make copy as gameJars is later mutated to hold the remapped jars
+		share.put("leaf-loader:inputGameJars", Collections.unmodifiableList(new ArrayList<>(gameJars)));
 
 		String version = arguments.remove(Arguments.GAME_VERSION);
 		if (version == null) version = System.getProperty(SystemProperties.GAME_VERSION);
-		versionData = McVersionLookup.getVersion(gameJars, entrypoint, version);
+		versionData = ZomboidVersionLookup.getVersion(gameJars, entrypoint, version);
 
 		processArgumentMap(arguments, envType);
 
@@ -277,42 +261,21 @@ public class MinecraftGameProvider implements GameProvider {
 
 	private static void processArgumentMap(Arguments argMap, EnvType envType) {
 		switch (envType) {
-		case CLIENT:
-			if (!argMap.containsKey("accessToken")) {
-				argMap.put("accessToken", "FabricMC");
-			}
-
-			if (!argMap.containsKey("version")) {
-				argMap.put("version", "Fabric");
-			}
-
-			String versionType = "";
-
-			if (argMap.containsKey("versionType") && !argMap.get("versionType").equalsIgnoreCase("release")) {
-				versionType = argMap.get("versionType") + "/";
-			}
-
-			argMap.put("versionType", versionType + "Fabric");
-
-			if (!argMap.containsKey("gameDir")) {
-				argMap.put("gameDir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
-			}
-
-			break;
-		case SERVER:
-			argMap.remove("version");
-			argMap.remove("gameDir");
-			argMap.remove("assetsDir");
-			break;
+			case CLIENT:
+			case SERVER:
+				argMap.putIfNotExists("cachedir",
+						getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
+				break;
 		}
 	}
 
 	private static Path getLaunchDirectory(Arguments argMap) {
-		return Paths.get(argMap.getOrDefault("gameDir", "."));
+		return Paths.get(argMap.getOrDefault("cachedir", System.getProperty("leaf.runDir",
+				Paths.get(System.getProperty("user.home")).resolve("Zomboid").toString())));
 	}
 
 	@Override
-	public void initialize(FabricLauncher launcher) {
+	public void initialize(LeafLauncher launcher) {
 		launcher.setValidParentClassPath(validParentClassPath);
 
 		MappingConfiguration config = launcher.getMappingConfiguration();
@@ -357,10 +320,6 @@ public class MinecraftGameProvider implements GameProvider {
 				names[i] = name;
 			}
 
-			if (realmsJar != null) {
-				obfJars.put("realms", realmsJar);
-			}
-
 			obfJars = GameProviderHelper.deobfuscate(obfJars,
 					gameNs,
 					getGameId(), getNormalizedGameVersion(),
@@ -373,8 +332,6 @@ public class MinecraftGameProvider implements GameProvider {
 
 				if (logJars.remove(oldJar)) logJars.add(newJar);
 			}
-
-			realmsJar = obfJars.get("realms");
 		}
 
 		// Load the logger libraries on the platform CL when in a unit test
@@ -393,20 +350,32 @@ public class MinecraftGameProvider implements GameProvider {
 		transformer.locateEntrypoints(launcher, gameJars);
 	}
 
-	private void setupLogHandler(FabricLauncher launcher, boolean useTargetCl) {
-		System.setProperty("log4j2.formatMsgNoLookups", "true"); // lookups are not used by mc and cause issues with older log4j2 versions
+	/**
+	 * Sets up the logging for the loader, and the rest of the game if slf4j/log4j is present.
+	 *
+	 * @param launcher The LeafLauncher object instance
+	 * @param useTargetCl Use the launcher's target class loader
+	 */
+	public void setupLogHandler(LeafLauncher launcher, boolean useTargetCl) {
+		System.setProperty("log4j2.formatMsgNoLookups", "true");
+
+		String logHandlerClsName;
+
+		if (getSemverGameVersion().getVersionComponent(0) <= 41) {
+			logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.OldZomboidLogHandler";
+		} else {
+			logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.NewZomboidLogHandler";
+		}
+
+		if (!SystemProperties.isSet(SystemProperties.DISABLE_LOG4J)) {
+			if (log4jAvailable) {
+				logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.Log4jLogHandler";
+			} else if (slf4jAvailable) {
+				logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.Slf4jLogHandler";
+			}
+		}
 
 		try {
-			final String logHandlerClsName;
-
-			if (log4jAvailable) {
-				logHandlerClsName = "net.fabricmc.loader.impl.game.minecraft.Log4jLogHandler";
-			} else if (slf4jAvailable) {
-				logHandlerClsName = "net.fabricmc.loader.impl.game.minecraft.Slf4jLogHandler";
-			} else {
-				return;
-			}
-
 			ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
 			Class<?> logHandlerCls;
 
@@ -417,7 +386,10 @@ public class MinecraftGameProvider implements GameProvider {
 				logHandlerCls = Class.forName(logHandlerClsName);
 			}
 
-			Log.init((LogHandler) logHandlerCls.getConstructor().newInstance());
+			if (logHandlerCls != null) {
+				Log.init((LogHandler) logHandlerCls.getConstructor().newInstance());
+			}
+
 			Thread.currentThread().setContextClassLoader(prevCl);
 		} catch (ReflectiveOperationException e) {
 			throw new RuntimeException(e);
@@ -442,7 +414,7 @@ public class MinecraftGameProvider implements GameProvider {
 			String arg = ret[i];
 
 			if (i + 1 < ret.length
-					&& arg.startsWith("--")
+                && arg.startsWith("-")
 					&& SENSITIVE_ARGS.contains(arg.substring(2).toLowerCase(Locale.ENGLISH))) {
 				i++; // skip value
 			} else {
@@ -466,18 +438,18 @@ public class MinecraftGameProvider implements GameProvider {
 			return true;
 		}
 
-		List<String> extras = arguments.getExtraArgs();
-		return !extras.contains("nogui") && !extras.contains("--nogui");
+        return arguments.contains("gui");
 	}
 
 	@Override
 	public boolean hasAwtSupport() {
 		// MC always sets -XstartOnFirstThread for LWJGL
+        // TODO(leaf): Is this true also for Zomboid?
 		return !LoaderUtil.hasMacOs();
 	}
 
 	@Override
-	public void unlockClassPath(FabricLauncher launcher) {
+	public void unlockClassPath(LeafLauncher launcher) {
 		for (Path gameJar : gameJars) {
 			if (logJars.contains(gameJar)) {
 				launcher.setAllowedPrefixes(gameJar);
@@ -485,8 +457,6 @@ public class MinecraftGameProvider implements GameProvider {
 				launcher.addToClassPath(gameJar);
 			}
 		}
-
-		if (realmsJar != null) launcher.addToClassPath(realmsJar);
 
 		for (Path lib : miscGameLibraries) {
 			launcher.addToClassPath(lib);
@@ -496,24 +466,20 @@ public class MinecraftGameProvider implements GameProvider {
 	@Override
 	public void launch(ClassLoader loader) {
 		String targetClass = entrypoint;
-
-		if (envType == EnvType.CLIENT && targetClass.contains("Applet")) {
-			targetClass = "net.fabricmc.loader.impl.game.minecraft.applet.AppletMain";
-		}
-
 		MethodHandle invoker;
 
 		try {
 			Class<?> c = loader.loadClass(targetClass);
 			invoker = MethodHandles.lookup().findStatic(c, "main", MethodType.methodType(void.class, String[].class));
 		} catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-			throw FormattedException.ofLocalized("exception.minecraft.invokeFailure", e);
+			throw FormattedException.ofLocalized("exception.zomboid.invokeFailure", e);
 		}
 
 		try {
+			// noinspection ConfusingArgumentToVarargsMethod
 			invoker.invokeExact(arguments.toArray());
 		} catch (Throwable t) {
-			throw FormattedException.ofLocalized("exception.minecraft.generic", t);
+			throw FormattedException.ofLocalized("exception.zomboid.generic", t);
 		}
 	}
 }

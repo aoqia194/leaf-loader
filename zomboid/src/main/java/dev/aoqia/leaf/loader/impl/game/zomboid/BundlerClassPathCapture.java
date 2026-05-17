@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.aoqia.leaf.loader.impl.game.minecraft;
+package dev.aoqia.leaf.loader.impl.game.zomboid;
 
 import java.io.IOException;
 import java.net.JarURLConnection;

@@ -14,57 +14,66 @@
  * limitations under the License.
  */
 
-package dev.aoqia.leaf.loader.impl.game.minecraft;
+package dev.aoqia.leaf.loader.impl.game.zomboid;
 
 import java.io.File;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.api.ModInitializer;
-import dev.aoqia.leaf.loader.impl.FabricLoaderImpl;
+import dev.aoqia.leaf.api.ClientModInitializer;
+import dev.aoqia.leaf.api.DedicatedServerModInitializer;
+import dev.aoqia.leaf.api.ModInitializer;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
+import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 
 public final class Hooks {
 	public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');
+    public static final String LEAF = "leaf";
 
-	public static String appletMainClass;
-
-	public static final String FABRIC = "fabric";
-	public static final String VANILLA = "vanilla";
-
-	public static String insertBranding(final String brand) {
-		if (brand == null || brand.isEmpty()) {
-			Log.warn(LogCategory.GAME_PROVIDER, "Null or empty branding found!", new IllegalStateException());
-			return FABRIC;
+    public static String setWindowTitle(final String title) {
+        if (title == null || title.isEmpty()) {
+            Log.warn(LogCategory.GAME_PROVIDER,
+                "Null or empty window title string found!", new IllegalStateException());
+            return LEAF;
 		}
 
-		return VANILLA.equals(brand) ? FABRIC : brand + ',' + FABRIC;
+        return title + " (" + LEAF + ")";
 	}
 
 	public static void startClient(File runDir, Object gameInstance) {
+		// TODO(leaf): Legacy had a check instead of ==null to see if runDir was at user.home???
 		if (runDir == null) {
 			runDir = new File(".");
 		}
 
-		FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
+		LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
 		loader.prepareModInit(runDir.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
 	}
 
 	public static void startServer(File runDir, Object gameInstance) {
+		// TODO(leaf): Legacy had a check instead of ==null to see if runDir was at user.home???
 		if (runDir == null) {
 			runDir = new File(".");
 		}
 
-		FabricLoaderImpl loader = FabricLoaderImpl.INSTANCE;
+		LeafLoaderImpl loader = LeafLoaderImpl.INSTANCE;
 		loader.prepareModInit(runDir.toPath(), gameInstance);
 		loader.invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
 		loader.invokeEntrypoints("server", DedicatedServerModInitializer.class, DedicatedServerModInitializer::onInitializeServer);
 	}
 
 	public static void setGameInstance(Object gameInstance) {
-		FabricLoaderImpl.INSTANCE.setGameInstance(gameInstance);
+		LeafLoaderImpl.INSTANCE.setGameInstance(gameInstance);
 	}
+
+    /**
+     * @see ZomboidGameProvider#setupLogHandler(LeafLauncher, boolean)
+     */
+    public static void setupLogHandler() {
+		((ZomboidGameProvider) LeafLoaderImpl.INSTANCE.getGameProvider())
+            .setupLogHandler(LeafLauncherBase.getLauncher(), true);
+    }
 }
