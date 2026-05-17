@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.objectweb.asm.ClassReader;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.api.LeafLoader;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
@@ -33,13 +33,13 @@ public class JavaLanguageAdapter implements LanguageAdapter {
 	private static boolean canApplyInterface(String itfString) throws IOException {
 		// TODO: Be a bit more involved
 		switch (itfString) {
-		case "net/fabricmc/api/ClientModInitializer":
+		case "dev/aoqia/leaf/api/ClientModInitializer":
 			if (LeafLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
 				return false;
 			}
 
 			break;
-		case "net/fabricmc/api/DedicatedServerModInitializer":
+		case "dev/aoqia/leaf/api/DedicatedServerModInitializer":
 			if (LeafLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 				return false;
 			}

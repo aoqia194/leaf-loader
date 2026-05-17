@@ -16,7 +16,7 @@
 
 package dev.aoqia.leaf.loader.launch.knot;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
 
 /**
