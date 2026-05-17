@@ -6,15 +6,15 @@
   "side": "client",
   "entrypoints": {
     "preLaunch": [
-      "net.fabricmc.test.TestMod"
+      "dev.aoqia.leaf.loader.test.TestMod"
     ],
     "main": [
-      "net.fabricmc.test.TestMod"
+      "dev.aoqia.leaf.loader.test.TestMod"
     ],
     "test:testing": [
-      "net.fabricmc.test.EntrypointTest::instanceEntry",
-      "net.fabricmc.test.EntrypointTest::staticEntry",
-      "net.fabricmc.test.EntrypointTest::FIELD_ENTRY"
+      "dev.aoqia.leaf.loader.test.EntrypointTest::instanceEntry",
+      "dev.aoqia.leaf.loader.test.EntrypointTest::staticEntry",
+      "dev.aoqia.leaf.loader.test.EntrypointTest::FIELD_ENTRY"
     ]
   }
 }

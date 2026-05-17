@@ -65,19 +65,11 @@
             
         ],
         "development": [
-            {
-                "name": "io.github.llamalad7:mixinextras-fabric:0.5.4",
-                "url": "https://maven.fabricmc.net/",
-                "md5": "d5070aa9700de60274a740d4c2640b4d",
-                "sha1": "5e167154bcb9942111313a5e186e16cd7265f858",
-                "sha256": "bd79ddb2f54b39a08deeb50cb12439bba01481264dd5a9f5ea830551bfef31ff",
-                "sha512": "31b929374c2526ebb532185cd54b752c0a5ca7f56a48c99ed6a73f598a4155c9db88ab4c8ea5904fa2e2f78310424393238b2db6cd435c0f3ad87d1391ea3320",
-                "size": 727805
-            }
+            
         ]
     },
     "mainClass": {
-        "client": "net.fabricmc.loader.impl.launch.knot.KnotClient",
-        "server": "net.fabricmc.loader.impl.launch.knot.KnotServer"
+        "client": "dev.aoqia.leaf.loader.impl.launch.knot.KnotClient",
+        "server": "dev.aoqia.leaf.loader.impl.launch.knot.KnotServer"
     }
 }
