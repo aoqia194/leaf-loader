@@ -21,7 +21,7 @@ import java.util.Locale;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.launch.knot.Knot;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
