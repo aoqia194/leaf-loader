@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package net.fabricmc.test;
+package dev.aoqia.leaf.loader.test;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.fabricmc.api.ModInitializer;
+import dev.aoqia.leaf.api.ModInitializer;
 import dev.aoqia.leaf.loader.api.LeafLoader;
 import dev.aoqia.leaf.loader.api.entrypoint.PreLaunchEntrypoint;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;

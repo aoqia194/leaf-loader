@@ -33,14 +33,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
-import net.fabricmc.api.EnvType;
+import dev.aoqia.leaf.api.EnvType;
 import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 
-public class GetNonFabricModsTest {
+public class GetNonLeafModsTest {
 	private LeafLoaderImpl loader;
 	private ModDiscoverer discoverer;
 	private MockedConstruction<LeafLoaderImpl> loaderConstruction;
@@ -76,24 +76,22 @@ public class GetNonFabricModsTest {
 	 * Test that the discoverer can find non-fabric mods
 	 */
 	@Test
-	public void testGetNonFabricMods() throws ModResolutionException {
-		List<ModCandidateImpl> acceptedMods = discoverer.discoverMods(loader, new HashMap<String, Set<ModCandidateImpl>>());
+    public void testGetNonLeafMods() throws ModResolutionException {
+        List<ModCandidateImpl> acceptedMods = discoverer.discoverMods(loader, new HashMap<>());
 
-		boolean foundDummyFabricMod = false;
-
+        boolean foundDummyMod = false;
 		for (ModCandidateImpl acceptedMod : acceptedMods) {
 			if (acceptedMod.getId().equals("dummy")) {
-				foundDummyFabricMod = true;
+                foundDummyMod = true;
 				break;
 			}
 		}
 
-		Assertions.assertTrue(foundDummyFabricMod);
-
-		List<Path> nonFabricMods = discoverer.getNonFabricMods();
-		Assertions.assertEquals(1, nonFabricMods.size());
-		Assertions.assertEquals(Paths.get("src/test/resources/testing/discovery/dummyNonFabricMod.jar").toAbsolutePath(),
-				nonFabricMods.get(0));
+        List<Path> nonLeafMods = discoverer.getNonLeafMods();
+        Assertions.assertEquals(1, nonLeafMods.size());
+        Assertions.assertEquals(
+            Paths.get("src/test/resources/testing/discovery/dummyNonLeafMod.jar").toAbsolutePath(),
+            nonLeafMods.get(0));
 	}
 
 	/*
@@ -103,8 +101,10 @@ public class GetNonFabricModsTest {
 	public static class MockCandidateFinder implements ModCandidateFinder {
 		@Override
 		public void findCandidates(ModCandidateConsumer out) {
-			out.accept(LoaderUtil.normalizePath(Paths.get("src/test/resources/testing/discovery/dummyFabricMod.jar")), false);
-			out.accept(LoaderUtil.normalizePath(Paths.get("src/test/resources/testing/discovery/dummyNonFabricMod.jar")), false);
+            out.accept(LoaderUtil.normalizePath(
+                Paths.get("src/test/resources/testing/discovery/dummyLeafMod.jar")), false);
+            out.accept(LoaderUtil.normalizePath(
+                Paths.get("src/test/resources/testing/discovery/dummyNonLeafMod.jar")), false);
 		}
 	}
 }

@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package net.fabricmc.test;
+package dev.aoqia.leaf.loader.test;
 
 /**
  * A custom entry point that allows testing functionalities of default methods.

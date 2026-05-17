@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package net.fabricmc.test;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
+package dev.aoqia.leaf.loader.test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,7 +28,10 @@ import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
 
-public class LogNonFabricModsTest {
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+
+public class LogNonLeafModsTest {
 	private LogHandler logHandler;
 
 	/*
@@ -52,18 +51,18 @@ public class LogNonFabricModsTest {
 	 * non-fabric mods found.
 	 */
 	@Test
-	public void testLogNonFabricMods() {
-		List<Path> nonFabricMods = new ArrayList<Path>();
-		nonFabricMods.add(Paths.get("mods/non_fabric_mod1.jar"));
-		nonFabricMods.add(Paths.get("mods/non_fabric_mod2.jar"));
-		nonFabricMods.add(Paths.get("mods/non_fabric_mod3.jar"));
+    public void testLogNonLeafMods() {
+        List<Path> nonLeafMods = new ArrayList<>();
+        nonLeafMods.add(Paths.get("mods/non_leaf_mod1.jar"));
+        nonLeafMods.add(Paths.get("mods/non_leaf_mod2.jar"));
+        nonLeafMods.add(Paths.get("mods/non_leaf_mod3.jar"));
 
-		LeafLoaderImpl.INSTANCE.dumpNonFabricMods(nonFabricMods);
+        LeafLoaderImpl.INSTANCE.dumpNonLeafMods(nonLeafMods);
 
-		String expectedLog = "Found 3 non-fabric mods:"
-				+ "\n\t- non_fabric_mod1.jar"
-				+ "\n\t- non_fabric_mod2.jar"
-				+ "\n\t- non_fabric_mod3.jar";
+		String expectedLog = "Found 3 non-leaf mods:"
+                             + "\n\t- non_leaf_mod1.jar"
+                             + "\n\t- non_leaf_mod2.jar"
+                             + "\n\t- non_leaf_mod3.jar";
 
 		Mockito.verify(logHandler, Mockito.times(1)).log(Mockito.anyLong(), Mockito.any(), Mockito.any(),
 				eq(expectedLog), Mockito.any(), Mockito.anyBoolean(), Mockito.anyBoolean());

@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package net.fabricmc.test;
+package dev.aoqia.leaf.loader.test;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,22 +24,34 @@ public class ArgumentParsingTests {
 	@Test
 	public void parseNormal() {
 		Arguments arguments = new Arguments();
-		arguments.parse(new String[]{"--clientId", "123", "--xuid", "abc", "--versionType", "release"});
-		arguments.put("versionType", "Fabric");
+		arguments.parse(new String[]{"-debug", "-pzexeconfig", "SomeConfig.json", "-novoip"});
+		arguments.put("versionType", "Leaf");
 
-		Assertions.assertEquals(arguments.keys().size(), 3);
-		Assertions.assertEquals(arguments.get("xuid"), "abc");
-		Assertions.assertEquals(arguments.get("versionType"), "Fabric");
+		Assertions.assertEquals(2, arguments.getValueArgs().size());
+		Assertions.assertEquals("SomeConfig.json", arguments.get("pzexeconfig"));
+		Assertions.assertEquals("Leaf", arguments.get("versionType"));
 	}
 
 	@Test
 	public void parseMissing() {
 		Arguments arguments = new Arguments();
-		arguments.parse(new String[]{"--clientId", "123", "--xuid", "--versionType", "release"});
-		arguments.put("versionType", "Fabric");
+		arguments.parse(new String[]{"-debug", "-pzexeconfig", "-novoip"});
+		arguments.put("versionType", "Leaf");
 
-		Assertions.assertEquals(arguments.keys().size(), 3);
-		Assertions.assertEquals(arguments.get("xuid"), "");
-		Assertions.assertEquals(arguments.get("versionType"), "Fabric");
+		Assertions.assertEquals(1, arguments.getValueArgs().size());
+        Assertions.assertNull(arguments.get("xuid"));
+        Assertions.assertNull(arguments.get("pzexeconfig"));
+		Assertions.assertEquals("Leaf", arguments.get("versionType"));
+	}
+
+	@Test
+	public void parseJvm() {
+		Arguments arguments = new Arguments();
+		arguments.parse(new String[]{"-Xmx8192m", "--"});
+		arguments.put("versionType", "Leaf");
+
+		Assertions.assertEquals(1, arguments.getValueArgs().size());
+		Assertions.assertNull(arguments.get("xuid"));
+		Assertions.assertEquals("Leaf", arguments.get("versionType"));
 	}
 }
