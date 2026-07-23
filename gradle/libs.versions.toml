@@ -1,7 +1,7 @@
 [versions]
 
 annotations = "23.0.0"
-asm = "9.9"
+asm = "9.10.1"
 clazztweaker = "0.3.0-beta.2"
 gson = "2.2.4"
 jreleaser = "1.17.0"
@@ -20,7 +20,7 @@ shadow = "9.2.2"
 # TODO(leaf): Maybe not needed?
 slf4j-api = "2.0.17"
 spotless = "8.0.0"
-tinyremapper = "0.13.0"
+tinyremapper = "0.14.0"
 
 [libraries]
 
