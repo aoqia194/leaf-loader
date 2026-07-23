@@ -25,5 +25,4 @@ rootProject.name = name
 // FIXME(leaf): Add back mixinextras subproject if needed.
 include("junit")
 include("zomboid")
-// FIXME(leaf): Uncomment when loom is ready
-//include("zomboid:zomboid-test")
+include("zomboid:zomboid-test")

@@ -8,8 +8,6 @@ plugins {
 }
 
 loom {
-//    clientOnlyZomboidJar()
-
     runConfigs.configureEach {
         isIdeConfigGenerated = true
         property("leaf.debug.replaceVersion", "leafloader:${version}")

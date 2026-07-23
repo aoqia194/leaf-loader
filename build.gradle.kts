@@ -7,7 +7,7 @@ import org.jreleaser.model.Active
 import org.jreleaser.model.Http
 import org.slf4j.LoggerFactory
 import proguard.gradle.ProGuardTask
-import java.net.URL
+import java.net.URI
 
 var groupUrl = rootProject.group.toString().replace(".", "/")
 
@@ -87,20 +87,20 @@ allprojects {
 }
 
 // FIXME(leaf): Uncomment after loom is sorted
-//// Disable zomboid-test Java code from compiling if CI and ignoreMissingFiles.
-//project(":zomboid:zomboid-test") {
-//    tasks.compileJava {
-//        onlyIf {
-//            !isCiEnv || (isCiEnv && !project.hasProperty("leaf.loom.ignoreMissingFiles"))
-//        }
-//    }
-//
-//    tasks.test {
-//        onlyIf {
-//            !isCiEnv || (isCiEnv && !project.hasProperty("leaf.loom.ignoreMissingFiles"))
-//        }
-//    }
-//}
+// Disable zomboid-test Java code from compiling if CI and ignoreMissingFiles.
+project(":zomboid:zomboid-test") {
+    tasks.compileJava {
+        onlyIf {
+            !isCiEnv || (isCiEnv && !project.hasProperty("leaf.loom.ignoreMissingFiles"))
+        }
+    }
+
+    tasks.test {
+        onlyIf {
+            !isCiEnv || (isCiEnv && !project.hasProperty("leaf.loom.ignoreMissingFiles"))
+        }
+    }
+}
 
 val mainSourceSetOutput by configurations.registering {
     isCanBeConsumed = true
@@ -414,11 +414,11 @@ val javadocJar by tasks.registering(Jar::class) {
  */
 val checkVersion by tasks.registering {
     doFirst {
-        val xml = URL(
+        val xml = URI.create(
             "https://repo.maven.apache.org/maven2/${
                 rootProject.group.toString().replace(".", "/")
             }/${rootProject.name}/maven-metadata.xml"
-        ).readText()
+        ).toURL().readText()
         val metadata = XmlSlurper().parseText(xml)
 
         val versioning = metadata.getProperty("versioning") as GPathResult

@@ -10,7 +10,7 @@ junit-jupiter = "5.9.2"
 # TODO(leaf): Maybe not needed?
 log4j = "2.25.1"
 # TODO(leaf): Update local version
-loom = "0.6.2.local"
+loom = "0.7.0.local"
 mappingio = "0.7.1"
 mixin = "0.17.2+mixin.0.8.7"
 mixinextras = "0.5.4"

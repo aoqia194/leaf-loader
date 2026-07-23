@@ -5,7 +5,9 @@
 !/.github
 !/buildSrc
 !/gradle
+!/junit
 !/src
+!/zomboid
 
 # Files
 !/.gitattributes
@@ -21,6 +23,3 @@
 !/README.md
 !/settings.gradle*
 !/proguard.conf
-
-!/zomboid
-!/junit
