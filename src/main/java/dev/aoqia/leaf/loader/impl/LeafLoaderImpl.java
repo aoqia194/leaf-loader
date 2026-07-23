@@ -36,13 +36,14 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import dev.aoqia.leaf.loader.LeafLoader;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
 
-import dev.aoqia.leaf.api.EnvType;
 import net.fabricmc.classtweaker.api.ClassTweaker;
 import net.fabricmc.classtweaker.api.ClassTweakerReader;
+
+import dev.aoqia.leaf.api.EnvType;
+import dev.aoqia.leaf.loader.LeafLoader;
 import dev.aoqia.leaf.loader.api.LanguageAdapter;
 import dev.aoqia.leaf.loader.api.MappingResolver;
 import dev.aoqia.leaf.loader.api.ModContainer;
@@ -280,7 +281,11 @@ public final class LeafLoaderImpl extends LeafLoader {
 
 		if (remapRegularMods) {
 			if (System.getProperty(SystemProperties.REMAP_CLASSPATH_FILE) == null) {
-				Log.warn(LogCategory.MOD_REMAP, "Runtime mod remapping disabled due to no fabric.remapClasspathFile being specified. You may need to update loom.");
+				MappingConfiguration config = LeafLauncherBase.getLauncher().getMappingConfiguration();
+
+				if (!config.getRuntimeNamespace().equals(config.getDefaultModDistributionNamespace())) {
+					Log.warn(LogCategory.MOD_REMAP, "Runtime mod remapping disabled due to no leaf.remapClasspathFile being specified. You may need to update loom.");
+				}
 			} else {
 				RuntimeModRemapper.remap(modCandidates, cacheDir.resolve(TMP_DIR_NAME), outputdir);
 			}
