@@ -51,6 +51,8 @@ public final class ZomboidLogHandler implements LogHandler {
     static {
         try {
             LOG_SEVERITY = Class.forName("zombie.debug.LogSeverity");
+            DEBUG_LOG = Class.forName("zombie.debug.DebugLog");
+
             final Method logSeverityValueOf = LOG_SEVERITY.getMethod("valueOf", String.class);
             LOG_SEVERITY_Trace = logSeverityValueOf.invoke(null, "Trace");
             LOG_SEVERITY_Debug = logSeverityValueOf.invoke(null, "Debug");
@@ -67,13 +69,12 @@ public final class ZomboidLogHandler implements LogHandler {
             DEBUG_TYPE_println = DEBUG_TYPE.getMethod("println", String.class);
             DEBUG_TYPE_warn = DEBUG_TYPE.getMethod("warn", Object.class);
             DEBUG_TYPE_error = DEBUG_TYPE.getMethod("error", Object.class);
-            DEBUG_TYPE_printException = DEBUG_TYPE.getMethod("printException", Exception.class,
-                String.class, LOG_SEVERITY);
+            DEBUG_TYPE_printException = DEBUG_TYPE.getMethod("printException", Throwable.class, String.class,
+                LOG_SEVERITY);
 
             // Set log stream as enabled just in case.
-            DEBUG_LOG = Class.forName("zombie.debug.DebugLog");
-            DEBUG_LOG.getMethod("enableLog", DEBUG_TYPE, LOG_SEVERITY)
-                .invoke(null, DEBUG_TYPE_Leaf, LOG_SEVERITY_Trace);
+            DEBUG_TYPE.getMethod("setLogSeverity", LOG_SEVERITY).invoke(DEBUG_TYPE_Leaf, LOG_SEVERITY_Trace);
+            DEBUG_LOG.getMethod("setLogEnabled", DEBUG_TYPE, boolean.class).invoke(null, DEBUG_TYPE_Leaf, true);
 
             DEBUG_LOG_STREAM = Class.forName("zombie.debug.DebugLogStream");
             DEBUG_LOG_STREAM_isLogEnabled = DEBUG_LOG_STREAM.getMethod("isLogEnabled",
