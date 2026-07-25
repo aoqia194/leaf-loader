@@ -46,7 +46,7 @@ import dev.aoqia.leaf.loader.impl.game.LibClassifier;
 import dev.aoqia.leaf.loader.impl.game.patch.GameTransformer;
 import dev.aoqia.leaf.loader.impl.game.zomboid.patch.BrandingPatch;
 import dev.aoqia.leaf.loader.impl.game.zomboid.patch.EntrypointPatch;
-import dev.aoqia.leaf.loader.impl.game.zomboid.patch.LoggerPatch;
+import dev.aoqia.leaf.loader.impl.game.zomboid.patch.LogTypePatch;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.launch.MappingConfiguration;
 import dev.aoqia.leaf.loader.impl.metadata.BuiltinModMetadata;
@@ -77,7 +77,7 @@ public class ZomboidGameProvider implements GameProvider {
 	private boolean hasModLoader = false;
 
 	private final GameTransformer transformer = new GameTransformer(
-			new LoggerPatch(),
+			new LogTypePatch(),
 			new EntrypointPatch(),
 			new BrandingPatch());
 

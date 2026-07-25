@@ -10,11 +10,10 @@ import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-public class LoggerPatch extends GamePatch {
+public class LogTypePatch extends GamePatch {
 	@Override
 	public void process(LeafLauncher launcher, Function<String, ClassNode> classSource,
 	                    Consumer<ClassNode> classEmitter) {
-		// Add Leaf value to DebugType enum.
 		final String leafDebugType = "Leaf";
 		final String debugTypeClassName = "zombie.debug.DebugType";
         final String debugTypeClassPath = debugTypeClassName.replace('.', '/');
