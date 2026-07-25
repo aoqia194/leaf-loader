@@ -9,7 +9,6 @@ junit-bom = "5.10.0"
 junit-jupiter = "5.9.2"
 # TODO(leaf): Maybe not needed?
 log4j = "2.25.1"
-# TODO(leaf): Update local version
 loom = "0.7.0.local"
 mappingio = "0.7.1"
 mixin = "0.17.2+mixin.0.8.7"
@@ -50,8 +49,7 @@ mappingio = { module = "net.fabricmc:mapping-io", version.ref = "mappingio" }
 mixin = { module = "net.fabricmc:sponge-mixin", version.ref = "mixin" }
 
 # MixinExtras common for subproject
-# TODO(leaf): Not needed anymore after fabric.mod.json compat is added?
-mixinextras = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinextras" }
+mixinextras = { module = "io.github.llamalad7:mixinextras-fabric", version.ref = "mixinextras" }
 
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
 

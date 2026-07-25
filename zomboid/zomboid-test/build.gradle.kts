@@ -31,11 +31,11 @@ dependencies {
 //    implementation(libs.slf4j.api)
 
     // If we ever do remapping again, ow2.asm and mixin AP needs to be added here too.
-    annotationProcessor(libs.mixin) {
-        exclude(module = "launchwrapper")
-        exclude(module = "guava")
-    }
-//    implementation(project(":mixinextras", "shadow"))
+//    annotationProcessor(libs.mixin) {
+//        exclude(module = "launchwrapper")
+//        exclude(module = "guava")
+//    }
+//    annotationProcessor(libs.mixinextras)
 
     testImplementation(project(":junit"))
     testRuntimeOnly(libs.junit.platformlauncher)
@@ -54,8 +54,6 @@ java {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    dependsOn(":mixinextras:shadowJar")
-
     options.encoding = "UTF-8"
     options.release = 17
 }

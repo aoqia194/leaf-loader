@@ -1,16 +1,15 @@
 package dev.aoqia.leaf.loader.zomboid.test.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import zombie.core.Core;
-import zombie.iso.IsoPuddles;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 
-import static dev.aoqia.leaf.loader.zomboid.test.TestEntrypoint.GAME_LOGGER;
+import zombie.core.Core;
+import zombie.debug.DebugLog;
+import zombie.iso.IsoPuddles;
 
 @Mixin(Core.class)
 public class CoreMixin {
@@ -28,8 +27,7 @@ public class CoreMixin {
 			)
 	)
 	private IsoPuddles initShaders(IsoPuddles instance) {
-		GAME_LOGGER.warn("IsoPuddles::initShaders instance effect name: {}",
-				instance.Effect.getName());
+		DebugLog.log("IsoPuddles::initShaders instance effect name: " + instance.effect.getName());
 		return instance;
 	}
 }

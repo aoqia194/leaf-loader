@@ -6,8 +6,8 @@ val generateInstallerJson by tasks.registering(GenerateInstallerJsonTask::class)
     configurations = mapOf("common" to "installer", "development" to "development")
     options = mapOf(
         "mainClass" to mapOf(
-            "client" to "dev.aoqia.leaf.loader.impl.launch.knot.KnotClient",
-            "server" to "dev.aoqia.leaf.loader.impl.launch.knot.KnotServer"
+            "client" to "${rootProject.group}.${rootProject.name}.impl.launch.knot.KnotClient",
+            "server" to "${rootProject.group}.${rootProject.name}.impl.launch.knot.KnotServer"
         )
     )
 
@@ -61,16 +61,16 @@ abstract class GenerateInstallerJsonTask : DefaultTask() {
                 val id = artifact.moduleVersion.id
 
                 // If it's a development dependency, add it to JiJ and go to next artifact.
-                if (side == "development") {
-                    libraries[side]?.add(
-                        mapOf(
-                            "name" to artifact.moduleVersion.toString(),
-                            "file" to "loader://META-INF/jars/${id.name}-${id.version}.jar"
-                        )
-                    )
-                    processed.add(artifact.moduleVersion.toString())
-                    continue
-                }
+//                if (side == "development") {
+//                    libraries[side]?.add(
+//                        mapOf(
+//                            "name" to artifact.moduleVersion.toString(),
+//                            "file" to "loader://META-INF/jars/${id.name}-${id.version}.jar"
+//                        )
+//                    )
+//                    processed.add(artifact.moduleVersion.toString())
+//                    continue
+//                }
 
                 // Otherwise, we need to get the repository URL that the dep is located at.
                 for (repo in project.repositories) {

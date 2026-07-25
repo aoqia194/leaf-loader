@@ -25,6 +25,7 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -35,6 +36,8 @@ import dev.aoqia.leaf.loader.impl.game.patch.GamePatch;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncher;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
+
+import org.objectweb.asm.tree.TypeInsnNode;
 
 public class EntrypointPatch extends GamePatch {
     @Override
@@ -55,7 +58,9 @@ public class EntrypointPatch extends GamePatch {
 
         // Find the main method in MainScreenState.
         MethodNode mainMethod = findMethod(mainClass, (method) -> {
-            return method.name.equals("main") && method.desc.equals("([Ljava/lang/String;)V") && isPublicStatic(method.access);
+            return method.name.equals("main")
+                && method.desc.equals("([Ljava/lang/String;)V")
+                && isPublicStatic(method.access);
         });
 
         if (mainMethod == null) {
@@ -64,7 +69,10 @@ public class EntrypointPatch extends GamePatch {
 
         // Attempt to find the DebugLog.init() function call and store the instruction.
         MethodInsnNode debugLogInitInsn = (MethodInsnNode) findInsn(mainMethod, (insn) -> {
-            return insn instanceof MethodInsnNode && insn.getOpcode() == Opcodes.INVOKESTATIC && ((MethodInsnNode) insn).name.equals("init") && ((MethodInsnNode) insn).owner.equals("zombie/debug/DebugLog");
+            return insn instanceof MethodInsnNode
+                && insn.getOpcode() == Opcodes.INVOKEVIRTUAL
+                && ((MethodInsnNode) insn).name.equals("init")
+                && ((MethodInsnNode) insn).owner.equals("zombie/debug/DebugLog");
         }, false);
         if (debugLogInitInsn == null) {
             throw new RuntimeException("Could not find DebugLog init method in " + entrypoint + "!");
@@ -77,13 +85,21 @@ public class EntrypointPatch extends GamePatch {
         // Init leaf's logger so that we can not use the builtin logger. Moved from game provider.
         iter.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, "setupLogHandler", "()V"));
 
-        // Set up ZomboidFileSystem.instance.getCacheDir() as first arg.
+        // Set up ZomboidFileSystem.instance.getCacheDir() and construct a File object to pass as first arg
+        iter.add(new TypeInsnNode(Opcodes.NEW, "java/io/File"));
+        iter.add(new InsnNode(Opcodes.DUP));
         iter.add(new FieldInsnNode(Opcodes.GETSTATIC, "zombie/ZomboidFileSystem", "instance", "Lzombie/ZomboidFileSystem;"));
         iter.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "zombie/ZomboidFileSystem", "getCacheDir", "()Ljava/lang/String;"));
+        iter.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, "java/io/File", "<init>", "(Ljava/lang/String;)V", false));
         // Set up the class itself as the second arg.
         iter.add(new LdcInsnNode(Type.getObjectType(entrypoint.replace(".", "/"))));
         // Add the final startClient/startServer method call.
-        iter.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, type == EnvType.CLIENT ? "startClient" : "startServer", "(Ljava/lang/String;Ljava/lang/Class;)V", false));
+        iter.add(new MethodInsnNode(
+            Opcodes.INVOKESTATIC,
+            Hooks.INTERNAL_NAME,
+            type == EnvType.CLIENT ? "startClient" : "startServer",
+            "(Ljava/io/File;Ljava/lang/Class;)V",
+            false));
 
         classEmitter.accept(mainClass);
     }

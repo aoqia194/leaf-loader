@@ -618,13 +618,13 @@ public final class LeafLoaderImpl extends LeafLoader {
 		}
 	}
 
-	public void prepareModInit(Path newRunDir, Object gameInstance) {
+	public void prepareModInit(Path newRunDir, Class<?> gameInstance) {
 		if (!frozen) {
 			throw new RuntimeException("Cannot instantiate mods when not frozen!");
 		}
 
 		if (gameInstance != null && LeafLauncherBase.getLauncher() instanceof Knot) {
-			ClassLoader gameClassLoader = gameInstance.getClass().getClassLoader();
+			ClassLoader gameClassLoader = gameInstance.getClassLoader();
 			ClassLoader targetClassLoader = LeafLauncherBase.getLauncher().getTargetClassLoader();
 			boolean matchesKnot = (gameClassLoader == targetClassLoader);
 			boolean containsKnot = false;

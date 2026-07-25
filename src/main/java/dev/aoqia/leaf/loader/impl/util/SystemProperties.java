@@ -52,9 +52,9 @@ public final class SystemProperties {
 	// a path to a directory to replace the default mod search directory
 	public static final String MODS_FOLDER = "leaf.modsFolder";
 	// a path to a directory to replace the default Project Zomboid Steam search directory
-	public static final String GAME_INSTALL_PATH = "leaf.gameInstallPath";
+	public static final String GAME_INSTALL_PATH = "leaf.gamePath";
 	// a path to the Steam workshop path for Zomboid (appid 108600).
-	public static final String GAME_WORKSHOP_PATH = "leaf.gameWorkshopPath";
+	public static final String GAME_WORKSHOP_PATH = "leaf.workshopPath";
 	// Disables workshop mod loading for developer environments.
 	public static final String DISABLE_WORKSHOP_MODS = "leaf.disableWorkshopMods";
 	// Does a dry run of the mod init stage. Stops the loader after mods are discovered.

@@ -5,7 +5,6 @@ import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.NodeChildren
 import org.jreleaser.model.Active
 import org.jreleaser.model.Http
-import org.slf4j.LoggerFactory
 import proguard.gradle.ProGuardTask
 import java.net.URI
 
@@ -69,7 +68,7 @@ allprojects {
                 // Force ASM to come from the fabric maven.
                 // This ensures that the version has been mirrored for use by the launcher/installer.
                 excludeGroupByRegex("org.ow2.asm")
-                // excludeGroupByRegex("io.github.llamalad7")
+                 excludeGroupByRegex("io.github.llamalad7")
             }
         }
     }
@@ -125,7 +124,7 @@ configurations.implementation {
 
 configurations.api {
     extendsFrom(installer.get())
-    // extendsFrom(development)
+    extendsFrom(development.get())
 }
 
 dependencies {
@@ -135,14 +134,13 @@ dependencies {
 //    "installer"(libs.bundles.log4j)
 //    "installer"(libs.slf4j.api)
 
+    "development"(libs.mixinextras)
+
     // impl dependencies
     "include"(libs.bundles.sat4j)
     "include"(libs.tinyremapper)
     "include"(libs.clazztweaker)
     "include"(libs.mappingio)
-
-    // We JiJ this into the launcher jar directly! (thanks llamalad7 for the help)
-//    "development"(project(":mixinextras", "shadow"))
 
     testCompileOnly(libs.annotations)
 
@@ -260,8 +258,6 @@ val getSat4jAbout by tasks.registering(Copy::class) {
 val fatJar by tasks.registering(ShadowJar::class) {
     description = "Creates a fat jar"
 
-    // FIXME(leaf): Uncomment after loom is fixed
-//    dependsOn(project(":mixinextras").tasks.shadowJar)
     dependsOn(getSat4jAbout)
 
     from(sourceSets.main.get().output)
@@ -300,7 +296,7 @@ val fatJar by tasks.registering(ShadowJar::class) {
     val devFiles = development.get().files
 
     doLast {
-        JarNester.nestJars(devFiles, archiveFile.get().asFile, LoggerFactory.getLogger("JiJ"))
+        JarNester.nestJars(devFiles, archiveFile.get().asFile)
     }
 
     outputs.upToDateWhen { false }

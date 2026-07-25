@@ -41,8 +41,7 @@ public final class Hooks {
         return title + " (" + LEAF + ")";
 	}
 
-	public static void startClient(File runDir, Object gameInstance) {
-		// TODO(leaf): Legacy had a check instead of ==null to see if runDir was at user.home???
+	public static void startClient(File runDir, Class<?> gameInstance) {
 		if (runDir == null) {
 			runDir = new File(".");
 		}
@@ -53,8 +52,7 @@ public final class Hooks {
 		loader.invokeEntrypoints("client", ClientModInitializer.class, ClientModInitializer::onInitializeClient);
 	}
 
-	public static void startServer(File runDir, Object gameInstance) {
-		// TODO(leaf): Legacy had a check instead of ==null to see if runDir was at user.home???
+	public static void startServer(File runDir, Class<?> gameInstance) {
 		if (runDir == null) {
 			runDir = new File(".");
 		}
