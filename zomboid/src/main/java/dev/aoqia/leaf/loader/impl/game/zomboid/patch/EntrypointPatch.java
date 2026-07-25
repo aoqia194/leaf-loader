@@ -82,7 +82,7 @@ public class EntrypointPatch extends GamePatch {
 
         ListIterator<AbstractInsnNode> iter = mainMethod.instructions.iterator();
         moveAfter(iter, debugLogInitInsn);
-        // Init leaf's logger so that we can not use the builtin logger. Moved from game provider.
+
         iter.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Hooks.INTERNAL_NAME, "setupLogHandler", "()V"));
 
         // Set up ZomboidFileSystem.instance.getCacheDir() and construct a File object to pass as first arg

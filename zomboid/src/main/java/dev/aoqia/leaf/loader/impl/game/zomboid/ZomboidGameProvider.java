@@ -335,7 +335,8 @@ public class ZomboidGameProvider implements GameProvider {
 			}
 		}
 
-		setupLogHandler(launcher, true);
+        // Don't set up here, it's too early. We set log handler up in EntrypointPatch
+//		setupLogHandler(launcher, true);
 
 		transformer.locateEntrypoints(launcher, gameJars);
 	}

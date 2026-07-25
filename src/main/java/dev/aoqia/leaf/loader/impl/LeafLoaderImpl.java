@@ -221,7 +221,6 @@ public final class LeafLoaderImpl extends LeafLoader {
 	}
 
 	private void setup() throws ModResolutionException {
-		// TODO(leaf): Do we ever need to remap mods?
 		boolean remapRegularMods = isDevelopmentEnvironment();
 		VersionOverrides versionOverrides = new VersionOverrides();
 		DependencyOverrides depOverrides = new DependencyOverrides(configDir);
