@@ -23,30 +23,26 @@ import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 import dev.aoqia.leaf.loader.impl.util.log.LogHandler;
 import dev.aoqia.leaf.loader.impl.util.log.LogLevel;
 
-/**
- * A log handler to use the built-in game logging system. This one is specifically for >=B42. If
- * something in a future unstable release breaks this class, it should be updated. This class should
- * be merged into {@link OldZomboidLogHandler} when unstable becomes stable.
- */
-public final class NewZomboidLogHandler implements LogHandler {
-    private static final Class<?> DEBUG_LOG;
-    private static final Class<?> DEBUG_LOG_STREAM;
-    private static final Method DEBUG_LOG_STREAM_isLogEnabled;
+public final class LegacyZomboidLogHandler implements LogHandler {
     private static final Class<?> DEBUG_TYPE;
     private static final Object DEBUG_TYPE_Leaf;
-    private static final Object DEBUG_TYPE_Leaf_logStream;
-    private static final Method DEBUG_TYPE_trace;
-    private static final Method DEBUG_TYPE_debugln;
-    private static final Method DEBUG_TYPE_println;
-    private static final Method DEBUG_TYPE_warn;
-    private static final Method DEBUG_TYPE_error;
-    private static final Method DEBUG_TYPE_printException;
     private static final Class<?> LOG_SEVERITY;
     private static final Object LOG_SEVERITY_Trace;
     private static final Object LOG_SEVERITY_Debug;
     private static final Object LOG_SEVERITY_General;
     private static final Object LOG_SEVERITY_Warning;
     private static final Object LOG_SEVERITY_Error;
+    private static final Class<?> DEBUG_LOG;
+    private static final Method DEBUG_LOG_createDebugLogStream;
+    private static final Method DEBUG_LOG_isLogEnabled;
+    private static final Class<?> DEBUG_LOG_STREAM;
+    private static final Method DEBUG_LOG_STREAM_trace;
+    private static final Method DEBUG_LOG_STREAM_debugln;
+    private static final Method DEBUG_LOG_STREAM_println;
+    private static final Method DEBUG_LOG_STREAM_warn;
+    private static final Method DEBUG_LOG_STREAM_error;
+    private static final Method DEBUG_LOG_STREAM_printException;
+    private static final Object LOGGER;
 
     static {
         try {
@@ -60,34 +56,36 @@ public final class NewZomboidLogHandler implements LogHandler {
 
             DEBUG_TYPE = Class.forName("zombie.debug.DebugType");
             DEBUG_TYPE_Leaf = DEBUG_TYPE.getMethod("valueOf", String.class).invoke(null, "Leaf");
-            DEBUG_TYPE_Leaf_logStream = DEBUG_TYPE.getMethod("getLogStream")
-                .invoke(DEBUG_TYPE_Leaf);
-            DEBUG_TYPE_trace = DEBUG_TYPE.getMethod("trace", Object.class);
-            DEBUG_TYPE_debugln = DEBUG_TYPE.getMethod("debugln", Object.class);
-            DEBUG_TYPE_println = DEBUG_TYPE.getMethod("println", String.class);
-            DEBUG_TYPE_warn = DEBUG_TYPE.getMethod("warn", Object.class);
-            DEBUG_TYPE_error = DEBUG_TYPE.getMethod("error", Object.class);
-            DEBUG_TYPE_printException = DEBUG_TYPE.getMethod("printException", Exception.class,
-                String.class, LOG_SEVERITY);
-
-            // Set log stream as enabled just in case.
-            DEBUG_LOG = Class.forName("zombie.debug.DebugLog");
-            DEBUG_LOG.getMethod("enableLog", DEBUG_TYPE, LOG_SEVERITY)
-                .invoke(null, DEBUG_TYPE_Leaf, LOG_SEVERITY_Trace);
 
             DEBUG_LOG_STREAM = Class.forName("zombie.debug.DebugLogStream");
-            DEBUG_LOG_STREAM_isLogEnabled = DEBUG_LOG_STREAM.getMethod("isLogEnabled",
-                LOG_SEVERITY);
+            DEBUG_LOG_STREAM_trace = DEBUG_LOG_STREAM.getMethod("trace", String.class);
+            DEBUG_LOG_STREAM_debugln = DEBUG_LOG_STREAM.getMethod("debugln", String.class);
+            DEBUG_LOG_STREAM_println = DEBUG_LOG_STREAM.getMethod("println", String.class);
+            DEBUG_LOG_STREAM_warn = DEBUG_LOG_STREAM.getMethod("warn", Object.class);
+            DEBUG_LOG_STREAM_error = DEBUG_LOG_STREAM.getMethod("error", Object.class);
+            DEBUG_LOG_STREAM_printException = DEBUG_LOG_STREAM.getMethod("printException",
+                Throwable.class, String.class, LOG_SEVERITY);
+
+            DEBUG_LOG = Class.forName("zombie.debug.DebugLog");
+            DEBUG_LOG_createDebugLogStream = DEBUG_LOG.getDeclaredMethod("createDebugLogStream",
+                DEBUG_TYPE);
+            DEBUG_LOG_isLogEnabled = DEBUG_LOG.getMethod("isLogEnabled", LOG_SEVERITY, DEBUG_TYPE);
+
+            DEBUG_LOG_createDebugLogStream.setAccessible(true);
+            LOGGER = DEBUG_LOG_createDebugLogStream.invoke(null, DEBUG_TYPE_Leaf);
+            DEBUG_LOG.getMethod("enableLog", DEBUG_TYPE, LOG_SEVERITY)
+                .invoke(null, DEBUG_TYPE_Leaf, LOG_SEVERITY_Trace);
+            DEBUG_LOG_createDebugLogStream.setAccessible(false);
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
                  InvocationTargetException e) {
-            throw new FormattedException("Failed to handle reflection for new log handler", e);
+            throw new FormattedException("Failed to handle reflection for old log handler", e);
         }
     }
 
     @Override
     public void log(long time, LogLevel level, LogCategory category, String msg, Throwable exc,
         boolean fromReplay, boolean wasSuppressed) {
-        if (DEBUG_TYPE_Leaf == null) {
+        if (LOGGER == null) {
             return;
         }
 
@@ -103,45 +101,45 @@ public final class NewZomboidLogHandler implements LogHandler {
             switch (level) {
                 case ERROR:
                     if (exc == null) {
-                        DEBUG_TYPE_error.invoke(DEBUG_TYPE_Leaf, msg);
+                        DEBUG_LOG_STREAM_error.invoke(LOGGER, msg);
                     } else {
-                        DEBUG_TYPE_printException.invoke(DEBUG_TYPE_Leaf, exc, msg,
+                        DEBUG_LOG_STREAM_printException.invoke(LOGGER, exc, msg,
                             LOG_SEVERITY_Error);
                     }
 
                     break;
                 case WARN:
                     if (exc == null) {
-                        DEBUG_TYPE_warn.invoke(DEBUG_TYPE_Leaf, msg);
+                        DEBUG_LOG_STREAM_warn.invoke(LOGGER, msg);
                     } else {
-                        DEBUG_TYPE_printException.invoke(DEBUG_TYPE_Leaf, exc, msg,
+                        DEBUG_LOG_STREAM_printException.invoke(LOGGER, exc, msg,
                             LOG_SEVERITY_Warning);
                     }
 
                     break;
                 case INFO:
                     if (exc == null) {
-                        DEBUG_TYPE_println.invoke(DEBUG_TYPE_Leaf, msg);
+                        DEBUG_LOG_STREAM_println.invoke(LOGGER, msg);
                     } else {
-                        DEBUG_TYPE_printException.invoke(DEBUG_TYPE_Leaf, exc, msg,
+                        DEBUG_LOG_STREAM_printException.invoke(LOGGER, exc, msg,
                             LOG_SEVERITY_General);
                     }
 
                     break;
                 case DEBUG:
                     if (exc == null) {
-                        DEBUG_TYPE_debugln.invoke(DEBUG_TYPE_Leaf, msg);
+                        DEBUG_LOG_STREAM_debugln.invoke(LOGGER, msg);
                     } else {
-                        DEBUG_TYPE_printException.invoke(DEBUG_TYPE_Leaf, exc, msg,
+                        DEBUG_LOG_STREAM_printException.invoke(LOGGER, exc, msg,
                             LOG_SEVERITY_Debug);
                     }
 
                     break;
                 case TRACE:
                     if (exc == null) {
-                        DEBUG_TYPE_trace.invoke(DEBUG_TYPE_Leaf, msg);
+                        DEBUG_LOG_STREAM_trace.invoke(LOGGER, msg);
                     } else {
-                        DEBUG_TYPE_printException.invoke(DEBUG_TYPE_Leaf, exc, msg,
+                        DEBUG_LOG_STREAM_printException.invoke(LOGGER, exc, msg,
                             LOG_SEVERITY_Trace);
                     }
 
@@ -151,33 +149,33 @@ public final class NewZomboidLogHandler implements LogHandler {
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new FormattedException(
-                "Failed to invoke logging functions for log() in NewZomboidLogHandler!", e);
+                "Failed to invoke logging functions for log() in OldZomboidLogHandler!", e);
         }
     }
 
     @Override
     public boolean shouldLog(LogLevel level, LogCategory category) {
-        if (DEBUG_TYPE_Leaf == null) {
+        if (LOGGER == null) {
             return true;
         }
 
         try {
             switch (level) {
                 case ERROR:
-                    return (boolean) DEBUG_LOG_STREAM_isLogEnabled.invoke(DEBUG_TYPE_Leaf_logStream,
-                        LOG_SEVERITY_Error);
+                    return (boolean) DEBUG_LOG_isLogEnabled.invoke(null, LOG_SEVERITY_Error,
+                        DEBUG_TYPE_Leaf);
                 case WARN:
-                    return (boolean) DEBUG_LOG_STREAM_isLogEnabled.invoke(DEBUG_TYPE_Leaf_logStream,
-                        LOG_SEVERITY_Warning);
+                    return (boolean) DEBUG_LOG_isLogEnabled.invoke(null, LOG_SEVERITY_Warning,
+                        DEBUG_TYPE_Leaf);
                 case INFO:
-                    return (boolean) DEBUG_LOG_STREAM_isLogEnabled.invoke(DEBUG_TYPE_Leaf_logStream,
-                        LOG_SEVERITY_General);
+                    return (boolean) DEBUG_LOG_isLogEnabled.invoke(null, LOG_SEVERITY_General,
+                        DEBUG_TYPE_Leaf);
                 case DEBUG:
-                    return (boolean) DEBUG_LOG_STREAM_isLogEnabled.invoke(DEBUG_TYPE_Leaf_logStream,
-                        LOG_SEVERITY_Debug);
+                    return (boolean) DEBUG_LOG_isLogEnabled.invoke(null, LOG_SEVERITY_Debug,
+                        DEBUG_TYPE_Leaf);
                 case TRACE:
-                    return (boolean) DEBUG_LOG_STREAM_isLogEnabled.invoke(DEBUG_TYPE_Leaf_logStream,
-                        LOG_SEVERITY_Trace);
+                    return (boolean) DEBUG_LOG_isLogEnabled.invoke(null, LOG_SEVERITY_Trace,
+                        DEBUG_TYPE_Leaf);
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new FormattedException("Failed to invoke isLogEnabled in shouldLog!", e);

@@ -352,10 +352,9 @@ public class ZomboidGameProvider implements GameProvider {
 		String logHandlerClsName;
 
 		if (getSemverGameVersion().getVersionComponent(0) <= 41) {
-			logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.OldZomboidLogHandler";
+			logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.LegacyZomboidLogHandler";
 		} else {
-			logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.NewZomboidLogHandler";
-            return;
+			logHandlerClsName = "dev.aoqia.leaf.loader.impl.game.zomboid.ZomboidLogHandler";
 		}
 
 		if (!SystemProperties.isSet(SystemProperties.DISABLE_LOG4J)) {
