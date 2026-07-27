@@ -231,10 +231,8 @@ tasks.withType<AbstractArchiveTask>().configureEach {
     isReproducibleFileOrder = true
 }
 
-/**
- * A task to get the raw loader version, used for GitHub workflows.
- */
 val getLoaderVersion by tasks.registering {
+    description = "A task to get the raw loader version, used for GitHub workflows."
     println(version)
 }
 
