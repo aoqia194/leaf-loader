@@ -36,6 +36,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import dev.aoqia.leaf.loader.api.SemanticVersion;
+import dev.aoqia.leaf.loader.impl.discovery.CachedirModCandidateFinder;
+
+import dev.aoqia.leaf.loader.impl.discovery.WorkshopModCandidateFinder;
+
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
 
@@ -107,6 +112,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 	private GameProvider provider;
 	private Path gameDir;
 	private Path configDir;
+    private Path cacheDir;
 
 	private LeafLoaderImpl() { }
 
@@ -225,27 +231,27 @@ public final class LeafLoaderImpl extends LeafLoader {
 		VersionOverrides versionOverrides = new VersionOverrides();
 		DependencyOverrides depOverrides = new DependencyOverrides(configDir);
 
+        // Statically get cachedir before entrypoint so we can load mods etc.
+        this.cacheDir = getCacheDir();
+        SemanticVersion gameVersion = getGameProvider().getSemverGameVersion();
+
 		// discover mods
 
 		ModDiscoverer discoverer = new ModDiscoverer(versionOverrides, depOverrides);
 		discoverer.addCandidateFinder(new ClasspathModCandidateFinder());
 		discoverer.addCandidateFinder(new ArgumentModCandidateFinder(remapRegularMods));
-
-        // Zomboid-specific directories to discover mods from.
-        final Path modSubpath = Paths.get("leaf/mods");
-        discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getModsDirectory0(),
-            remapRegularMods, 4, modSubpath));
+        discoverer.addCandidateFinder(new CachedirModCandidateFinder(this.cacheDir, gameVersion, remapRegularMods));
 
         // Only load mods from workshop folders if:
 		// - Not in development environment
-		// - `disableWorkshopMods` is false
+		// - `disableWorkshopMods` is not present
 		// - `zomboid.steam` is not 1
-        if (System.getProperty(SystemProperties.DEVELOPMENT) == null
-			&& System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null
+        if (!isDevelopmentEnvironment()
+            && System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null
 			&& "1".equals(System.getProperty(SystemProperties.ZOMBOID_STEAM))
 		) {
-            discoverer.addCandidateFinder(new DirectoryModCandidateFinder(getZomboidWorkshopPath(),
-                remapRegularMods, 6, modSubpath));
+            discoverer.addCandidateFinder(new WorkshopModCandidateFinder(getGameWorkshopPath(), gameVersion,
+                remapRegularMods));
         }
 
 		Map<String, Set<ModCandidateImpl>> envDisabledMods = new HashMap<>();
@@ -268,13 +274,15 @@ public final class LeafLoaderImpl extends LeafLoader {
 		dumpModList(modCandidates);
         dumpNonLeafMods(discoverer.getNonLeafMods());
 
+        // TODO(leaf): Do JAR verification/signing here
+
         if (SystemProperties.isSet(SystemProperties.DRY_RUN_MOD_DISCOVERY)) {
             throw new FormattedException("Dry run mod discovery",
                 "Stopping before mod init due to dry run mod discovery");
         }
 
-		Path cacheDir = gameDir.resolve(CACHE_DIR_NAME);
-		Path outputdir = cacheDir.resolve(PROCESSED_MODS_DIR_NAME);
+		Path leafCacheDir = gameDir.resolve(CACHE_DIR_NAME);
+		Path processedModsDir = leafCacheDir.resolve(PROCESSED_MODS_DIR_NAME);
 
 		// runtime mod remapping
 
@@ -286,7 +294,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 					Log.warn(LogCategory.MOD_REMAP, "Runtime mod remapping disabled due to no leaf.remapClasspathFile being specified. You may need to update loom.");
 				}
 			} else {
-				RuntimeModRemapper.remap(modCandidates, cacheDir.resolve(TMP_DIR_NAME), outputdir);
+				RuntimeModRemapper.remap(modCandidates, leafCacheDir.resolve(TMP_DIR_NAME), processedModsDir);
 			}
 		}
 
@@ -317,7 +325,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 		for (ModCandidateImpl mod : modCandidates) {
 			if (!mod.hasPath() && !mod.isBuiltin()) {
 				try {
-					mod.setPaths(Collections.singletonList(mod.copyToDir(outputdir, false)));
+					mod.setPaths(Collections.singletonList(mod.copyToDir(processedModsDir, false)));
 				} catch (IOException e) {
 					throw new RuntimeException("Error extracting mod "+mod, e);
 				}
@@ -329,16 +337,14 @@ public final class LeafLoaderImpl extends LeafLoader {
 		modCandidates = null;
 	}
 
-	private Path getZomboidGamePath() {
+	private Path getGameInstallPath() {
 		String dir = System.getProperty(SystemProperties.GAME_INSTALL_PATH);
 		if (dir != null) {
 			return Paths.get(dir);
 		}
 
-		// TODO(leaf): Make platform-agnostic. Maybe we can use MirrorUtil from loom?
-		//     Maybe this can even be dynamic, if we have access to the game jvm workingDir path at this point in time.
 		try {
-			return Paths.get("C:\\Program Files (x86)\\Steam\\steamapps\\common\\ProjectZomboid");
+            return Paths.get(System.getProperty("user.dir")).getParent().toAbsolutePath();
 		} catch (InvalidPathException e) {
 			throw new RuntimeException("Failed to find the game directory for Project Zomboid."
 				+ " This could happen if Steam is not installed at the default location,"
@@ -347,14 +353,14 @@ public final class LeafLoaderImpl extends LeafLoader {
 		}
 	}
 
-	private Path getZomboidWorkshopPath() {
+	private Path getGameWorkshopPath() {
 		String dir = System.getProperty(SystemProperties.GAME_WORKSHOP_PATH);
 		if (dir != null) {
 			return Paths.get(dir);
 		}
 
 		try {
-			return getZomboidGamePath().getParent().getParent().resolve("workshop/content/108600");
+			return getGameInstallPath().getParent().getParent().resolve("workshop/content/108600").toAbsolutePath();
 		} catch (InvalidPathException e) {
 			throw new RuntimeException("Failed to find Steam workshop directory for Project Zomboid."
 				+ " This could happen if your workshop folder is separate from the Steam library folder."
@@ -701,6 +707,37 @@ public final class LeafLoaderImpl extends LeafLoader {
 		String directory = System.getProperty(SystemProperties.MODS_FOLDER);
 		return directory != null ? Paths.get(directory) : gameDir.resolve("mods");
 	}
+
+    private Path getModsStagingDirectory() {
+        return getModsDirectory0().getParent().resolve("Workshop");
+    }
+
+    /**
+     * Replicates the functionality of {@link zombie.ZomboidFileSystem#getCacheDir()}
+     * @return the cachedir
+     */
+    @SuppressWarnings("JavadocReference")
+    private Path getCacheDir() {
+        if (isDevelopmentEnvironment()) {
+            String runDir = System.getProperty("leaf.runDir");
+            if (runDir != null) {
+                return Paths.get(runDir);
+            }
+        }
+
+        String cacheDirRoot = System.getProperty("deployment.user.cachedir");
+        if (cacheDirRoot == null || System.getProperty("os.name").startsWith("Win")) {
+            cacheDirRoot = System.getProperty("user.home");
+        }
+
+        String cacheDirPathStr = cacheDirRoot + File.separator + "Zomboid";
+        File cacheDir = new File(cacheDirPathStr.replace("/", File.separator));
+        if (!cacheDir.exists()) {
+            throw new IllegalStateException("Statically getting cachedir failed: the cachedir folder doesn't exist");
+        }
+
+        return cacheDir.toPath();
+    }
 
 	/**
 	 * Provides singleton for static init assignment regardless of load order.

@@ -29,12 +29,13 @@ import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.log.Log;
 import dev.aoqia.leaf.loader.impl.util.log.LogCategory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DirectoryModCandidateFinder implements ModCandidateFinder {
 	private final Path path;
 	private final boolean requiresRemap;
 	private final int depth;
-	private final Path subpath;
+	private final @Nullable Path subpath;
 
 	public DirectoryModCandidateFinder(Path path, boolean requiresRemap, int depth) {
 		this.path = LoaderUtil.normalizePath(path);
@@ -43,7 +44,7 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
 		this.subpath = null;
 	}
 
-	public DirectoryModCandidateFinder(Path path, boolean requiresRemap, int depth, Path subpath) {
+	public DirectoryModCandidateFinder(Path path, boolean requiresRemap, int depth, @Nullable Path subpath) {
 		this.path = LoaderUtil.normalizePath(path);
 		this.requiresRemap = requiresRemap;
 		this.depth = depth;
@@ -69,7 +70,7 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
 			Files.walkFileTree(this.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), depth, new SimpleFileVisitor<Path>() {
 				@Override
 				public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) {
-					if (isValidFile(file) && file.getParent().endsWith(subpath)) {
+					if (isValidFile(file) && (subpath == null || file.getParent().endsWith(subpath))) {
 						out.accept(file, requiresRemap);
 					}
 
