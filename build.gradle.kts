@@ -497,16 +497,20 @@ jreleaser {
 
     signing {
         active = Active.ALWAYS
-        armored = true
-        passphrase = gpgKeyPassphrase
-        publicKey = gpgKeyPublic
-        secretKey = gpgKeyPrivate
+
+        pgp {
+            active = Active.ALWAYS
+            armored = true
+            passphrase = gpgKeyPassphrase
+            publicKey = gpgKeyPublic
+            secretKey = gpgKeyPrivate
+        }
     }
 
     deploy {
         maven {
             pomchecker {
-                version = "1.14.0"
+                version = "1.15.0"
                 failOnWarning = false // annoying
                 failOnError = true
                 strict = true
