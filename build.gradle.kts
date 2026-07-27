@@ -521,7 +521,7 @@ jreleaser {
                     applyMavenCentralRules = true
                     active = Active.ALWAYS
                     snapshotSupported = true
-                    authorization = Http.Authorization.Basic
+                    authorization = Http.Authorization.BASIC
                     username = mavenUsername
                     password = mavenPassword
                     url = "https://central.sonatype.com/api/v1/publisher"
