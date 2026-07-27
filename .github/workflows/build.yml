@@ -1,0 +1,76 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: ${{ github.repository_owner == 'aoqia194' }}
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-home-cache-excludes: 'caches/leaf-loom' # Causes a massive stall for CI builds.
+
+      - name: Build
+        run: ./gradlew build -x test -S -Pleaf.loom.ignoreMissingFiles=true
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-output
+          path: '**/build/**'
+          retention-days: 7
+          if-no-files-found: error
+          overwrite: true
+
+#  client_test:
+#    if: ${{ github.repository_owner == 'aoqia194' }}
+#    runs-on: self-hosted
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: temurin
+#          java-version: 17
+#
+#      - name: Run Auto Test Client
+#        uses: modmuss50/xvfb-action@v1
+#        with:
+#          run: ./gradlew :zomboid:zomboid-test:runProductionAutoTestClient -S --warning-mode=fail
+#
+#      - name: Upload Client Test Screenshots
+#        uses: actions/upload-artifact@v4
+#        if: always()
+#        with:
+#          name: Client Test Screenshots
+#          path: zomboid/zomboid-test/run/Screenshots
