@@ -39,15 +39,6 @@ jobs:
       - name: Build
         run: ./gradlew build -x test -S -Pleaf.loom.ignoreMissingFiles=true
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: build-output
-          path: '**/build/**'
-          retention-days: 7
-          if-no-files-found: error
-          overwrite: true
-
 #  client_test:
 #    if: ${{ github.repository_owner == 'aoqia194' }}
 #    runs-on: self-hosted

@@ -9,13 +9,8 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build
-    uses: ./.github/workflows/build.yml
-
   dry-release:
     name: Dry Release
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,11 +18,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch Build Output
-        uses: actions/download-artifact@v8
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
-          name: build-output
-          path: build/
+          java-version: 25
+          distribution: temurin
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-home-cache-excludes: 'caches/leaf-loom' # Causes a massive stall for CI builds.
+
+      - name: Build
+        run: ./gradlew build -x test -S -Pleaf.loom.ignoreMissingFiles=true
 
       - name: Deploy
         run: ./gradlew publish -S -Pleaf.loom.ignoreMissingFiles=true

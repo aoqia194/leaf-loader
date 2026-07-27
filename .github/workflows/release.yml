@@ -3,16 +3,11 @@ name: Release
 on: workflow_dispatch
 
 jobs:
-  build:
-    if: ${{ github.repository_owner == 'aoqia194' }}
-    name: Build
-    uses: ./.github/workflows/build.yml
-
   release:
     if: ${{ github.repository_owner == 'aoqia194' }}
     name: Release
-    needs: build
     runs-on: ubuntu-latest
+    environment: publishing
 
     steps:
       - name: Checkout
@@ -20,11 +15,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch Build Output
-        uses: actions/download-artifact@v8
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
-          name: build-output
-          path: build/
+          java-version: 25
+          distribution: temurin
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-home-cache-excludes: 'caches/leaf-loom' # Causes a massive stall for CI builds.
+
+      - name: Build
+        run: ./gradlew build -x test -S -Pleaf.loom.ignoreMissingFiles=true
 
       - name: Release
         env:
