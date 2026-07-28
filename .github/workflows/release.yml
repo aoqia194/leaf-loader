@@ -28,7 +28,7 @@ jobs:
           gradle-home-cache-excludes: 'caches/leaf-loom' # Causes a massive stall for CI builds.
 
       - name: Build
-        run: ./gradlew build -x test -S -Pleaf.loom.ignoreMissingFiles=true
+        run: ./gradlew build -x test -S -Pleaf.loom.onlyProvideJars=true
 
       - name: Release
         env:
@@ -38,12 +38,12 @@ jobs:
           GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
           MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-        run: ./gradlew checkVersion generateInstallerJson publish jreleaserFullRelease -S -Pleaf.loom.ignoreMissingFiles=true
+        run: ./gradlew checkVersion generateInstallerJson publish jreleaserFullRelease -S -Pleaf.loom.onlyProvideJars=true
 
       # Taken from installerjson.yml
 
       - name: Get Loader Version
-        run: echo "LOADER_VERSION=$(./gradlew -q getLoaderVersion -Pleaf.loom.ignoreMissingFiles=true | grep -Eo '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')" >> $GITHUB_ENV
+        run: echo "LOADER_VERSION=$(./gradlew -q getLoaderVersion -Pleaf.loom.onlyProvideJars=true | grep -Eo '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')" >> $GITHUB_ENV
 
       - name: Upload Installer Json to Leaf
         uses: supsm/copy_file_to_another_repo@master
