@@ -31,10 +31,10 @@ jobs:
           gradle-home-cache-excludes: 'caches/leaf-loom' # Causes a massive stall for CI builds.
 
       - name: Build
-        run: ./gradlew build -x test -S -Pleaf.loom.onlyProvideJars=true
+        run: ./gradlew build -x test -S -Pleaf.loom.ignoreMissingFiles=true
 
       - name: Deploy
-        run: ./gradlew publish -S -Pleaf.loom.onlyProvideJars=true
+        run: ./gradlew publish -S -Pleaf.loom.ignoreMissingFiles=true
 
       - name: Dry Release
         env:
@@ -45,4 +45,4 @@ jobs:
           GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
           MAVEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-        run: ./gradlew jreleaserFullRelease -S -Pleaf.loom.onlyProvideJars=true
+        run: ./gradlew jreleaserFullRelease -S -Pleaf.loom.ignoreMissingFiles=true

@@ -37,7 +37,7 @@ jobs:
           gradle-home-cache-excludes: 'caches/leaf-loom' # Causes a massive stall for CI builds.
 
       - name: Build
-        run: ./gradlew build -x test -S -Pleaf.loom.onlyProvideJars=true
+        run: ./gradlew build -x test -S -Pleaf.loom.ignoreMissingFiles=true
 
 #  client_test:
 #    if: ${{ github.repository_owner == 'aoqia194' }}
