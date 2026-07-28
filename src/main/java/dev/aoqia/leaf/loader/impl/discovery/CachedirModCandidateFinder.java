@@ -1,5 +1,6 @@
 package dev.aoqia.leaf.loader.impl.discovery;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -38,20 +39,24 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
 
         try {
             // mods folder
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.cacheDir.resolve("mods"), Files::isDirectory)) {
-                findModsInModRoot(out, stream);
+            if (this.cacheDir.resolve("mods").toFile().exists()) {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.cacheDir.resolve("mods"), Files::isDirectory)) {
+                    findModsInModRoot(out, stream);
+                }
             }
 
             // Workshop folder
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.cacheDir.resolve("Workshop"), Files::isDirectory)) {
-                for (Path rootModFolder : stream) {
-                    Path modsFolder = rootModFolder.resolve("Contents/mods");
-                    if (!Files.exists(modsFolder) || !Files.isDirectory(modsFolder)) {
-                        continue;
-                    }
+            if (this.cacheDir.resolve("Workshop").toFile().exists()) {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.cacheDir.resolve("Workshop"), Files::isDirectory)) {
+                    for (Path rootModFolder : stream) {
+                        Path modsFolder = rootModFolder.resolve("Contents/mods");
+                        if (!Files.exists(modsFolder) || !Files.isDirectory(modsFolder)) {
+                            continue;
+                        }
 
-                    try (DirectoryStream<Path> stream2 = Files.newDirectoryStream(modsFolder, Files::isDirectory)) {
-                        findModsInModRoot(out, stream2);
+                        try (DirectoryStream<Path> stream2 = Files.newDirectoryStream(modsFolder, Files::isDirectory)) {
+                            findModsInModRoot(out, stream2);
+                        }
                     }
                 }
             }
@@ -79,29 +84,31 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
     }
 
     Path getVersionFolder(Path modPath) throws VersionParsingException {
-        if (this.gameVersion.getVersionComponent(1) <= 41) {
+        int majorVersion = this.gameVersion.getVersionComponent(0);
+        if (majorVersion <= 41) {
             return modPath;
         }
 
-        String[] versionFolders = modPath.toFile().list((file, name) ->
-            file.isDirectory() && !name.equalsIgnoreCase("media"));
+        File[] versionFolders = modPath.toFile().listFiles(f -> f.isDirectory() && !f.getName().equalsIgnoreCase("media"));
 
         if (versionFolders == null || versionFolders.length == 0) {
             return modPath;
         }
 
-        SemanticVersion bestVersion = SemanticVersion.parse(this.gameVersion.getVersionComponent(1) + ".0.0");
+        SemanticVersion bestVersion = SemanticVersion.parse(majorVersion + ".0.0");
         String bestFolder = null;
-        for (String folder : versionFolders) {
-            SemanticVersion version = SemanticVersion.parse(folder);
+        for (File folder : versionFolders) {
+            String folderName = folder.getName();
+            SemanticVersion version = SemanticVersion.parse(folderName);
             if (version.compareTo((Version) bestVersion) >= 0 && version.compareTo((Version) this.gameVersion) <= 0) {
-                bestFolder = folder;
+                bestFolder = folderName;
                 bestVersion = version;
             }
         }
 
         if (bestFolder == null) {
-            throw new IllegalStateException("Failed to get best version folder for mod at path '" + modPath + "'!");
+            return modPath;
+//            throw new IllegalStateException("Failed to get best version folder for mod at path '" + modPath + "'!");
         }
 
         return modPath.resolve(bestFolder);
