@@ -36,11 +36,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import dev.aoqia.leaf.loader.api.SemanticVersion;
-import dev.aoqia.leaf.loader.impl.discovery.CachedirModCandidateFinder;
-
-import dev.aoqia.leaf.loader.impl.discovery.WorkshopModCandidateFinder;
-
 import org.jetbrains.annotations.VisibleForTesting;
 import org.objectweb.asm.Opcodes;
 
@@ -53,15 +48,17 @@ import dev.aoqia.leaf.loader.api.LanguageAdapter;
 import dev.aoqia.leaf.loader.api.MappingResolver;
 import dev.aoqia.leaf.loader.api.ModContainer;
 import dev.aoqia.leaf.loader.api.ObjectShare;
+import dev.aoqia.leaf.loader.api.SemanticVersion;
 import dev.aoqia.leaf.loader.api.entrypoint.EntrypointContainer;
 import dev.aoqia.leaf.loader.impl.discovery.ArgumentModCandidateFinder;
+import dev.aoqia.leaf.loader.impl.discovery.CachedirModCandidateFinder;
 import dev.aoqia.leaf.loader.impl.discovery.ClasspathModCandidateFinder;
-import dev.aoqia.leaf.loader.impl.discovery.DirectoryModCandidateFinder;
 import dev.aoqia.leaf.loader.impl.discovery.ModCandidateImpl;
 import dev.aoqia.leaf.loader.impl.discovery.ModDiscoverer;
 import dev.aoqia.leaf.loader.impl.discovery.ModResolutionException;
 import dev.aoqia.leaf.loader.impl.discovery.ModResolver;
 import dev.aoqia.leaf.loader.impl.discovery.RuntimeModRemapper;
+import dev.aoqia.leaf.loader.impl.discovery.WorkshopModCandidateFinder;
 import dev.aoqia.leaf.loader.impl.entrypoint.EntrypointStorage;
 import dev.aoqia.leaf.loader.impl.game.GameProvider;
 import dev.aoqia.leaf.loader.impl.launch.LeafLauncherBase;
@@ -71,6 +68,7 @@ import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
 import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.VersionOverrides;
+import dev.aoqia.leaf.loader.impl.util.Arguments;
 import dev.aoqia.leaf.loader.impl.util.DefaultLanguageAdapter;
 import dev.aoqia.leaf.loader.impl.util.ExceptionUtil;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
@@ -281,7 +279,7 @@ public final class LeafLoaderImpl extends LeafLoader {
                 "Stopping before mod init due to dry run mod discovery");
         }
 
-		Path leafCacheDir = gameDir.resolve(CACHE_DIR_NAME);
+		Path leafCacheDir = this.cacheDir.resolve(CACHE_DIR_NAME);
 		Path processedModsDir = leafCacheDir.resolve(PROCESSED_MODS_DIR_NAME);
 
 		// runtime mod remapping
@@ -640,9 +638,9 @@ public final class LeafLoaderImpl extends LeafLoader {
 				gameClassLoader = gameClassLoader.getParent();
 
 				while (gameClassLoader != null && gameClassLoader.getParent() != gameClassLoader) {
-					if (gameClassLoader == targetClassLoader) {
-						containsKnot = true;
-					}
+                    if (gameClassLoader == targetClassLoader) {
+                        containsKnot = true;
+                    }
 
 					gameClassLoader = gameClassLoader.getParent();
 				}
@@ -718,10 +716,20 @@ public final class LeafLoaderImpl extends LeafLoader {
      */
     @SuppressWarnings("JavadocReference")
     private Path getCacheDir() {
+        // runDir is always specified in dev, so we can rely on it
         if (isDevelopmentEnvironment()) {
             String runDir = System.getProperty("leaf.runDir");
             if (runDir != null) {
                 return Paths.get(runDir);
+            }
+        }
+
+        // Check the lunch args for cachedir
+        Arguments args = getGameProvider().getArguments();
+        if (args.containsKey("cachedir")) {
+            String cachedir = args.get("cachedir");
+            if (cachedir != null) {
+                return Paths.get(cachedir);
             }
         }
 
