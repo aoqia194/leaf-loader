@@ -85,16 +85,16 @@ public final class LeafLoaderImpl extends LeafLoader {
     public static final String VERSION = "1.6.0";
     public static final String MOD_ID = "leafloader";
 
-    // Relative to game dir.
+    // Relative to game cachedir.
     public static final String CACHE_DIR_NAME = ".leaf";
-    // Relative to cache dir.
+    // Relative to leaf cache dir.
     private static final String PROCESSED_MODS_DIR_NAME = "processedMods";
     public static final String REMAPPED_JARS_DIR_NAME = "remappedJars";
     private static final String TMP_DIR_NAME = "tmp";
 
-	protected final Map<String, ModContainerImpl> modMap = new HashMap<>();
+	private final Map<String, ModContainerImpl> modMap = new HashMap<>();
 	private List<ModCandidateImpl> modCandidates;
-	protected List<ModContainerImpl> mods = new ArrayList<>();
+	private final List<ModContainerImpl> mods = new ArrayList<>();
 
 	private final Map<String, LanguageAdapter> adapterMap = new HashMap<>();
 	private final EntrypointStorage entrypointStorage = new EntrypointStorage();
@@ -146,7 +146,6 @@ public final class LeafLoaderImpl extends LeafLoader {
 
 	private void setGameDir(Path gameDir) {
 		this.gameDir = gameDir.toAbsolutePath().normalize();
-		this.configDir = gameDir.resolve("config");
 	}
 
 	@Override
@@ -225,13 +224,16 @@ public final class LeafLoaderImpl extends LeafLoader {
 	}
 
 	private void setup() throws ModResolutionException {
+        // Statically get cachedir before entrypoint so we can load mods etc.
+        setCacheDir(getCacheDir());
+        SemanticVersion gameVersion = getGameProvider().getSemverGameVersion();
+
+        Path leafCacheDir = this.cacheDir.resolve(CACHE_DIR_NAME);
+        Path processedModsDir = leafCacheDir.resolve(PROCESSED_MODS_DIR_NAME);
+
 		boolean remapRegularMods = isDevelopmentEnvironment();
 		VersionOverrides versionOverrides = new VersionOverrides();
 		DependencyOverrides depOverrides = new DependencyOverrides(configDir);
-
-        // Statically get cachedir before entrypoint so we can load mods etc.
-        this.cacheDir = getCacheDir();
-        SemanticVersion gameVersion = getGameProvider().getSemverGameVersion();
 
 		// discover mods
 
@@ -270,15 +272,10 @@ public final class LeafLoaderImpl extends LeafLoader {
 		dumpModList(modCandidates);
         dumpNonLeafMods(discoverer.getNonLeafMods());
 
-        // TODO(leaf): Do JAR verification/signing here
-
         if (SystemProperties.isSet(SystemProperties.DRY_RUN_MOD_DISCOVERY)) {
             throw new FormattedException("Dry run mod discovery",
                 "Stopping before mod init due to dry run mod discovery");
         }
-
-		Path leafCacheDir = this.cacheDir.resolve(CACHE_DIR_NAME);
-		Path processedModsDir = leafCacheDir.resolve(PROCESSED_MODS_DIR_NAME);
 
 		// runtime mod remapping
 
@@ -638,6 +635,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 				while (gameClassLoader != null && gameClassLoader.getParent() != gameClassLoader) {
                     if (gameClassLoader == targetClassLoader) {
                         containsKnot = true;
+                        break;
                     }
 
 					gameClassLoader = gameClassLoader.getParent();
@@ -743,6 +741,11 @@ public final class LeafLoaderImpl extends LeafLoader {
         }
 
         return cacheDir.toPath();
+    }
+
+    private void setCacheDir(Path cacheDir) {
+        this.cacheDir = cacheDir;
+        this.configDir = cacheDir.resolve("config");
     }
 
 	/**
