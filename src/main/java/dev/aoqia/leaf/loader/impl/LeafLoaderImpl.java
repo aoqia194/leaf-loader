@@ -241,11 +241,9 @@ public final class LeafLoaderImpl extends LeafLoader {
         discoverer.addCandidateFinder(new CachedirModCandidateFinder(this.cacheDir, gameVersion, remapRegularMods));
 
         // Only load mods from workshop folders if:
-		// - Not in development environment
 		// - `disableWorkshopMods` is not present
 		// - `zomboid.steam` is not 1
-        if (!isDevelopmentEnvironment()
-            && System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null
+        if (System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null
 			&& "1".equals(System.getProperty(SystemProperties.ZOMBOID_STEAM))
 		) {
             discoverer.addCandidateFinder(new WorkshopModCandidateFinder(getGameWorkshopPath(), gameVersion,
