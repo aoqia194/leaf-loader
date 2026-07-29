@@ -1,14 +1,14 @@
 package dev.aoqia.leaf.loader.impl.gui;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import dev.aoqia.leaf.loader.impl.discovery.ModCandidateImpl;
 
-public class VerifyModDialog {
+public class UpdatedModDialog {
     public static boolean show(ModCandidateImpl mod) {
         int result = JOptionPane.showConfirmDialog(
             null,
-            "A leaf Java mod was discovered and is about to be loaded."
+            "A leaf Java mod was discovered that has been modified since it was last verified."
                 + "\nDo you want to load the mod?"
                 + "\nIf you do not recognise or trust this mod, you should click no."
                 + "\n"

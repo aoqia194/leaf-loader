@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.discovery.ModCandidateImpl;
 
 public class VerifiedModList {
@@ -59,20 +61,42 @@ public class VerifiedModList {
         this.internal.get(mod.getGameId()).add(new Mod(mod));
     }
 
-    public boolean contains(Mod mod) {
-        return this.internal.containsKey(mod.getGameId()) && this.internal.get(mod.getGameId()).contains(mod);
-    }
-
     public boolean contains(ModCandidateImpl mod) {
         return this.internal.containsKey(mod.getGameId()) && this.internal.get(mod.getGameId()).stream().anyMatch(m ->
             m.getGameId().equals(mod.getGameId())
                 && m.getId().equals(mod.getId())
-                && m.getJarHash().equals(mod.getJarHash())
-        );
+                && m.getJarHash().equals(mod.getJarHash()));
+    }
+
+    private boolean containsIgnoreHash(ModCandidateImpl mod) {
+        return this.internal.containsKey(mod.getGameId()) && this.internal.get(mod.getGameId()).stream().anyMatch(m ->
+            m.getGameId().equals(mod.getGameId()) && m.getId().equals(mod.getId()));
+    }
+
+    private boolean containsWithBadHash(ModCandidateImpl mod) {
+        return this.internal.containsKey(mod.getGameId()) && this.internal.get(mod.getGameId()).stream().anyMatch(m ->
+            m.getGameId().equals(mod.getGameId())
+            && m.getId().equals(mod.getId())
+            && !m.getJarHash().equals(mod.getJarHash()));
     }
 
     public boolean isVerified(ModCandidateImpl mod) {
         return contains(mod);
+    }
+
+    public boolean wasVerified(ModCandidateImpl mod) {
+        return containsWithBadHash(mod);
+    }
+
+    public void updateMod(ModCandidateImpl mod) {
+        Optional<Mod> stored = this.internal.get(mod.getGameId()).stream().findFirst();
+        if (!stored.isPresent()) {
+            throw new FormattedException("Failed to update mod %s (%s) after verifying", mod.getId(), mod.getGameId());
+        }
+
+        stored.get().setId(mod.getId());
+        stored.get().setGameId(mod.getGameId());
+        stored.get().setJarHash(mod.getJarHash());
     }
 
     public Map<String, List<Mod>> getInternal() {

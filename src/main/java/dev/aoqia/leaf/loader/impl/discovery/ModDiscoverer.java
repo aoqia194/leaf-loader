@@ -54,6 +54,7 @@ import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.discovery.ModCandidateFinder.ModCandidateConsumer;
 import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinMod;
+import dev.aoqia.leaf.loader.impl.gui.UpdatedModDialog;
 import dev.aoqia.leaf.loader.impl.gui.VerifyModDialog;
 import dev.aoqia.leaf.loader.impl.models.ModInfo;
 import dev.aoqia.leaf.loader.impl.metadata.BuiltinModMetadata;
@@ -218,6 +219,7 @@ public final class ModDiscoverer {
             }
 
             // If the mod isn't enabled in the game, don't load it.
+            // TODO(leaf): Support server-side
             ModInfo modInfo = ModInfo.parse(mod.getRootModFolder().resolve("mod.info"));
             if (modInfo != null && !mod.isBuiltin() && !enabledGameModIds.contains(mod.getGameId())) {
                 Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s'",
@@ -228,9 +230,12 @@ public final class ModDiscoverer {
             // If the mod is enabled in the game, but the user hasn't verified it, prompt them to.
 
             if (!mod.isBuiltin()
-                && (mod.getSource() == ModSource.CACHEDIR || mod.getSource() == ModSource.WORKSHOP)
-                && !verifiedModList.isVerified(mod)) {
-                if (VerifyModDialog.show(mod)) {
+                && (mod.getSource() == ModSource.CACHEDIR || mod.getSource() == ModSource.WORKSHOP)) {
+                if (verifiedModList.wasVerified(mod) && UpdatedModDialog.show(mod)) {
+                    // TODO(leaf): Support server-side
+                    verifiedModList.updateMod(mod);
+                } else if (!verifiedModList.isVerified(mod) && VerifyModDialog.show(mod)) {
+                    // TODO(leaf): Support server-side
                     verifiedModList.add(mod);
                 } else {
                     Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s') because it wasn't verified!",
