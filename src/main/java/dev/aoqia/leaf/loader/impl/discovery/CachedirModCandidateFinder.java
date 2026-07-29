@@ -89,7 +89,9 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
             return modPath;
         }
 
-        File[] versionFolders = modPath.toFile().listFiles(f -> f.isDirectory() && !f.getName().equalsIgnoreCase("media"));
+        File[] versionFolders = modPath.toFile().listFiles(f -> {
+            return f.isDirectory() && (Character.isDigit(f.getName().charAt(0)));
+        });
 
         if (versionFolders == null || versionFolders.length == 0) {
             return modPath;
