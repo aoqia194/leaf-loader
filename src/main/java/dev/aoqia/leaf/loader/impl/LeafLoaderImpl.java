@@ -711,7 +711,7 @@ public final class LeafLoaderImpl extends LeafLoader {
      * @return the cachedir
      */
     @SuppressWarnings("JavadocReference")
-    private Path getCacheDir() {
+    public Path getCacheDir() {
         // runDir is always specified in dev, so we can rely on it
         if (isDevelopmentEnvironment()) {
             String runDir = System.getProperty("leaf.runDir");

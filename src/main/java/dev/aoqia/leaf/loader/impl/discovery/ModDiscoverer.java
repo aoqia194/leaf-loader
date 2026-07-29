@@ -16,6 +16,7 @@
 
 package dev.aoqia.leaf.loader.impl.discovery;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -53,6 +54,7 @@ import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.discovery.ModCandidateFinder.ModCandidateConsumer;
 import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinMod;
+import dev.aoqia.leaf.loader.impl.game.models.ModInfo;
 import dev.aoqia.leaf.loader.impl.metadata.BuiltinModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
 import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
@@ -185,6 +187,10 @@ public final class ModDiscoverer {
 		// get optional set of disabled mod ids
 		Set<String> disabledModIds = findDisabledModIds();
 
+        // get the mods currently loaded by the game
+        // usually these are the last loaded mods from the previous play session
+        Set<String> enabledGameModIds = getEnabledGameModIds(loader);
+
 		// gather all mods (root+nested), initialize parent data
 
 		Set<ModCandidateImpl> ret = Collections.newSetFromMap(new IdentityHashMap<>(candidates.size() * 2));
@@ -197,6 +203,17 @@ public final class ModDiscoverer {
 					Log.info(LogCategory.DISCOVERY, "Skipping disabled mod %s", mod.getId());
 					continue;
 				}
+
+                Path modFolder = mod.getPaths().get(0).getParent().getParent().getParent();
+                String modFolderRootName = modFolder.getParent().getFileName().toString();
+                ModInfo modInfo = ModInfo.parse(modFolder.resolve("mod.info"));
+                if (modInfo != null
+                    && !mod.isBuiltin()
+                    && !enabledGameModIds.contains(modFolderRootName)) {
+                    Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s'",
+                        mod.getId(), modFolderRootName);
+                    continue;
+                }
 
 				if (!ret.add(mod)) continue;
 
@@ -236,6 +253,30 @@ public final class ModDiscoverer {
 		Log.debug(LogCategory.DISCOVERY, "Disabled mod ids: %s", disabledModIds);
 		return disabledModIds;
 	}
+
+    private Set<String> getEnabledGameModIds(LeafLoaderImpl loader) {
+        HashSet<String> enabledGameModIds = new HashSet<>();
+
+        Path defaultFile = loader.getCacheDir().resolve("mods/default.txt");
+        if (!Files.exists(defaultFile)) {
+            return enabledGameModIds;
+        }
+
+        try (BufferedReader br = Files.newBufferedReader(defaultFile)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.startsWith("    mod = ") || !line.endsWith(",")) {
+                    continue;
+                }
+
+                enabledGameModIds.add(line.replace("    mod = ", "").replace(",", ""));
+            }
+        } catch (IOException e) {
+            throw new FormattedException("Failed to read mods from game default.txt at: %s", defaultFile.toString());
+        }
+
+        return enabledGameModIds;
+    }
 
 	private ModCandidateImpl createJavaMod() {
 		ModMetadata metadata = new BuiltinModMetadata.Builder("java", System.getProperty("java.specification.version").replaceFirst("^1\\.", ""))
