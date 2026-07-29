@@ -43,7 +43,7 @@ public final class DependencyOverrides {
 	private final Map<String, List<Entry>> dependencyOverrides;
 
 	public DependencyOverrides(Path configDir) {
-		Path path = configDir.resolve("fabric_loader_dependencies.json");
+		Path path = configDir.resolve("leaf_loader_dependencies.json");
 
 		if (!Files.exists(path)) {
 			dependencyOverrides = Collections.emptyMap();
