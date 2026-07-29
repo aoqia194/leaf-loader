@@ -139,6 +139,6 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
 
         String fileName = path.getFileName().toString();
 
-        return fileName.endsWith(".jar") && !fileName.startsWith(".");
+        return fileName.endsWith(".jar") && !fileName.startsWith(".") && !fileName.endsWith("-sources.jar");
     }
 }
