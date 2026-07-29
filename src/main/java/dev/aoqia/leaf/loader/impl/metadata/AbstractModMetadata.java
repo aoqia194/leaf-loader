@@ -21,7 +21,7 @@ import dev.aoqia.leaf.loader.api.metadata.ModMetadata;
 
 public abstract class AbstractModMetadata implements ModMetadata {
 	public static final String TYPE_BUILTIN = "builtin";
-	public static final String TYPE_FABRIC_MOD = "fabric";
+	public static final String TYPE_LEAF_MOD = "leaf";
 
 	@Override
 	public boolean containsCustomElement(String key) {

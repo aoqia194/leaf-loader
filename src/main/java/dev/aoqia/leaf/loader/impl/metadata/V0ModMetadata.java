@@ -89,7 +89,7 @@ final class V0ModMetadata extends AbstractModMetadata implements LoaderModMetada
 
 	@Override
 	public String getType() {
-		return TYPE_FABRIC_MOD;
+		return TYPE_LEAF_MOD;
 	}
 
 	@Override

@@ -405,7 +405,7 @@ final class ResultAnalyzer {
 		String typePrefix;
 
 		switch (candidate.getMetadata().getType()) {
-		case AbstractModMetadata.TYPE_FABRIC_MOD:
+		case AbstractModMetadata.TYPE_LEAF_MOD:
 			typePrefix = String.format("%s ", Localization.format("resolution.type.mod"));
 			break;
 		case AbstractModMetadata.TYPE_BUILTIN:
