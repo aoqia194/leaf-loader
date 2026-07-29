@@ -41,7 +41,7 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
             // mods folder
             if (this.cacheDir.resolve("mods").toFile().exists()) {
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.cacheDir.resolve("mods"), Files::isDirectory)) {
-                    findModsInModRoot(out, stream);
+                    findModsInModRoot(out, stream, ModSource.CACHEDIR);
                 }
             }
 
@@ -55,7 +55,7 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
                         }
 
                         try (DirectoryStream<Path> stream2 = Files.newDirectoryStream(modsFolder, Files::isDirectory)) {
-                            findModsInModRoot(out, stream2);
+                            findModsInModRoot(out, stream2, ModSource.CACHEDIR);
                         }
                     }
                 }
@@ -65,7 +65,7 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
         }
     }
 
-    protected void findModsInModRoot(ModCandidateConsumer out, DirectoryStream<Path> stream)
+    protected void findModsInModRoot(ModCandidateConsumer out, DirectoryStream<Path> stream, ModSource source)
         throws IOException, VersionParsingException
     {
         for (Path path : stream) {
@@ -78,7 +78,7 @@ public class CachedirModCandidateFinder implements ModCandidateFinder {
 
             try (Stream<Path> stream2 = Files.list(javaPath)) {
                 stream2.filter(CachedirModCandidateFinder::isValidFile)
-                    .forEach(f -> out.accept(f, this.requiresRemap));
+                    .forEach(f -> out.accept(f, this.requiresRemap, source));
             }
         }
     }

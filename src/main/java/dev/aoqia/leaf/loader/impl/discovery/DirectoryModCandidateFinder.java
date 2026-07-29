@@ -71,7 +71,7 @@ public class DirectoryModCandidateFinder implements ModCandidateFinder {
 				@Override
 				public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) {
 					if (isValidFile(file) && (subpath == null || file.getParent().endsWith(subpath))) {
-						out.accept(file, requiresRemap);
+						out.accept(file, requiresRemap, ModSource.UNKNOWN);
 					}
 
 					return FileVisitResult.CONTINUE;

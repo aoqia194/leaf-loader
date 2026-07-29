@@ -111,6 +111,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 	private Path gameDir;
 	private Path configDir;
     private Path cacheDir;
+    private Path leafDir;
 
 	private LeafLoaderImpl() { }
 
@@ -228,8 +229,7 @@ public final class LeafLoaderImpl extends LeafLoader {
         setCacheDir(getCacheDir());
         SemanticVersion gameVersion = getGameProvider().getSemverGameVersion();
 
-        Path leafCacheDir = this.cacheDir.resolve(CACHE_DIR_NAME);
-        Path processedModsDir = leafCacheDir.resolve(PROCESSED_MODS_DIR_NAME);
+        Path processedModsDir = this.leafDir.resolve(PROCESSED_MODS_DIR_NAME);
 
 		boolean remapRegularMods = isDevelopmentEnvironment();
 		VersionOverrides versionOverrides = new VersionOverrides();
@@ -287,7 +287,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 					Log.warn(LogCategory.MOD_REMAP, "Runtime mod remapping disabled due to no leaf.remapClasspathFile being specified. You may need to update loom.");
 				}
 			} else {
-				RuntimeModRemapper.remap(modCandidates, leafCacheDir.resolve(TMP_DIR_NAME), processedModsDir);
+				RuntimeModRemapper.remap(modCandidates, this.leafDir.resolve(TMP_DIR_NAME), processedModsDir);
 			}
 		}
 
@@ -745,7 +745,16 @@ public final class LeafLoaderImpl extends LeafLoader {
 
     private void setCacheDir(Path cacheDir) {
         this.cacheDir = cacheDir;
+        this.leafDir = cacheDir.resolve(CACHE_DIR_NAME);
         this.configDir = cacheDir.resolve("config");
+    }
+
+    public Path getLeafDir() {
+        return this.leafDir;
+    }
+
+    public void setLeafDir(Path dir) {
+        this.leafDir = dir;
     }
 
 	/**

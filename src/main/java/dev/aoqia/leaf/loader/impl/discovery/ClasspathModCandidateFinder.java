@@ -58,9 +58,9 @@ public class ClasspathModCandidateFinder implements ModCandidateFinder {
 						List<Path> paths = pathGroups.get(path);
 
 						if (paths == null) {
-							out.accept(path, false);
+							out.accept(path, false, ModSource.CLASSPATH);
 						} else {
-							out.accept(paths, false);
+							out.accept(paths, false, ModSource.CLASSPATH);
 						}
 					} catch (UrlConversionException e) {
 						Log.debug(LogCategory.DISCOVERY, "Error determining location for leaf.mod.json from %s", url, e);
@@ -71,7 +71,7 @@ public class ClasspathModCandidateFinder implements ModCandidateFinder {
 			}
 		} else { // production, add loader as a mod
 			try {
-				out.accept(UrlUtil.LOADER_CODE_SOURCE, false);
+				out.accept(UrlUtil.LOADER_CODE_SOURCE, false, ModSource.CLASSPATH);
 			} catch (Throwable t) {
 				Log.debug(LogCategory.DISCOVERY, "Could not retrieve launcher code source!", t);
 			}

@@ -22,6 +22,7 @@ import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,8 +34,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.jetbrains.annotations.Nullable;
+
 import dev.aoqia.leaf.loader.api.Version;
 import dev.aoqia.leaf.loader.api.metadata.ModDependency;
+import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinMod;
 import dev.aoqia.leaf.loader.impl.metadata.AbstractModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
@@ -61,21 +66,38 @@ public final class ModCandidateImpl implements DomainObject.Mod {
 	private final Collection<ModCandidateImpl> parentMods;
 	private int minNestLevel;
 	private SoftReference<ByteBuffer> dataRef;
+    private final ModSource source;
 
 	static ModCandidateImpl createBuiltin(BuiltinMod mod, VersionOverrides versionOverrides, DependencyOverrides depOverrides) {
 		LoaderModMetadata metadata = new BuiltinMetadataWrapper(mod.metadata);
 		versionOverrides.apply(metadata);
 		depOverrides.apply(metadata);
 
-		return new ModCandidateImpl(mod.paths, null, -1, metadata, false, Collections.emptyList());
+		return new ModCandidateImpl(mod.paths, null, -1, metadata, false, Collections.emptyList(), ModSource.INTERNAL);
 	}
 
-	static ModCandidateImpl createPlain(List<Path> paths, LoaderModMetadata metadata, boolean requiresRemap, Collection<ModCandidateImpl> nestedMods) {
-		return new ModCandidateImpl(paths, null, -1, metadata, requiresRemap, nestedMods);
+	static ModCandidateImpl createPlain(List<Path> paths, LoaderModMetadata metadata, boolean requiresRemap,
+        Collection<ModCandidateImpl> nestedMods)
+    {
+		return new ModCandidateImpl(paths, null, -1, metadata, requiresRemap, nestedMods, ModSource.UNKNOWN);
 	}
 
-	static ModCandidateImpl createNested(String localPath, long hash, LoaderModMetadata metadata, boolean requiresRemap, Collection<ModCandidateImpl> nestedMods) {
-		return new ModCandidateImpl(null, localPath, hash, metadata, requiresRemap, nestedMods);
+    static ModCandidateImpl createPlain(List<Path> paths, LoaderModMetadata metadata, boolean requiresRemap,
+        Collection<ModCandidateImpl> nestedMods, ModSource source)
+    {
+		return new ModCandidateImpl(paths, null, -1, metadata, requiresRemap, nestedMods, source);
+	}
+
+	static ModCandidateImpl createNested(String localPath, long hash, LoaderModMetadata metadata, boolean requiresRemap,
+        Collection<ModCandidateImpl> nestedMods)
+    {
+		return new ModCandidateImpl(null, localPath, hash, metadata, requiresRemap, nestedMods, ModSource.UNKNOWN);
+	}
+
+    static ModCandidateImpl createNested(String localPath, long hash, LoaderModMetadata metadata, boolean requiresRemap,
+        Collection<ModCandidateImpl> nestedMods, ModSource source)
+    {
+		return new ModCandidateImpl(null, localPath, hash, metadata, requiresRemap, nestedMods, ModSource.UNKNOWN);
 	}
 
 	static long hash(ZipEntry entry) {
@@ -88,7 +110,9 @@ public final class ModCandidateImpl implements DomainObject.Mod {
 		return hash & 0xffffffffL;
 	}
 
-	private ModCandidateImpl(List<Path> paths, String localPath, long hash, LoaderModMetadata metadata, boolean requiresRemap, Collection<ModCandidateImpl> nestedMods) {
+	private ModCandidateImpl(List<Path> paths, String localPath, long hash, LoaderModMetadata metadata,
+        boolean requiresRemap, Collection<ModCandidateImpl> nestedMods, ModSource source)
+    {
 		this.originPaths = paths;
 		this.paths = paths;
 		this.localPath = localPath;
@@ -98,6 +122,7 @@ public final class ModCandidateImpl implements DomainObject.Mod {
 		this.nestedMods = nestedMods;
 		this.parentMods = paths == null ? new ArrayList<>() : Collections.emptyList();
 		this.minNestLevel = paths != null ? 0 : Integer.MAX_VALUE;
+        this.source = source;
 	}
 
 	public List<Path> getOriginPaths() {
@@ -134,6 +159,30 @@ public final class ModCandidateImpl implements DomainObject.Mod {
 	public LoaderModMetadata getMetadata() {
 		return metadata;
 	}
+
+    public Path getRootModFolder() {
+        return getPaths().get(0).getParent().getParent().getParent();
+    }
+
+    public String getGameId() {
+        return getRootModFolder().getParent().getFileName().toString();
+    }
+
+    public @Nullable String getJarHash() {
+        if (isBuiltin()) {
+            return null;
+        }
+
+        try {
+            return DigestUtils.sha256Hex(Files.newInputStream(Paths.get(getLocalPath())));
+        } catch (IOException e) {
+            throw new FormattedException("Failed to get secure JAR hash for mod '%s' (%s)", getId(), getGameId());
+        }
+    }
+
+    public ModSource getSource() {
+        return this.source;
+    }
 
 	@Override
 	public String getId() {

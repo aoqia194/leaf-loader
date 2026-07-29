@@ -1,4 +1,4 @@
-package dev.aoqia.leaf.loader.impl.game.models;
+package dev.aoqia.leaf.loader.impl.models;
 
 import java.io.BufferedReader;
 import java.io.IOException;

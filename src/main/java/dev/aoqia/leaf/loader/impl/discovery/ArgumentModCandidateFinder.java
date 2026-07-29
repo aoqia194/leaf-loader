@@ -94,7 +94,7 @@ public class ArgumentModCandidateFinder implements ModCandidateFinder {
 			}
 
 			if (Files.exists(path.resolve("leaf.mod.json"))) { // extracted mod
-				out.accept(path, requiresRemap);
+				out.accept(path, requiresRemap, ModSource.ARGUMENTS);
 			} else { // dir containing jars
 				try {
 					List<String> skipped = new ArrayList<>();
@@ -103,7 +103,7 @@ public class ArgumentModCandidateFinder implements ModCandidateFinder {
 						@Override
 						public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 							if (DirectoryModCandidateFinder.isValidFile(file)) {
-								out.accept(file, requiresRemap);
+								out.accept(file, requiresRemap, ModSource.ARGUMENTS);
 							} else {
 								skipped.add(path.relativize(file).toString());
 							}
@@ -132,7 +132,7 @@ public class ArgumentModCandidateFinder implements ModCandidateFinder {
 			if (!DirectoryModCandidateFinder.isValidFile(path)) {
 				Log.warn(LogCategory.DISCOVERY, "Incompatible file in %s provided mod path %s (non-jar or hidden)", source, path);
 			} else {
-				out.accept(path, requiresRemap);
+				out.accept(path, requiresRemap, ModSource.ARGUMENTS);
 			}
 		}
 	}

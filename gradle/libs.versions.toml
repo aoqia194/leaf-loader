@@ -1,6 +1,7 @@
 [versions]
 
 annotations = "23.0.0"
+apache-commons-codec = "1.22.0"
 asm = "9.10.1"
 clazztweaker = "0.3.0-beta.2"
 gson = "2.2.4"
@@ -22,6 +23,8 @@ tinyremapper = "0.14.0"
 [libraries]
 
 annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
+
+apache-commons-codec = { module = "commons-codec:commons-codec", version.ref = "apache-commons-codec" }
 
 asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
 asm-analysis = { module = "org.ow2.asm:asm-analysis", version.ref = "asm" }

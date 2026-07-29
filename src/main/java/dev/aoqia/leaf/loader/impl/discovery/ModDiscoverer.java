@@ -54,7 +54,8 @@ import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.discovery.ModCandidateFinder.ModCandidateConsumer;
 import dev.aoqia.leaf.loader.impl.game.GameProvider.BuiltinMod;
-import dev.aoqia.leaf.loader.impl.game.models.ModInfo;
+import dev.aoqia.leaf.loader.impl.gui.VerifyModDialog;
+import dev.aoqia.leaf.loader.impl.models.ModInfo;
 import dev.aoqia.leaf.loader.impl.metadata.BuiltinModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
 import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
@@ -63,6 +64,7 @@ import dev.aoqia.leaf.loader.impl.metadata.ModMetadataParser;
 import dev.aoqia.leaf.loader.impl.metadata.NestedJarEntry;
 import dev.aoqia.leaf.loader.impl.metadata.ParseMetadataException;
 import dev.aoqia.leaf.loader.impl.metadata.VersionOverrides;
+import dev.aoqia.leaf.loader.impl.models.VerifiedModList;
 import dev.aoqia.leaf.loader.impl.util.ExceptionUtil;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
@@ -93,7 +95,7 @@ public final class ModDiscoverer {
 		Set<Path> processedPaths = new HashSet<>(); // suppresses duplicate paths
 		List<Future<ModCandidateImpl>> futures = new ArrayList<>();
 
-		ModCandidateConsumer taskSubmitter = (paths, requiresRemap) -> {
+		ModCandidateConsumer taskSubmitter = (paths, requiresRemap, source) -> {
 			List<Path> pendingPaths = new ArrayList<>(paths.size());
 
 			for (Path path : paths) {
@@ -105,7 +107,7 @@ public final class ModDiscoverer {
 			}
 
 			if (!pendingPaths.isEmpty()) {
-				futures.add(pool.submit(new ModScanTask(pendingPaths, requiresRemap)));
+				futures.add(pool.submit(new ModScanTask(pendingPaths, requiresRemap, source)));
 			}
 		};
 
@@ -191,6 +193,13 @@ public final class ModDiscoverer {
         // usually these are the last loaded mods from the previous play session
         Set<String> enabledGameModIds = getEnabledGameModIds(loader);
 
+        VerifiedModList verifiedModList = new VerifiedModList(loader.getLeafDir().resolve("verified_mods.txt"));
+        try {
+            verifiedModList.readOrCreate();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read user-verified leaf mod list file");
+        }
+
 		// gather all mods (root+nested), initialize parent data
 
 		Set<ModCandidateImpl> ret = Collections.newSetFromMap(new IdentityHashMap<>(candidates.size() * 2));
@@ -198,36 +207,54 @@ public final class ModDiscoverer {
 		ModCandidateImpl mod;
 
 		while ((mod = queue.poll()) != null) {
-			if (mod.getMetadata().loadsInEnvironment(envType)) {
-				if (disabledModIds.contains(mod.getId())) {
-					Log.info(LogCategory.DISCOVERY, "Skipping disabled mod %s", mod.getId());
-					continue;
-				}
+			if (!mod.getMetadata().loadsInEnvironment(envType)) {
+                envDisabledModsOut.computeIfAbsent(mod.getId(), ignore ->
+                    Collections.newSetFromMap(new IdentityHashMap<>())).add(mod);
+            }
 
-                Path modFolder = mod.getPaths().get(0).getParent().getParent().getParent();
-                String modFolderRootName = modFolder.getParent().getFileName().toString();
-                ModInfo modInfo = ModInfo.parse(modFolder.resolve("mod.info"));
-                if (modInfo != null
-                    && !mod.isBuiltin()
-                    && !enabledGameModIds.contains(modFolderRootName)) {
-                    Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s'",
-                        mod.getId(), modFolderRootName);
+            if (disabledModIds.contains(mod.getId())) {
+                Log.info(LogCategory.DISCOVERY, "Skipping disabled mod %s", mod.getId());
+                continue;
+            }
+
+            // If the mod isn't enabled in the game, don't load it.
+            ModInfo modInfo = ModInfo.parse(mod.getRootModFolder().resolve("mod.info"));
+            if (modInfo != null && !mod.isBuiltin() && !enabledGameModIds.contains(mod.getGameId())) {
+                Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s'",
+                    mod.getId(), mod.getGameId());
+                continue;
+            }
+
+            // If the mod is enabled in the game, but the user hasn't verified it, prompt them to.
+
+            if (!mod.isBuiltin()
+                && (mod.getSource() == ModSource.CACHEDIR || mod.getSource() == ModSource.WORKSHOP)
+                && !verifiedModList.isVerified(mod)) {
+                if (VerifyModDialog.show(mod)) {
+                    verifiedModList.add(mod);
+                } else {
+                    Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s') because it wasn't verified!",
+                        mod.getId(), mod.getGameId());
                     continue;
                 }
+            }
 
-				if (!ret.add(mod)) continue;
+            if (!ret.add(mod)) continue;
 
-				for (ModCandidateImpl child : mod.getNestedMods()) {
-					if (child.addParent(mod)) {
-						queue.add(child);
-					}
-				}
-			} else {
-				envDisabledModsOut.computeIfAbsent(mod.getId(), ignore -> Collections.newSetFromMap(new IdentityHashMap<>())).add(mod);
-			}
+            for (ModCandidateImpl child : mod.getNestedMods()) {
+                if (child.addParent(mod)) {
+                    queue.add(child);
+                }
+            }
 		}
 
-		long endTime = System.nanoTime();
+        try {
+            verifiedModList.write();
+        } catch (IOException e) {
+            throw new FormattedException("Failed to write to verified_mods.txt", e);
+        }
+
+        long endTime = System.nanoTime();
 
 		Log.debug(LogCategory.DISCOVERY, "Mod discovery time: %.1f ms", (endTime - startTime) * 1e-6);
 
@@ -295,19 +322,21 @@ public final class ModDiscoverer {
 		private final long hash;
 		private final boolean requiresRemap;
 		private final List<String> parentPaths;
+        private final ModSource source;
 
-		ModScanTask(List<Path> paths, boolean requiresRemap) {
-			this(paths, null, null, -1, requiresRemap, Collections.emptyList());
+		ModScanTask(List<Path> paths, boolean requiresRemap, ModSource source) {
+			this(paths, null, null, -1, requiresRemap, Collections.emptyList(), source);
 		}
 
 		private ModScanTask(List<Path> paths, String localPath, RewindableInputStream is, long hash,
-				boolean requiresRemap, List<String> parentPaths) {
+				boolean requiresRemap, List<String> parentPaths, ModSource source) {
 			this.paths = paths;
 			this.localPath = localPath != null ? localPath : paths.get(0).toString();
 			this.is = is;
 			this.hash = hash;
 			this.requiresRemap = requiresRemap;
 			this.parentPaths = parentPaths;
+            this.source = source;
 		}
 
 		@Override
@@ -355,7 +384,7 @@ public final class ModDiscoverer {
 				metadata = parseMetadata(is, path.toString());
 			}
 
-			return ModCandidateImpl.createPlain(paths, metadata, requiresRemap, Collections.emptyList());
+			return ModCandidateImpl.createPlain(paths, metadata, requiresRemap, Collections.emptyList(), source);
 		}
 
 		private ModCandidateImpl computeJarFile(Path path) throws IOException, ParseMetadataException {
@@ -374,7 +403,7 @@ public final class ModDiscoverer {
 				}
 
 				if (!metadata.loadsInEnvironment(envType)) {
-					return ModCandidateImpl.createPlain(paths, metadata, requiresRemap, Collections.emptyList());
+					return ModCandidateImpl.createPlain(paths, metadata, requiresRemap, Collections.emptyList(), source);
 				}
 
 				List<ModScanTask> nestedModTasks;
@@ -427,7 +456,7 @@ public final class ModDiscoverer {
 					nestedModInitDatas.add(new NestedModInitData(nestedModTasks, nestedMods));
 				}
 
-				return ModCandidateImpl.createPlain(paths, metadata, requiresRemap, nestedMods);
+				return ModCandidateImpl.createPlain(paths, metadata, requiresRemap, nestedMods, source);
 			}
 		}
 
@@ -447,7 +476,7 @@ public final class ModDiscoverer {
 			if (metadata == null) return null;
 
 			if (!metadata.loadsInEnvironment(envType)) {
-				return ModCandidateImpl.createNested(localPath, hash, metadata, requiresRemap, Collections.emptyList());
+				return ModCandidateImpl.createNested(localPath, hash, metadata, requiresRemap, Collections.emptyList(), source);
 			}
 
 			Collection<NestedJarEntry> nestedJars = metadata.getJars();
@@ -505,7 +534,7 @@ public final class ModDiscoverer {
 				nestedModInitDatas.add(new NestedModInitData(nestedModTasks, nestedMods));
 			}
 
-			ModCandidateImpl ret = ModCandidateImpl.createNested(localPath, hash, metadata, requiresRemap, nestedMods);
+			ModCandidateImpl ret = ModCandidateImpl.createNested(localPath, hash, metadata, requiresRemap, nestedMods, source);
 			ret.setData(is.getBuffer());
 
 			return ret;
@@ -525,7 +554,7 @@ public final class ModDiscoverer {
 				ModScanTask task = jijDedupMap.get(hash);
 
 				if (task == null) {
-					task = new ModScanTask(null, entry.getName(), entrySource.getInputStream(), hash, requiresRemap, parentPaths);
+					task = new ModScanTask(null, entry.getName(), entrySource.getInputStream(), hash, requiresRemap, parentPaths, source);
 					ModScanTask prev = jijDedupMap.putIfAbsent(hash, task);
 
 					if (prev != null) {

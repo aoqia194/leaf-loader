@@ -37,7 +37,7 @@ public class WorkshopModCandidateFinder extends CachedirModCandidateFinder {
                     }
 
                     try (DirectoryStream<Path> stream2 = Files.newDirectoryStream(modsFolder, Files::isDirectory)) {
-                        findModsInModRoot(out, stream2);
+                        findModsInModRoot(out, stream2, ModSource.WORKSHOP);
                     }
                 }
             }

@@ -131,8 +131,7 @@ dependencies {
     // leaf-loader dependencies
     "installer"(libs.bundles.asm)
     "installer"(libs.mixin)
-//    "installer"(libs.bundles.log4j)
-//    "installer"(libs.slf4j.api)
+    "installer"(libs.apache.commons.codec)
 
     "development"(libs.mixinextras)
 

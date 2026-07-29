@@ -25,10 +25,10 @@ interface ModCandidateFinder {
 	void findCandidates(ModCandidateConsumer out);
 
 	interface ModCandidateConsumer {
-		default void accept(Path path, boolean requiresRemap) {
-			accept(Collections.singletonList(path), requiresRemap);
+		default void accept(Path path, boolean requiresRemap, ModSource source) {
+			accept(Collections.singletonList(path), requiresRemap, source);
 		}
 
-		void accept(List<Path> paths, boolean requiresRemap);
+		void accept(List<Path> paths, boolean requiresRemap, ModSource source);
 	}
 }

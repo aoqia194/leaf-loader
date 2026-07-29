@@ -59,6 +59,13 @@
                 "sha256": "95cef6aebd9da1559cf9c4624eafae2ce1242d0167e3587d5d62c488e45b6999",
                 "sha512": "89044dca9a63bd5f2ceec09bfcb5807f1b294026665294bae7a9a980da89bd86c6d441eb38c92c89ca0efe86884c0730dab348d27633ef1e3970ed9eb5c30a4e",
                 "size": 1540039
+            },
+            {
+                "name": "commons-codec:commons-codec:1.22.0",
+                "url": "https://repo.maven.apache.org/maven2/",
+                "md5": "f14b9146cd553f4e8c5c3f5c9e2be611",
+                "sha1": "6b3eb4beb7058c2a638f5f17bcb388649fd339dd",
+                "size": 420480
             }
         ],
         "server": [
