@@ -48,8 +48,7 @@ public class LogTypePatch extends GamePatch {
                 return false;
             }, true);
 
-			ListIterator<AbstractInsnNode> iter = clinit.instructions.iterator(
-                clinit.instructions.indexOf(valuesCall) - 2);
+			ListIterator<AbstractInsnNode> iter = clinit.instructions.iterator(clinit.instructions.indexOf(valuesCall));
 			iter.add(new TypeInsnNode(Opcodes.NEW, debugTypeClassPath));
 			iter.add(new InsnNode(Opcodes.DUP));
 			iter.add(new LdcInsnNode(leafDebugType));
