@@ -244,10 +244,11 @@ public final class LeafLoaderImpl extends LeafLoader {
 
         // Only load mods from workshop folders if:
 		// - `disableWorkshopMods` is not present
-		// - `zomboid.steam` is not 1
+		// - `zomboid.steam` is 1
+        // - `-nosteam` is not provided to the game
         if (System.getProperty(SystemProperties.DISABLE_WORKSHOP_MODS) == null
 			&& "1".equals(System.getProperty(SystemProperties.ZOMBOID_STEAM))
-		) {
+            && !getGameProvider().getArguments().contains("nosteam")) {
             discoverer.addCandidateFinder(new WorkshopModCandidateFinder(getGameWorkshopPath(), gameVersion,
                 remapRegularMods));
         }
