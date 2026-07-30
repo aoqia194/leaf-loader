@@ -233,13 +233,15 @@ public final class ModDiscoverer {
                 if (verifiedModList.wasVerified(mod) && UpdatedModDialog.show(mod)) {
                     // TODO(leaf): Support server-side
                     verifiedModList.updateMod(mod);
-                } else if (!verifiedModList.isVerified(mod) && VerifyModDialog.show(mod)) {
-                    // TODO(leaf): Support server-side
-                    verifiedModList.add(mod);
-                } else {
-                    Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s/%s') because it wasn't verified!",
-                        mod.getId(), mod.getWorkshopId(), mod.getGameId());
-                    continue;
+                } else if (!verifiedModList.isVerified(mod)) {
+                    if (VerifyModDialog.show(mod)) {
+                        // TODO(leaf): Support server-side
+                        verifiedModList.add(mod);
+                    } else {
+                        Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s/%s') because it wasn't verified!",
+                            mod.getId(), mod.getWorkshopId(), mod.getGameId());
+                        continue;
+                    }
                 }
             }
 
