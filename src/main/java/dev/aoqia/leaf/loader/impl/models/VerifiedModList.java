@@ -1,5 +1,6 @@
 package dev.aoqia.leaf.loader.impl.models;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,6 +16,8 @@ import dev.aoqia.leaf.loader.impl.FormattedException;
 import dev.aoqia.leaf.loader.impl.discovery.ModCandidateImpl;
 
 public class VerifiedModList {
+    public static final int VERSION = 1;
+
     private final Path path;
     private final Map<String, List<Mod>> internal;
 
@@ -27,28 +30,39 @@ public class VerifiedModList {
         // If the mod list data file doesn't exist, initialise it and return empty.
         if (!Files.exists(this.path)) {
             Files.createDirectory(this.path.getParent());
-            Files.write(this.path, new byte[]{});
+            Files.write(this.path, (VERSION + "\n").getBytes());
             return;
         }
 
-        for (String line : Files.readAllLines(this.path)) {
-            String[] components = line.split("\t");
-            if (components.length != 4) {
-                throw new IllegalStateException("Parsed bad verified mod list file");
+        try (BufferedReader br = Files.newBufferedReader(this.path)) {
+            int version = Character.getNumericValue(br.readLine().charAt(0));
+            if (version != VERSION) {
+                br.close();
+                Files.write(this.path, (VERSION + "\n").getBytes());
+                return;
             }
 
-            String workshopId = components[0];
-            String gameModId = components[1];
-            String leafModId = components[2];
-            String jarHash = components[3];
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] components = line.split("\t");
+                if (components.length != 4) {
+                    throw new IllegalStateException("Parsed bad verified mod list file");
+                }
 
-            this.internal.putIfAbsent(workshopId, new ArrayList<>());
-            this.internal.get(workshopId).add(new Mod(workshopId, leafModId, gameModId, jarHash));
+                String workshopId = components[0];
+                String gameModId = components[1];
+                String leafModId = components[2];
+                String jarHash = components[3];
+
+                this.internal.putIfAbsent(workshopId, new ArrayList<>());
+                this.internal.get(workshopId).add(new Mod(workshopId, leafModId, gameModId, jarHash));
+            }
         }
     }
 
     public void write() throws IOException {
         try (BufferedWriter bw = Files.newBufferedWriter(this.path, StandardOpenOption.CREATE)) {
+            bw.write(VERSION + "\n");
             for (String workshopId : this.internal.keySet()) {
                 for (Mod mod : this.internal.get(workshopId)) {
                     bw.write(mod.getWorkshopId()
