@@ -222,15 +222,14 @@ public final class ModDiscoverer {
             // TODO(leaf): Support server-side
             ModInfo modInfo = ModInfo.parse(mod.getRootModFolder().resolve("mod.info"));
             if (modInfo != null && !mod.isBuiltin() && !enabledGameModIds.contains(mod.getGameId())) {
-                Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s'",
-                    mod.getId(), mod.getGameId());
+                Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s/%s'",
+                    mod.getId(), mod.getWorkshopId(), mod.getGameId());
                 continue;
             }
 
             // If the mod is enabled in the game, but the user hasn't verified it, prompt them to.
 
-            if (!mod.isBuiltin()
-                && (mod.getSource() == ModSource.CACHEDIR || mod.getSource() == ModSource.WORKSHOP)) {
+            if (!mod.isBuiltin() && (mod.getSource() == ModSource.CACHEDIR || mod.getSource() == ModSource.WORKSHOP)) {
                 if (verifiedModList.wasVerified(mod) && UpdatedModDialog.show(mod)) {
                     // TODO(leaf): Support server-side
                     verifiedModList.updateMod(mod);
@@ -238,8 +237,8 @@ public final class ModDiscoverer {
                     // TODO(leaf): Support server-side
                     verifiedModList.add(mod);
                 } else {
-                    Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s') because it wasn't verified!",
-                        mod.getId(), mod.getGameId());
+                    Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s/%s') because it wasn't verified!",
+                        mod.getId(), mod.getWorkshopId(), mod.getGameId());
                     continue;
                 }
             }

@@ -12,6 +12,7 @@ public class UpdatedModDialog {
                 + "\nDo you want to load the mod?"
                 + "\nIf you do not recognise or trust this mod, you should click no."
                 + "\n"
+                + "\nWorkshop ID: " + mod.getWorkshopId()
                 + "\nGame Mod ID: " + mod.getGameId()
                 + "\nLeaf Mod ID: " + mod.getId(),
             "Mod Verification",

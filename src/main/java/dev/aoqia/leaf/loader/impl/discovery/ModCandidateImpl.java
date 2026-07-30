@@ -180,6 +180,14 @@ public final class ModCandidateImpl implements DomainObject.Mod {
         }
     }
 
+    public @Nullable String getWorkshopId() {
+        if (this.source != ModSource.WORKSHOP) {
+            return null;
+        }
+
+        return getRootModFolder().getParent().getParent().getParent().getFileName().toString();
+    }
+
     public ModSource getSource() {
         return this.source;
     }
