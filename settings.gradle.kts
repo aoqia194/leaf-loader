@@ -22,7 +22,9 @@ if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21)) {
 val name: String by settings
 rootProject.name = name
 
-// FIXME(leaf): Add back mixinextras subproject if needed.
 include("junit")
 include("zomboid")
-include("zomboid:zomboid-test")
+
+if (!providers.gradleProperty("leaf.loom.minimalSetup").orNull.toBoolean()) {
+    include("zomboid:zomboid-test")
+}
