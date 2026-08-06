@@ -1,7 +1,6 @@
 import groovy.json.JsonSlurper
 
 val zomboidVersion: String by project
-val zomboidMappings: String by project
 
 plugins {
     alias(libs.plugins.loom)
@@ -20,15 +19,12 @@ repositories {
 
 dependencies {
     "zomboid"("com.theindiestone:zomboid:${zomboidVersion}")
-    // Don't include any mappings because they aren't needed as of current.
-//    "mappings"("dev.aoqia.leaf:yarn:${zomboidMappings}:v2")
 
     implementation(project(":zomboid"))
     implementation(project(":zomboid", "mainSourceSetOutput"))
     implementation(project(":", "mainSourceSetOutput"))
 
-//    implementation(libs.bundles.log4j)
-//    implementation(libs.slf4j.api)
+//    annotationProcessor(libs.bundles.asm)
 
     // If we ever do remapping again, ow2.asm and mixin AP needs to be added here too.
 //    annotationProcessor(libs.mixin) {
