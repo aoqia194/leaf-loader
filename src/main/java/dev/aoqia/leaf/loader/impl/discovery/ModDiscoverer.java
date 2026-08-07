@@ -218,29 +218,30 @@ public final class ModDiscoverer {
                 continue;
             }
 
-            // If the mod isn't enabled in the game, don't load it.
             // TODO(leaf): Support server-side
-            ModInfo modInfo = ModInfo.parse(mod.getRootModFolder().resolve("mod.info"));
-            if (modInfo != null && !mod.isBuiltin() && !enabledGameModIds.contains(mod.getGameId())) {
-                Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s/%s'",
-                    mod.getId(), mod.getWorkshopId(), mod.getGameId());
-                continue;
-            }
+            if (!mod.isBuiltin() && !"3776625738".equals(mod.getWorkshopId()) && !"LeafLoader".equals(mod.getGameId())) {
+                // If the mod isn't enabled in the game, don't load it.
+                // Ignore the leaf loader Steam mod (for use with proxy) as it should always be enabled.
+                if (mod.getModInfo() != null && !enabledGameModIds.contains(mod.getGameId())) {
+                    Log.info(LogCategory.DISCOVERY, "Skipping disabled mod '%s' from in-game mod list modid '%s/%s'",
+                        mod.getId(), mod.getWorkshopId(), mod.getGameId());
+                    continue;
+                }
 
-            // If the mod is enabled in the game, but the user hasn't verified it, prompt them to.
-
-            if (!mod.isBuiltin() && (mod.getSource() == ModSource.CACHEDIR || mod.getSource() == ModSource.WORKSHOP)) {
-                if (verifiedModList.wasVerified(mod) && UpdatedModDialog.show(mod)) {
-                    // TODO(leaf): Support server-side
-                    verifiedModList.updateMod(mod);
-                } else if (!verifiedModList.isVerified(mod)) {
-                    if (VerifyModDialog.show(mod)) {
+                // If the mod is enabled in the game, but the user hasn't verified it, prompt them to.
+                if (mod.getSource() == ModSource.CACHEDIR || mod.getSource() == ModSource.WORKSHOP) {
+                    if (verifiedModList.wasVerified(mod) && UpdatedModDialog.show(mod)) {
                         // TODO(leaf): Support server-side
-                        verifiedModList.add(mod);
-                    } else {
-                        Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s/%s') because it wasn't verified!",
-                            mod.getId(), mod.getWorkshopId(), mod.getGameId());
-                        continue;
+                        verifiedModList.updateMod(mod);
+                    } else if (!verifiedModList.isVerified(mod)) {
+                        if (VerifyModDialog.show(mod)) {
+                            // TODO(leaf): Support server-side
+                            verifiedModList.add(mod);
+                        } else {
+                            Log.info(LogCategory.DISCOVERY, "Skipping mod '%s' (from '%s/%s') because it wasn't verified!",
+                                mod.getId(), mod.getWorkshopId(), mod.getGameId());
+                            continue;
+                        }
                     }
                 }
             }

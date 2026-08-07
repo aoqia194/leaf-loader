@@ -45,6 +45,7 @@ import dev.aoqia.leaf.loader.impl.metadata.AbstractModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.DependencyOverrides;
 import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.VersionOverrides;
+import dev.aoqia.leaf.loader.impl.models.ModInfo;
 
 public final class ModCandidateImpl implements DomainObject.Mod {
 	static final Comparator<ModCandidateImpl> ID_VERSION_COMPARATOR = new Comparator<ModCandidateImpl>() {
@@ -67,6 +68,7 @@ public final class ModCandidateImpl implements DomainObject.Mod {
 	private int minNestLevel;
 	private SoftReference<ByteBuffer> dataRef;
     private final ModSource source;
+    private ModInfo modInfo = null;
 
 	static ModCandidateImpl createBuiltin(BuiltinMod mod, VersionOverrides versionOverrides, DependencyOverrides depOverrides) {
 		LoaderModMetadata metadata = new BuiltinMetadataWrapper(mod.metadata);
@@ -123,6 +125,10 @@ public final class ModCandidateImpl implements DomainObject.Mod {
 		this.parentMods = paths == null ? new ArrayList<>() : Collections.emptyList();
 		this.minNestLevel = paths != null ? 0 : Integer.MAX_VALUE;
         this.source = source;
+
+        if (source == ModSource.WORKSHOP) {
+            this.modInfo = ModInfo.parse(getRootModFolder().resolve("mod.info"));
+        }
 	}
 
 	public List<Path> getOriginPaths() {
@@ -165,6 +171,10 @@ public final class ModCandidateImpl implements DomainObject.Mod {
     }
 
     public String getGameId() {
+        if (source == ModSource.WORKSHOP) {
+            return getModInfo().getId();
+        }
+
         return getRootModFolder().getParent().getFileName().toString();
     }
 
@@ -447,7 +457,11 @@ public final class ModCandidateImpl implements DomainObject.Mod {
 		return ret;
 	}
 
-	@Override
+    public ModInfo getModInfo() {
+        return modInfo;
+    }
+
+    @Override
 	public String toString() {
 		return String.format("%s %s", getId(), getVersion());
 	}
