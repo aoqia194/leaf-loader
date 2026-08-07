@@ -4,6 +4,7 @@ import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.NodeChildren
 import proguard.gradle.ProGuardTask
+import java.io.FileNotFoundException
 import java.net.URI
 
 val isCiBuild = providers.environmentVariable("CI").map { it.toBoolean() }.orElse(false).get()
@@ -424,64 +425,75 @@ val javadocJar by tasks.registering(Jar::class) {
  */
 val checkVersion by tasks.registering {
     doFirst {
-        val xml = URI.create(
-            "https://maven.aoqia.dev/${if (isSnapshot) "snapshots" else "releases"}/${
+        val xml = try {
+            URI.create("https://maven.aoqia.dev/${if (isSnapshot) "snapshots" else "releases"}/${
                 rootProject.group.toString().replace(".", "/")
-            }/${rootProject.name}/maven-metadata.xml"
-        ).toURL().readText()
-        val metadata = XmlSlurper().parseText(xml)
+            }/${rootProject.name}/maven-metadata.xml").toURL().readText()
+        } catch (_: FileNotFoundException) {
+            null
+        }
 
-        val versioning = metadata.getProperty("versioning") as GPathResult
-        val versions = versioning.getProperty("versions") as GPathResult
-        val versionText = (versions.getProperty("version") as NodeChildren).map { it.toString() }
+        if (xml != null) {
+            val metadata = XmlSlurper().parseText(xml)
 
-        if (versionText.contains(version)) {
-            throw RuntimeException("$version has already been released!")
+            val versioning = metadata.getProperty("versioning") as GPathResult
+            val versions = versioning.getProperty("versions") as GPathResult
+            val versionText = (versions.getProperty("version") as NodeChildren).map { it.toString() }
+
+            if (versionText.contains(version)) {
+                throw RuntimeException("$version has already been released!")
+            }
         }
     }
 }
 
 publishing {
-    publications.withType<MavenPublication>().configureEach {
-        artifact(finalJar)
-        artifact(sourcesJar)
-        artifact(javadocJar)
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
 
-        artifact(tasks.generateInstallerJson) {
-            builtBy(copyJson)
-        }
+            artifact(finalJar)
+            artifact(sourcesJar)
+            artifact(javadocJar)
 
-        pom {
-            name = rootProject.name
-            group = rootProject.group
-            description = rootProject.description
-            url = property("url").toString()
-            inceptionYear = "2025"
-
-            developers {
-                developer {
-                    id = "aoqia"
-                    name = "aoqia"
-                    email = "aoqia@aoqia.dev"
-                }
+            artifact(tasks.generateInstallerJson) {
+                builtBy(copyJson)
             }
 
-            issueManagement {
-                system = "GitHub"
-                url = "${property("url").toString()}/issues"
-            }
-
-            licenses {
-                license {
-                    name = "Apache-2.0"
-                    url = "https://spdx.org/licenses/Apache-2.0.html"
-                }
-            }
-
-            scm {
-                connection = "scm:git:${property("url").toString()}.git"
-                developerConnection = "scm:git:${property("url").toString().replace("https", "ssh")}.git"
+            pom {
+                name = rootProject.name
+                group = rootProject.group
+                description = rootProject.description
                 url = property("url").toString()
+                inceptionYear = "2025"
+
+                developers {
+                    developer {
+                        id = "aoqia"
+                        name = "aoqia"
+                        email = "aoqia@aoqia.dev"
+                    }
+                }
+
+                issueManagement {
+                    system = "GitHub"
+                    url = "${property("url").toString()}/issues"
+                }
+
+                licenses {
+                    license {
+                        name = "Apache-2.0"
+                        url = "https://spdx.org/licenses/Apache-2.0.html"
+                    }
+                }
+
+                scm {
+                    connection = "scm:git:${property("url").toString()}.git"
+                    developerConnection = "scm:git:${property("url").toString().replace("https", "ssh")}.git"
+                    url = property("url").toString()
+                }
             }
         }
     }
