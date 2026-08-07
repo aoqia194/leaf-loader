@@ -50,14 +50,14 @@ import dev.aoqia.leaf.loader.impl.util.version.VersionPredicateParser;
 public final class ZomboidVersionLookup {
 	private static final Pattern VERSION_PATTERN = Pattern.compile(
         // Modern versions: 41.78.16, optional -unstable suffix for unstable build.
-        "\\d+\\.\\d+\\.\\d+(-unstable\\.\\d+)?"
+        "\\d+\\.\\d+\\.\\d+(-unstable(\\.\\d+|\\+\\w+))?$"
     );
-    private static final Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+");
+    private static final Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+\\.\\d+$");
     private static final Pattern RELEASE_JARNAME_PATTERN =
         Pattern.compile(".+?(?:\\d+\\.|-)(\\d+\\.\\d+\\.\\d+).+");
-    private static final Pattern UNSTABLE_RELEASE_PATTERN = Pattern.compile(".+-unstable\\.(\\d+)");
+    private static final Pattern UNSTABLE_RELEASE_PATTERN = Pattern.compile(".+-unstable(\\.\\d+|\\+\\w+)");
     private static final Pattern UNSTABLE_RELEASE_JARNAME_PATTERN =
-        Pattern.compile(".+?(?:\\d+\\.|-)(\\d+\\.\\d+\\.\\d+-unstable\\.\\d+).+");
+        Pattern.compile(".+?(?:\\d+\\.|-)(\\d+\\.\\d+\\.\\d+-unstable(\\.\\d+|\\+\\w+)).+");
     private static final Pattern UNSTABLE_REVISION_PATTERN = Pattern.compile("\\s*rev:(\\d+).+");
 
 	public static ZomboidVersion getVersion(List<Path> gameJars, String entrypointClass, String versionName) {
@@ -213,7 +213,7 @@ public final class ZomboidVersionLookup {
         private int patch = -1;
         private int major = -1;
         private int minor = -1;
-        private int revision = -1;
+        private String gitHash = null;
 
         // Visit the BIPUSH 41, BIPUSH 78, LDC "" (for 41.78.16) instructions
         // and store these statics, including revision number (only present on 42)
@@ -224,19 +224,16 @@ public final class ZomboidVersionLookup {
 
 		@Override
 		public String getResult() {
-            if (revision == -1) {
-                return String.format("%d.%d.%d", major, minor, patch);
-			}
-
-            return String.format("%d.%d.%d-unstable.%d", major, minor, patch, revision);
+            return String.format("%d.%d.%d", major, minor, patch);
+            // return String.format("%d.%d.%d-unstable+%s", major, minor, patch, gitHash);
 		}
 
 		@Override
         public MethodVisitor visitMethod(int access, String name, String descriptor, String signature,
-			String[] exceptions
+            String[] exceptions
 		) {
             // If all version data set, no need to visit anything else.
-            if (major != -1 && minor != -1 && patch != -1 && revision != -1) {
+            if (major != -1 && minor != -1 && patch != -1 && gitHash != null) {
 				return null;
 			}
 
@@ -283,25 +280,23 @@ public final class ZomboidVersionLookup {
 				};
 			}
 
-            // Capture LDC instruction (revision number) from getSVNRevisionString() function.
-            // If this function doesn't exist, it means we are on a build older than `42.0.0`.
-            if (revision == -1 && name.equals("getSVNRevisionString")) {
-				return new InsnFwdMethodVisitor() {
-					@Override
-					public void visitLdcInsn(Object value) {
-                        if (revision != -1) {
-                            return;
-						}
-
-                        if (value instanceof String) {
-                            revision = Integer.parseInt(findProbableRevisionNumber((String) value));
-						}
-					}
-
-					@Override
-                    protected void visitAnyInsn() {}
-                };
-            }
+            // if (gitHash == null && name.equals("getGitRevision")) {
+            //     return new InsnFwdMethodVisitor() {
+            //         @Override
+            //         protected void visitAnyInsn() {}
+            //
+            //         @Override
+            //         public void visitLdcInsn(Object value) {
+            //             if (gitHash != null) {
+            //                 return;
+            //             }
+            //
+            //             if (value instanceof String) {
+            //                 gitHash = (String) value;
+            //             }
+            //         }
+            //     };
+            // }
 
 			return null;
 		}
