@@ -210,11 +210,6 @@ tasks.withType<AbstractArchiveTask>().configureEach {
     isReproducibleFileOrder = true
 }
 
-val publishTasks = tasks.withType<PublishToMavenLocal>()
-publishTasks.configureEach {
-    mustRunAfter(publishTasks.matching { it.name < this.name })
-}
-
 // Workaround for https://youtrack.jetbrains.com/issue/KT-46466
 tasks.withType<AbstractPublishToMaven>().configureEach {
     dependsOn(tasks.withType<Sign>())
@@ -430,7 +425,7 @@ val javadocJar by tasks.registering(Jar::class) {
 val checkVersion by tasks.registering {
     doFirst {
         val xml = URI.create(
-            "https://repo.maven.apache.org/maven2/${
+            "https://maven.aoqia.dev/${if (isSnapshot) "snapshots" else "releases"}/${
                 rootProject.group.toString().replace(".", "/")
             }/${rootProject.name}/maven-metadata.xml"
         ).toURL().readText()
