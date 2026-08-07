@@ -37,7 +37,7 @@ jobs:
       # If this isn't a snapshot release, publish a snapshot release so that they are both up-to-date.
       - name: Sync Snapshot
         if: ${{ !github.event.inputs.is_snapshot }}
-        run: ./gradlew checkVersion generateInstallerJson publish -S -Pleaf.loom.minimalSetup
+        run: ./gradlew checkVersion generateInstallerJson publish -S -Pleaf.loom.minimalSetup=true
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE_KEY }}
@@ -46,7 +46,7 @@ jobs:
           ORG_GRADLE_PROJECT_isSnapshot: true
 
       - name: Release
-        run: ./gradlew checkVersion generateInstallerJson publish -S -Pleaf.loom.minimalSetup
+        run: ./gradlew checkVersion generateInstallerJson publish -S -Pleaf.loom.minimalSetup=true
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE_KEY }}
@@ -74,7 +74,7 @@ jobs:
       # Taken from installerjson.yml
 
       - name: Get Loader Version
-        run: echo "LOADER_VERSION=$(./gradlew -q getLoaderVersion -Pleaf.loom.minimalSetup | grep -Eo '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')" >> $GITHUB_ENV
+        run: echo "LOADER_VERSION=$(./gradlew -q getLoaderVersion -Pleaf.loom.minimalSetup=true | grep -Eo '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')" >> $GITHUB_ENV
 
       - name: Upload Installer Json to Leaf
         uses: supsm/copy_file_to_another_repo@master
