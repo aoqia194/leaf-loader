@@ -82,7 +82,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 
 	public static final int ASM_VERSION = Opcodes.ASM9;
 
-    public static final String VERSION = "1.6.0";
+    public static final String VERSION = "UNKNOWN";
     public static final String MOD_ID = "leafloader";
 
     // Relative to game cachedir.

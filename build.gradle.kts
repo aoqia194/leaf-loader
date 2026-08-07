@@ -3,20 +3,16 @@ import dev.aoqia.leaf.loom.build.nesting.JarNester
 import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
 import groovy.xml.slurpersupport.NodeChildren
-import org.jreleaser.model.Active
-import org.jreleaser.model.Http
 import proguard.gradle.ProGuardTask
 import java.net.URI
 
+val isCiBuild = providers.environmentVariable("CI").map { it.toBoolean() }.orElse(false).get()
+val isSnapshot = providers.gradleProperty("isSnapshot").map { it.toBoolean() }.orElse(false).get()
+
 var groupUrl = rootProject.group.toString().replace(".", "/")
 
-val env = System.getenv()!!
-val isCiEnv = env["CI"].toBoolean()
-val gpgKeyPassphrase = env["GPG_PASSPHRASE_KEY"]
-val gpgKeyPublic = env["GPG_PUBLIC_KEY"]
-val gpgKeyPrivate = env["GPG_PRIVATE_KEY"]
-val mavenUsername = env["MAVEN_USERNAME"]
-val mavenPassword = env["MAVEN_PASSWORD"]
+val baseVersion = project.version.toString()
+project.version = if (isSnapshot) "$baseVersion-SNAPSHOT" else if (!isCiBuild) "$baseVersion.local" else baseVersion
 
 val proguardTmpFile = file("build/tmp/loader-${version}.jar")
 
@@ -39,7 +35,7 @@ plugins {
 
     // Publishing to Maven Central
     `maven-publish`
-    alias(libs.plugins.jreleaser)
+    signing
 
     id("installerjson")
 }
@@ -53,10 +49,7 @@ allprojects {
     apply(plugin = "eclipse")
 //    apply(plugin = "com.diffplug.spotless")
 
-    val constantsSource =
-        rootProject.file("src/main/java/${groupUrl}/${rootProject.name}/impl/LeafLoaderImpl.java").readText()
-    version = Regex("""\s+VERSION\s*=\s*"(.*)";""")
-        .find(constantsSource)!!.groupValues[1] + if (isCiEnv) "" else ".local"
+    version = rootProject.version
 
     repositories {
         maven {
@@ -83,22 +76,6 @@ allprojects {
 //            targetExclude("**/lib/gson/*.java")
 //        }
 //    }
-}
-
-// FIXME(leaf): Uncomment after loom is sorted
-// Disable zomboid-test Java code from compiling if CI and ignoreMissingFiles.
-project(":zomboid:zomboid-test") {
-    tasks.compileJava {
-        onlyIf {
-            !isCiEnv || (isCiEnv && !project.hasProperty("leaf.loom.ignoreMissingFiles"))
-        }
-    }
-
-    tasks.test {
-        onlyIf {
-            !isCiEnv || (isCiEnv && !project.hasProperty("leaf.loom.ignoreMissingFiles"))
-        }
-    }
 }
 
 val mainSourceSetOutput by configurations.registering {
@@ -152,7 +129,7 @@ dependencies {
 
 sourceSets {
     main {
-        java.srcDirs("src/main/java", "src/main/legacyJava")
+        java.srcDirs("src/main/java", "src/main/legacyJava", "src/main/generated")
     }
 
     register("java17")
@@ -179,40 +156,42 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks {
-    build {
-        dependsOn(finalJar)
-        dependsOn(javadocJar)
+tasks.build {
+    dependsOn(finalJar)
+    dependsOn(javadocJar)
+}
+
+tasks.compileJava {
+    dependsOn(generateBuildInfo)
+}
+
+tasks.processResources {
+    dependsOn(copyJson)
+
+    inputs.property("version", project.version)
+
+    filesMatching("leaf.mod.json") {
+        expand("version" to inputs.properties["version"].toString().replace(".local", ""))
     }
+}
 
-    processResources {
-        dependsOn(copyJson)
+tasks.jar {
+    enabled = false
+    // Set the classifier to fix gradle task validation confusion.
+    archiveClassifier = "disabled"
+}
 
-        inputs.property("version", project.version)
+tasks.shadowJar {
+    // Has stupid defaults, make our own.
+    enabled = false
+}
 
-        filesMatching("leaf.mod.json") {
-            expand("version" to inputs.properties["version"].toString().replace(".local", ""))
-        }
-    }
+tasks.test {
+    useJUnitPlatform()
+}
 
-    jar {
-        enabled = false
-        // Set the classifier to fix gradle task validation confusion.
-        archiveClassifier = "disabled"
-    }
-
-    shadowJar {
-        // Has stupid defaults, make our own.
-        enabled = false
-    }
-
-    test {
-        useJUnitPlatform()
-    }
-
-    publish {
-        mustRunAfter(checkVersion)
-    }
+tasks.publish {
+    mustRunAfter(checkVersion)
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -230,6 +209,42 @@ tasks.withType<AbstractArchiveTask>().configureEach {
     isReproducibleFileOrder = true
 }
 
+val publishTasks = tasks.withType<PublishToMavenLocal>()
+publishTasks.configureEach {
+    mustRunAfter(publishTasks.matching { it.name < this.name })
+}
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-46466
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(tasks.withType<Sign>())
+}
+
+tasks.withType<Sign>().configureEach {
+    enabled = isCiBuild && !isSnapshot
+}
+
+val generatedDir = layout.buildDirectory.dir("generated/source/buildinfo/java")
+val generateBuildInfo by tasks.registering {
+    description = "Generates build info used by loader classes"
+
+    outputs.dir(generatedDir)
+
+    doLast {
+        val file = generatedDir.get().asFile.resolve("dev/aoqia/leaf/loader/impl/util/BuildInfo.java")
+        file.parentFile.mkdirs()
+        file.writeText(
+            """
+            package dev.aoqia.leaf.loader.impl.util;
+            
+            public final class BuildInfo {
+                public static final String VERSION = "${rootProject.version}";
+                private BuildInfo() {}
+            }
+            """.trimIndent()
+        )
+    }
+}
+
 val getLoaderVersion by tasks.registering {
     description = "A task to get the raw loader version, used for GitHub workflows."
     println(version)
@@ -237,6 +252,8 @@ val getLoaderVersion by tasks.registering {
 
 // Renaming in the shadow jar task doesnt seem to work, so do it here
 val getSat4jAbout by tasks.registering(Copy::class) {
+    description = "_"
+
     dependsOn(include.get())
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
@@ -425,130 +442,75 @@ val checkVersion by tasks.registering {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = project.group.toString()
-            artifactId = project.name
-            version = project.version.toString()
+    publications.withType<MavenPublication>().configureEach {
+        artifact(finalJar)
+        artifact(sourcesJar)
+        artifact(javadocJar)
 
-            pom {
-                name = rootProject.name
-                group = rootProject.group
-                description = rootProject.description
-                url = property("url").toString()
-                inceptionYear = "2025"
-                developers {
-                    developer {
-                        id = "aoqia"
-                        name = "aoqia"
-                    }
-                }
-                issueManagement {
-                    system = "GitHub"
-                    url = "${property("url").toString()}/issues"
-                }
-                licenses {
-                    license {
-                        name = "Apache-2.0"
-                        url = "https://spdx.org/licenses/Apache-2.0.html"
-                    }
-                }
-                scm {
-                    connection = "scm:git:${property("url").toString()}.git"
-                    developerConnection =
-                        "scm:git:${property("url").toString().replace("https", "ssh")}.git"
-                    url = property("url").toString()
+        artifact(tasks.generateInstallerJson) {
+            builtBy(copyJson)
+        }
+
+        pom {
+            name = rootProject.name
+            group = rootProject.group
+            description = rootProject.description
+            url = property("url").toString()
+            inceptionYear = "2025"
+
+            developers {
+                developer {
+                    id = "aoqia"
+                    name = "aoqia"
+                    email = "aoqia@aoqia.dev"
                 }
             }
 
-            artifact(finalJar)
-            artifact(sourcesJar)
-            artifact(javadocJar)
+            issueManagement {
+                system = "GitHub"
+                url = "${property("url").toString()}/issues"
+            }
 
-            artifact(tasks.generateInstallerJson) {
-                builtBy(copyJson)
+            licenses {
+                license {
+                    name = "Apache-2.0"
+                    url = "https://spdx.org/licenses/Apache-2.0.html"
+                }
+            }
+
+            scm {
+                connection = "scm:git:${property("url").toString()}.git"
+                developerConnection = "scm:git:${property("url").toString().replace("https", "ssh")}.git"
+                url = property("url").toString()
             }
         }
     }
 
     repositories {
         maven {
-            url = uri(layout.buildDirectory.dir("staging-deploy"))
+            name = "leaf"
+            url = uri("https://maven.aoqia.dev/${if (isSnapshot) "snapshots" else "releases"}")
+
+            credentials {
+                username = providers.gradleProperty("mavenUsername").orNull
+                password = providers.gradleProperty("mavenPassword").orNull
+            }
+
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
         }
     }
 }
 
-jreleaser {
-    project {
-        name = rootProject.name
-        version = rootProject.version.toString()
-        versionPattern = "SEMVER"
-        authors = listOf("aoqia194", "FabricMC")
-        maintainers = listOf("aoqia194")
-        license = "Apache-2.0"
-        inceptionYear = "2025"
+signing {
+    isRequired = isCiBuild and !isSnapshot
 
-        links {
-            homepage = property("url").toString()
-            license = "https://spdx.org/licenses/Apache-2.0.html"
-        }
+    val signingKey = providers.gradleProperty("signingKey")
+    val signingPassword = providers.gradleProperty("signingPassword")
+    if (signingKey.isPresent && signingPassword.isPresent) {
+        useInMemoryPgpKeys(signingKey.get(), signingPassword.get())
     }
 
-    signing {
-        active = Active.ALWAYS
-
-        pgp {
-            active = Active.ALWAYS
-            armored = true
-            passphrase = gpgKeyPassphrase
-            publicKey = gpgKeyPublic
-            secretKey = gpgKeyPrivate
-        }
-    }
-
-    deploy {
-        maven {
-            pomchecker {
-                version = "1.15.0"
-                failOnWarning = false // annoying
-                failOnError = true
-                strict = true
-            }
-
-            mavenCentral {
-                create("sonatype") {
-                    applyMavenCentralRules = true
-                    active = Active.ALWAYS
-                    snapshotSupported = true
-                    authorization = Http.Authorization.BASIC
-                    username = mavenUsername
-                    password = mavenPassword
-                    url = "https://central.sonatype.com/api/v1/publisher"
-                    stagingRepository("build/staging-deploy")
-                    verifyUrl = "https://repo1.maven.org/maven2/{{path}}/{{filename}}"
-                    namespace = rootProject.group.toString()
-                    retryDelay = 60
-                    maxRetries = 30
-                }
-            }
-        }
-    }
-
-    release {
-        github {
-            enabled = true
-            repoOwner = "aoqia194"
-            name = "leaf-loader"
-            host = "github.com"
-            releaseName = "{{tagName}}"
-            sign = true
-            overwrite = true
-
-            changelog {
-                formatted = Active.ALWAYS
-                preset = "conventional-commits"
-                extraProperties.put("categorizeScopes", "true")
-            }
-        }
-    }
+    sign(publishing.publications)
 }

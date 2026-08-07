@@ -3,6 +3,7 @@ import groovy.json.JsonOutput
 import java.net.URI
 
 val generateInstallerJson by tasks.registering(GenerateInstallerJsonTask::class) {
+    description = "Generates the internal leaf-installer json file for the loader"
     configurations = mapOf("common" to "installer", "development" to "development")
     options = mapOf(
         "mainClass" to mapOf(
@@ -40,6 +41,8 @@ abstract class GenerateInstallerJsonTask : DefaultTask() {
                 "development" to mutableListOf(),
             )
         )
+
+        @Suppress("UNCHECKED_CAST")
         val libraries = json["libraries"] as Map<String, MutableList<Any>>
 
         configurations.get().forEach { (side, name) ->
@@ -119,6 +122,7 @@ abstract class GenerateInstallerJsonTask : DefaultTask() {
         outputFile.get().asFile.writeText(JsonOutput.prettyPrint(JsonOutput.toJson(json)))
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun resolveHashes(artifact: String): Map<String, Any> {
         return mapOf<String, Any?>(
             "md5" to resolveHash(artifact, "md5", false),

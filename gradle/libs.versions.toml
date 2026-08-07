@@ -4,12 +4,11 @@ annotations = "23.0.0"
 apache-commons-codec = "1.22.0"
 asm = "9.10.1"
 clazztweaker = "0.3.0-beta.2"
-gson = "2.2.4"
-jreleaser = "1.25.0"
+gson = "2.14.0"
 junit-bom = "5.10.0"
 junit-jupiter = "5.9.2"
 log4j = "2.25.1"
-loom = "0.7.1"
+loom = "0.7.2.local"
 mappingio = "0.7.1"
 mixin = "0.17.2+mixin.0.8.7"
 mixinextras = "0.5.4"
@@ -71,6 +70,5 @@ sat4j = ["sat4j-core", "sat4j-pb"]
 
 loom = { id = "dev.aoqia.leaf.loom", version.ref = "loom" }
 
-jreleaser = { id = "org.jreleaser", version.ref = "jreleaser" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

@@ -19,12 +19,6 @@ dependencies {
     testImplementation(libs.gson)
 }
 
-sourceSets {
-    main {
-        java.srcDirs("src/main/java", "src/main/legacyJava")
-    }
-}
-
 artifacts {
     val main = sourceSets.main.get()
     main.output.classesDirs.forEach {
