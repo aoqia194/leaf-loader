@@ -129,7 +129,7 @@ dependencies {
 
 sourceSets {
     main {
-        java.srcDirs("src/main/java", "src/main/legacyJava", "src/main/generated")
+        java.srcDirs("src/main/java", "src/main/legacyJava")
     }
 
     register("java17")
@@ -157,6 +157,7 @@ java {
 }
 
 tasks.build {
+    dependsOn(generateBuildInfo)
     dependsOn(finalJar)
     dependsOn(javadocJar)
 }
@@ -223,14 +224,14 @@ tasks.withType<Sign>().configureEach {
     enabled = isCiBuild && !isSnapshot
 }
 
-val generatedDir = layout.buildDirectory.dir("generated/source/buildinfo/java")
+val generatedDir = layout.projectDirectory.dir("src/${sourceSets.main.name}/generated/")
 val generateBuildInfo by tasks.registering {
     description = "Generates build info used by loader classes"
 
     outputs.dir(generatedDir)
 
     doLast {
-        val file = generatedDir.get().asFile.resolve("dev/aoqia/leaf/loader/impl/util/BuildInfo.java")
+        val file = generatedDir.asFile.resolve("dev/aoqia/leaf/loader/impl/util/BuildInfo.java")
         file.parentFile.mkdirs()
         file.writeText(
             """
@@ -243,6 +244,10 @@ val generateBuildInfo by tasks.registering {
             """.trimIndent()
         )
     }
+}
+
+sourceSets.main {
+    java.srcDir(generateBuildInfo)
 }
 
 val getLoaderVersion by tasks.registering {

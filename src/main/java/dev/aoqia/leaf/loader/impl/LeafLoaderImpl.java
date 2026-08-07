@@ -69,6 +69,7 @@ import dev.aoqia.leaf.loader.impl.metadata.EntrypointMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.LoaderModMetadata;
 import dev.aoqia.leaf.loader.impl.metadata.VersionOverrides;
 import dev.aoqia.leaf.loader.impl.util.Arguments;
+import dev.aoqia.leaf.loader.impl.util.BuildInfo;
 import dev.aoqia.leaf.loader.impl.util.DefaultLanguageAdapter;
 import dev.aoqia.leaf.loader.impl.util.ExceptionUtil;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
@@ -82,7 +83,7 @@ public final class LeafLoaderImpl extends LeafLoader {
 
 	public static final int ASM_VERSION = Opcodes.ASM9;
 
-    public static final String VERSION = "UNKNOWN";
+    public static final String VERSION = BuildInfo.VERSION;
     public static final String MOD_ID = "leafloader";
 
     // Relative to game cachedir.
