@@ -1,7 +1,6 @@
 # Ignore everything
 /*
 
-# Folders
 !/.github
 !/buildSrc
 !/gradle
@@ -9,7 +8,7 @@
 !/src
 !/zomboid
 
-# Files
+!/.cliff.toml
 !/.gitattributes
 !/.gitignore
 !/.editorconfig
