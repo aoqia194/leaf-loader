@@ -14,47 +14,37 @@
  * limitations under the License.
  */
 
-package net.fabricmc.minecraft.test.junit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+package dev.aoqia.leaf.loader.zomboid.test.junit;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import zombie.core.Core;
 
-import net.minecraft.Bootstrap;
-import net.minecraft.SharedConstants;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.GrassBlock;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import dev.aoqia.leaf.loader.api.FabricLoader;
+import dev.aoqia.leaf.loader.api.LeafLoader;
 
 public class JunitTest {
-	@BeforeAll
-	public static void setup() {
-	}
+    @BeforeAll
+    public static void setup() {
+    }
 
-	@Test
-	public void testMixin() {
-		// TODO(leaf): Write better test
-		final String gameVersion = Core.getInstance().getVersion();
-		assertEquals("43.69.0", gameVersion);
-	}
+    @Test
+    public void testMixin() {
+        // TODO(leaf): Write better test
+        final String gameVersion = Core.getInstance().getVersion();
+        assertEquals("43.69.0", gameVersion);
+    }
 
-	@Test
-	public void testMixinExtras() {
-		// TODO(leaf): Write better test
-//		 final String gameVersion = Core.getInstance().getVersion();
-//		 assertEquals("43.69.0", gameVersion);
-	}
+    @Test
+    public void testMixinExtras() {
+        // TODO(leaf): Write better test
+        //		 final String gameVersion = Core.getInstance().getVersion();
+        //		 assertEquals("43.69.0", gameVersion);
+    }
 
-	@Test
-	public void testAccessLoader() {
-		LeafLoader.getInstance().getAllMods();
-	}
+    @Test
+    public void testAccessLoader() {
+        LeafLoader.getInstance().getAllMods();
+    }
 }
