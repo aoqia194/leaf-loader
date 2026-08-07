@@ -1,1 +1,1 @@
-net.fabricmc.loader.impl.junit.FabricLoaderLauncherSessionListener
+dev.aoqia.leaf.loader.impl.junit.LeafLoaderLauncherSessionListener
