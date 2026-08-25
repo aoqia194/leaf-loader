@@ -102,9 +102,9 @@ public class GetNonLeafModsTest {
 		@Override
 		public void findCandidates(ModCandidateConsumer out) {
             out.accept(LoaderUtil.normalizePath(
-                Paths.get("src/test/resources/testing/discovery/dummyLeafMod.jar")), false);
+                Paths.get("src/test/resources/testing/discovery/dummyLeafMod.jar")), false, ModSource.INTERNAL);
             out.accept(LoaderUtil.normalizePath(
-                Paths.get("src/test/resources/testing/discovery/dummyNonLeafMod.jar")), false);
+                Paths.get("src/test/resources/testing/discovery/dummyNonLeafMod.jar")), false, ModSource.INTERNAL);
 		}
 	}
 }
