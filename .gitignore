@@ -9,9 +9,10 @@
 !/zomboid
 
 !/.cliff.toml
+!/.editorconfig
+!/.envrc
 !/.gitattributes
 !/.gitignore
-!/.editorconfig
 !/build.gradle*
 !/checkstyle.xml
 !/gradle.properties
@@ -19,6 +20,7 @@
 !/gradlew.bat
 !/HEADER
 !/LICENSE
+!/proguard.conf
 !/README.md
 !/settings.gradle*
-!/proguard.conf
+!/shell.nix
