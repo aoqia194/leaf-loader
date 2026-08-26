@@ -5,8 +5,13 @@ let
         pkgs.wayland
         pkgs.libxkbcommon
         pkgs.libx11
+        pkgs.libxrandr
         pkgs.glfw
         pkgs.libGL
+        pkgs.libpulseaudio
+        pkgs.libusb1
+        pkgs.openal
+        pkgs.udev
     ];
 in
 pkgs.mkShell {
