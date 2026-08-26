@@ -70,7 +70,7 @@ jobs:
         with:
           fail_on_unmatched_files: true
           files: |
-            build/libs/*.!(*-*).jar*
+            build/libs/*.jar*
           body: ${{ steps.cliff.outputs.content }}
 
 
