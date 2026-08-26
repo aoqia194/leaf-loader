@@ -25,6 +25,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.aoqia.leaf.loader.api.LeafLoader;
+import dev.aoqia.leaf.loader.impl.LeafLoaderImpl;
 import dev.aoqia.leaf.loader.impl.util.LoaderUtil;
 import dev.aoqia.leaf.loader.impl.util.SystemProperties;
 
@@ -167,7 +169,8 @@ final class BuiltinLogHandler extends ConsoleLogHandler {
 				}
 
 				String fileName = System.getProperty(SystemProperties.LOG_FILE,
-					Paths.get(System.getProperty("leaf.log.file", System.getProperty("leaf.runDir", ".")))
+					Paths.get(System.getProperty("leaf.log.file", System.getProperty("leaf.runDir",
+                            ((LeafLoaderImpl) LeafLoader.getInstance()).getCacheDir().toString())))
 						.resolve(DEFAULT_LOG_FILE)
 						.toString());
 				if (fileName.isEmpty()) return;
