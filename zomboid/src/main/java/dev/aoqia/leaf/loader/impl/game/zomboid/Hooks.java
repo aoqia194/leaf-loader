@@ -31,14 +31,13 @@ public final class Hooks {
 	public static final String INTERNAL_NAME = Hooks.class.getName().replace('.', '/');
     public static final String LEAF = "leaf";
 
-    public static String setWindowTitle(final String title) {
-        if (title == null || title.isEmpty()) {
-            Log.warn(LogCategory.GAME_PROVIDER,
-                "Null or empty window title string found!", new IllegalStateException());
+    public static String appendBrandingString(final String s) {
+        if (s == null || s.isEmpty()) {
+            Log.warn(LogCategory.GAME_PROVIDER, "Null or empty input string found!", new IllegalStateException());
             return LEAF;
 		}
 
-        return title + " (" + LEAF + ")";
+        return s + " (" + LEAF + ")";
 	}
 
 	public static void startClient(File runDir, Class<?> gameInstance) {
