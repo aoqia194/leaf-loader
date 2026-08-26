@@ -11,6 +11,12 @@ loom {
         isIdeConfigGenerated = true
         property("leaf.debug.replaceVersion", "leafloader:${version}")
     }
+
+    decompilers {
+        getByName("vineflower") {
+            options.put("included-classes", """(zombie).*""")
+        }
+    }
 }
 
 repositories {
@@ -41,7 +47,7 @@ dependencies {
         rootProject.file("src/main/resources/leaf-installer.json")
     ) as Map<String, Any>
     val libraries = installerJson["libraries"] as Map<String, List<Map<String, Any>>>
-    libraries["common"]!!.map { "zomboidTestClientRuntimeLibraries"(it["name"].toString()) }
+    libraries["common"]!!.forEach { "zomboidTestClientRuntimeLibraries"(it["name"].toString()) }
 }
 
 java {
