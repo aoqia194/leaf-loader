@@ -234,7 +234,7 @@ val generateBuildInfo by tasks.registering {
             package dev.aoqia.leaf.loader.impl.util;
             
             public final class BuildInfo {
-                public static final String VERSION = "${rootProject.version}";
+                public static final String VERSION = "$baseVersion";
                 private BuildInfo() {}
             }
             """.trimIndent()
