@@ -6,6 +6,7 @@ on:
     branches:
       - main
   workflow_call:
+  workflow_dispatch:
   workflow_run:
     workflows:
       - manual
