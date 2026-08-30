@@ -49,7 +49,6 @@ enum LoaderLibrary {
 	SAT4J_CORE(ContradictionException.class),
 	SAT4J_PB(SolverFactory.class),
 	SERVER_LAUNCH("leaf-server-launch.properties", EnvType.SERVER), // installer generated jar to run setup loader's class path
-	SERVER_LAUNCHER("dev/aoqia/leaf/installer/ServerLauncher.class", EnvType.SERVER), // installer based launch-through method
 	JUNIT_API("org/junit/jupiter/api/Test.class", null),
 	JUNIT_PLATFORM_ENGINE("org/junit/platform/engine/TestEngine.class", null),
 	JUNIT_PLATFORM_LAUNCHER("org/junit/platform/launcher/core/LauncherFactory.class", null),
