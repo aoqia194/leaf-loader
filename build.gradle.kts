@@ -79,20 +79,17 @@ allprojects {
 //    }
 }
 
-val mainSourceSetOutput by configurations.registering {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-}
+val mainSourceSetOutput = configurations.dependencyScope("mainSourceSetOutput")
 
-val include by configurations.registering {
+val include = configurations.dependencyScope("include") {
     isTransitive = false
 }
 
-val installer by configurations.registering {
+val installer = configurations.dependencyScope("installer") {
     isTransitive = false
 }
 
-val development by configurations.registering {
+val development = configurations.dependencyScope("development") {
     isTransitive = false
 }
 
@@ -221,7 +218,7 @@ tasks.withType<Sign>().configureEach {
 }
 
 val generatedDir = layout.projectDirectory.dir("src/${sourceSets.main.name}/generated/")
-val generateBuildInfo by tasks.registering {
+val generateBuildInfo = tasks.register("generateBuildInfo") {
     description = "Generates build info used by loader classes"
 
     outputs.dir(generatedDir)
@@ -246,13 +243,13 @@ sourceSets.main {
     java.srcDir(generateBuildInfo)
 }
 
-val getLoaderVersion by tasks.registering {
+val getLoaderVersion = tasks.register("getLoaderVersion") {
     description = "A task to get the raw loader version, used for GitHub workflows."
     println(version)
 }
 
 // Renaming in the shadow jar task doesnt seem to work, so do it here
-val getSat4jAbout by tasks.registering(Copy::class) {
+val getSat4jAbout = tasks.register<Copy>("getSat4jAbout") {
     description = "_"
 
     dependsOn(include.get())
@@ -270,7 +267,7 @@ val getSat4jAbout by tasks.registering(Copy::class) {
     into(layout.buildDirectory.dir("sat4j"))
 }
 
-val fatJar by tasks.registering(ShadowJar::class) {
+val fatJar = tasks.register<ShadowJar>("fatJar") {
     description = "Creates a fat jar"
 
     dependsOn(getSat4jAbout)
@@ -317,7 +314,7 @@ val fatJar by tasks.registering(ShadowJar::class) {
     outputs.upToDateWhen { false }
 }
 
-val proguardJar by tasks.registering(ProGuardTask::class) {
+val proguardJar = tasks.register<ProGuardTask>("proguardJar") {
     dependsOn(fatJar)
 
     val classpath = project(":zomboid").configurations.compileClasspath.get()
@@ -341,7 +338,7 @@ val proguardJar by tasks.registering(ProGuardTask::class) {
 
 // As proguard does not support MRJ's we must add the MRJ classes to the final jar
 // Use a Zip task to not alter the manifest
-val finalJar by tasks.registering(Zip::class) {
+val finalJar = tasks.register<Zip>("finalJar") {
     dependsOn(proguardJar)
 
     destinationDirectory = file("build/libs")
@@ -353,7 +350,7 @@ val finalJar by tasks.registering(Zip::class) {
     }
 }
 
-val sourcesJar by tasks.named<Jar>("sourcesJar") {
+val sourcesJar = tasks.named<Jar>("sourcesJar") {
     description = "Creates the sources jar"
 
     // Need to depend on JAR task because otherwise Gradle gets funky with the task graph.
@@ -365,14 +362,14 @@ val sourcesJar by tasks.named<Jar>("sourcesJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-val testJar by tasks.registering(Jar::class) {
+val testJar = tasks.register<Jar>("testJar") {
     description = "A useful task for creating a test mod jar"
 
     archiveClassifier = "test"
     from(sourceSets.test.get().output)
 }
 
-val copyJson by tasks.registering {
+val copyJson = tasks.register("copyJson") {
     dependsOn(tasks.generateInstallerJson)
 
     val inJson = tasks.generateInstallerJson.get().outputFile.get().asFile
@@ -413,7 +410,7 @@ val javadoc = tasks.named<Javadoc>("javadoc") {
     isFailOnError = false
 }
 
-val javadocJar by tasks.registering(Jar::class) {
+val javadocJar = tasks.register<Jar>("javadocJar") {
     dependsOn(javadoc)
 
     archiveClassifier = "javadoc"
@@ -423,7 +420,7 @@ val javadocJar by tasks.registering(Jar::class) {
 /*
  * A task to ensure that the version being released has not already been released.
  */
-val checkVersion by tasks.registering {
+val checkVersion = tasks.register("checkVersion") {
     doFirst {
         val xml = try {
             URI.create("https://maven.aoqia.dev/${if (isSnapshot) "snapshots" else "releases"}/${
