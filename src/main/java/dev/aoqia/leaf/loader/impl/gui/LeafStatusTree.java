@@ -71,13 +71,13 @@ public final class LeafStatusTree {
 	/** Generic non-Fabric jar file. */
 	public static final String ICON_TYPE_JAR_FILE = "jar";
 	/** Generic Fabric-related jar file. */
-	public static final String ICON_TYPE_FABRIC_JAR_FILE = "jar+fabric";
+	public static final String ICON_TYPE_LEAF_JAR_FILE = "jar+leaf";
 	/** Something related to Fabric (It's not defined what exactly this is for, but it uses the main Fabric logo). */
-	public static final String ICON_TYPE_FABRIC = "fabric";
+	public static final String ICON_TYPE_LEAF = "leaf";
 	/** Generic JSON file. */
 	public static final String ICON_TYPE_JSON = "json";
 	/** A file called "fabric.mod.json". */
-	public static final String ICON_TYPE_FABRIC_JSON = "json+fabric";
+	public static final String ICON_TYPE_LEAF_JSON = "json+leaf";
 	/** Java bytecode class file. */
 	public static final String ICON_TYPE_JAVA_CLASS = "java_class";
 	/** A folder inside of a Java JAR. */
