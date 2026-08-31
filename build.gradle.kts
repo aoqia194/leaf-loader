@@ -79,17 +79,15 @@ allprojects {
 //    }
 }
 
-val mainSourceSetOutput = configurations.dependencyScope("mainSourceSetOutput")
-
-val include = configurations.dependencyScope("include") {
+val include = configurations.register("include") {
     isTransitive = false
 }
 
-val installer = configurations.dependencyScope("installer") {
+val installer = configurations.register("installer") {
     isTransitive = false
 }
 
-val development = configurations.dependencyScope("development") {
+val development = configurations.register("development") {
     isTransitive = false
 }
 
@@ -131,18 +129,6 @@ sourceSets {
     }
 
     register("java17")
-}
-
-artifacts {
-    val main = sourceSets.main.get()
-    main.output.classesDirs.forEach {
-        add(mainSourceSetOutput.name, provider { it }) {
-            builtBy(tasks.compileJava)
-        }
-    }
-    add(mainSourceSetOutput.name, provider { main.output.resourcesDir }) {
-        builtBy(tasks.processResources)
-    }
 }
 
 java {

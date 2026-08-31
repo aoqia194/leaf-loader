@@ -1,4 +1,4 @@
-val mainSourceSetOutput by configurations.registering {
+val mainSourceSetOutput = configurations.register("mainSourceSetOutput") {
     isCanBeConsumed = true
     isCanBeResolved = false
 }

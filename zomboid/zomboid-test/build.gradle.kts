@@ -1,6 +1,6 @@
 import groovy.json.JsonSlurper
 
-val zomboidVersion: String by project
+val zomboidVersion = project.findProperty("zomboidVersion") as String?
 
 plugins {
     alias(libs.plugins.loom)
@@ -8,8 +8,8 @@ plugins {
 
 loom {
     runConfigs.configureEach {
-        isIdeConfigGenerated = true
-        property("leaf.debug.replaceVersion", "leafloader:${version}")
+        generateRunConfig.set(true)
+        systemProperties.put("leaf.debug.replaceVersion", "leafloader:${version}")
     }
 
     decompilers {
@@ -23,12 +23,14 @@ repositories {
     mavenCentral()
 }
 
+val zomboidProject = project(":zomboid")
+
 dependencies {
     "zomboid"("com.theindiestone:zomboid:${zomboidVersion}")
 
-    implementation(project(":zomboid"))
-    implementation(project(":zomboid", "mainSourceSetOutput"))
-    implementation(project(":", "mainSourceSetOutput"))
+    implementation(zomboidProject)
+    implementation(zomboidProject.extensions.getByType<SourceSetContainer>()["main"].output)
+    implementation(rootProject.extensions.getByType<SourceSetContainer>()["main"].output)
 
 //    annotationProcessor(libs.bundles.asm)
 
