@@ -1,8 +1,3 @@
-val mainSourceSetOutput = configurations.register("mainSourceSetOutput") {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-}
-
 dependencies {
     api(project(":"))
 
@@ -17,18 +12,6 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platformlauncher)
     testImplementation(libs.gson)
-}
-
-artifacts {
-    val main = sourceSets.main.get()
-    main.output.classesDirs.forEach {
-        add(mainSourceSetOutput.name, it) {
-            builtBy(tasks.compileJava)
-        }
-    }
-    add(mainSourceSetOutput.name, main.output.resourcesDir!!) {
-        builtBy(tasks.processResources)
-    }
 }
 
 java {
