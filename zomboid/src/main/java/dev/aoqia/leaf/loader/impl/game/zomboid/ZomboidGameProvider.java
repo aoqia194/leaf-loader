@@ -250,12 +250,15 @@ public class ZomboidGameProvider implements GameProvider {
 	}
 
 	private static void processArgumentMap(Arguments argMap, EnvType envType) {
+        argMap.putIfNotExists("cachedir", getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
+
 		switch (envType) {
 			case CLIENT:
+                // client-specific args here
+                break;
 			case SERVER:
-				argMap.putIfNotExists("cachedir",
-						getLaunchDirectory(argMap).toAbsolutePath().normalize().toString());
-				break;
+                // server-specific args here
+                break;
 		}
 	}
 
