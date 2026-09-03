@@ -62,7 +62,7 @@ allprojects {
                 // Force ASM to come from the fabric maven.
                 // This ensures that the version has been mirrored for use by the launcher/installer.
                 excludeGroupByRegex("org.ow2.asm")
-                 excludeGroupByRegex("io.github.llamalad7")
+                excludeGroupByRegex("io.github.llamalad7")
             }
         }
     }
