@@ -10,6 +10,7 @@ loom {
     runConfigs.configureEach {
         generateRunConfig.set(true)
         systemProperties.put("leaf.debug.replaceVersion", "leafloader:${version}")
+        programArguments.add("-debug")
     }
 
     decompilers {
