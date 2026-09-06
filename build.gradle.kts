@@ -101,14 +101,16 @@ configurations.api {
 }
 
 dependencies {
-    // leaf-loader dependencies
+    // Pulled from the installer in prod
     "installer"(libs.bundles.asm)
     "installer"(libs.mixin)
     "installer"(libs.apache.commons.codec)
+    "installer"(libs.flatlaf)
 
+    // JIJ dependencies in the fat jar
     "development"(libs.mixinextras)
 
-    // impl dependencies
+    // Implementation dependencies
     "include"(libs.bundles.sat4j)
     "include"(libs.tinyremapper)
     "include"(libs.clazztweaker)
@@ -278,6 +280,10 @@ val fatJar = tasks.register<ShadowJar>("fatJar") {
 
     archiveClassifier = "fat"
     configurations = listOf(include.get())
+
+    minimize {
+        exclude(dependency("${libs.flatlaf.get()}"))
+    }
 
     relocate("org.sat4j", "${project.group}.${project.name}.impl.lib.sat4j")
     relocate("net.fabricmc.classtweaker", "${project.group}.${project.name}.impl.lib.classtweaker")
