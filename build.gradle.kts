@@ -414,6 +414,10 @@ val javadocJar = tasks.register<Jar>("javadocJar") {
  */
 val checkVersion = tasks.register("checkVersion") {
     doFirst {
+        if (isSnapshot) {
+            return@doFirst
+        }
+
         val xml = try {
             URI.create("https://maven.aoqia.dev/${if (isSnapshot) "snapshots" else "releases"}/${
                 rootProject.group.toString().replace(".", "/")
