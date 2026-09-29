@@ -66,6 +66,15 @@
                 "md5": "f14b9146cd553f4e8c5c3f5c9e2be611",
                 "sha1": "6b3eb4beb7058c2a638f5f17bcb388649fd339dd",
                 "size": 420480
+            },
+            {
+                "name": "com.formdev:flatlaf:3.7.2",
+                "url": "https://repo.maven.apache.org/maven2/",
+                "md5": "a0d9747cdda2aa5f29d3aca1331aaa76",
+                "sha1": "fcf9f3f276b11c7f5fc525838073ddcd80abda6a",
+                "sha256": "917aff3963c88d797d0fd9b9ccbd70f7681c101df9d11c59e2bc7a3a6c0fabf4",
+                "sha512": "1552b7a32af6ee553dedfeaaeb217e8c700c13291f6e73005ad4533ef851fca725b6edfcee58b11e0e5e62d9930bc4d71f2c00e470871ce99a0c336de725da72",
+                "size": 1016186
             }
         ],
         "server": [
