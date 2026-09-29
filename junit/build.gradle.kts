@@ -1,13 +1,17 @@
+val isCiBuild = providers.environmentVariable("CI").map { it.toBoolean() }.orElse(false).get()
+val isSnapshot = providers.gradleProperty("isSnapshot").map { it.toBoolean() }.orElse(false).get()
+
+version = rootProject.version
+group = rootProject.group
+
 plugins {
     `maven-publish`
+    signing
 }
 
 base {
     archivesName = "${rootProject.name}-junit"
 }
-
-version = rootProject.version
-group = rootProject.group
 
 repositories {
     mavenCentral()
@@ -34,16 +38,29 @@ tasks.jar {
     }
 }
 
+// Workaround for https://youtrack.jetbrains.com/issue/KT-46466
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(tasks.withType<Sign>())
+}
+
+tasks.withType<Sign>().configureEach {
+    enabled = isCiBuild && !isSnapshot
+}
+
 publishing {
     publications {
-        register<MavenPublication>("maven") {
+        create<MavenPublication>("junitMaven") {
             groupId = project.group.toString()
             artifactId = project.base.archivesName.get()
             version = project.version.toString()
 
+            artifact(tasks.jar)
+            artifact(tasks.named("sourcesJar"))
+            artifact(tasks.named("javadocJar"))
+
             pom {
                 name = rootProject.name
-                group = rootProject.group.toString()
+                group = rootProject.group
                 description = rootProject.description
                 url = property("url").toString()
                 inceptionYear = "2024"
@@ -52,12 +69,8 @@ publishing {
                     developer {
                         id = "aoqia"
                         name = "aoqia"
+                        email = "aoqia@aoqia.dev"
                     }
-                }
-
-                issueManagement {
-                    system = "GitHub"
-                    url = "${property("url")}/issues"
                 }
 
                 licenses {
@@ -66,23 +79,35 @@ publishing {
                         url = "https://spdx.org/licenses/Apache-2.0.html"
                     }
                 }
-
-                scm {
-                    connection = "scm:git:${property("url").toString()}.git"
-                    developerConnection = "scm:git:${property("url").toString().replace("https", "ssh")}.git"
-                    url = rootProject.property("url").toString()
-                }
             }
-
-            artifact(tasks.jar)
-            artifact(tasks.named("sourcesJar"))
-            artifact(tasks.named("javadocJar"))
         }
     }
 
     repositories {
         maven {
-            url = uri(rootProject.layout.buildDirectory.dir("staging-deploy"))
+            name = "leaf"
+            url = uri("https://maven.aoqia.dev/${if (isSnapshot) "snapshots" else "releases"}")
+
+            credentials {
+                username = providers.gradleProperty("mavenUsername").orNull
+                password = providers.gradleProperty("mavenPassword").orNull
+            }
+
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
         }
     }
+}
+
+signing {
+    isRequired = isCiBuild and !isSnapshot
+
+    val signingKey = providers.gradleProperty("signingKey")
+    val signingPassword = providers.gradleProperty("signingPassword")
+    if (signingKey.isPresent && signingPassword.isPresent) {
+        useInMemoryPgpKeys(signingKey.get(), signingPassword.get())
+    }
+
+    sign(publishing.publications)
 }

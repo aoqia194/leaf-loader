@@ -456,7 +456,7 @@ publishing {
                 group = rootProject.group
                 description = rootProject.description
                 url = property("url").toString()
-                inceptionYear = "2025"
+                inceptionYear = "2024"
 
                 developers {
                     developer {
