@@ -9,7 +9,7 @@ plugins {
 loom {
     runConfigs.configureEach {
         generateRunConfig.set(true)
-        systemProperties.put("leaf.debug.replaceVersion", "leafloader:${version}")
+        systemProperties.put("leaf.debug.replaceVersion", "leaf${rootProject.name}:${version}")
         programArguments.add("-debug")
     }
 
