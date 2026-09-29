@@ -260,7 +260,7 @@ public final class ZomboidVersionLookup {
             }
 
             // Capture LDC instruction for patch number.
-            if (patch == -1 && name.equals("getVersion")) {
+            if (patch == -1 && name.equals("getGameAndBuildVersion")) {
 				return new InsnFwdMethodVisitor() {
 					@Override
 					public void visitInvokeDynamicInsn(String name, String descriptor,
@@ -268,6 +268,10 @@ public final class ZomboidVersionLookup {
 						if (patch != -1) {
 							return;
 						}
+
+                        if (!name.equals("makeConcatWithConstants")) {
+                            return;
+                        }
 
 						Object arg = bootstrapMethodArguments[0];
 						if (arg instanceof String) {
@@ -280,6 +284,7 @@ public final class ZomboidVersionLookup {
 				};
 			}
 
+            // TODO(leaf): handle revision hash/number here
             // if (gitHash == null && name.equals("getGitRevision")) {
             //     return new InsnFwdMethodVisitor() {
             //         @Override
