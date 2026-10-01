@@ -16,6 +16,9 @@
 
 package dev.aoqia.leaf.loader.impl.util.log;
 
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -23,14 +26,18 @@ public class ConsoleLogHandler implements LogHandler {
 	private static final LogLevel MIN_STDERR_LEVEL = LogLevel.ERROR;
 	private static final LogLevel MIN_STDOUT_LEVEL = LogLevel.getDefault();
 
+    private final PrintStream originalOut = new PrintStream(new FileOutputStream(FileDescriptor.out));
+    private final PrintStream originalErr = new PrintStream(new FileOutputStream(FileDescriptor.err));
+
 	@Override
 	public void log(long time, LogLevel level, LogCategory category, String msg, Throwable exc, boolean fromReplay, boolean wasSuppressed) {
 		String formatted = formatLog(time, level, category, msg, exc);
 
+        // Call original streams instead because the game hijacks stdout and stderr
 		if (level.isLessThan(MIN_STDERR_LEVEL)) {
-			System.out.print(formatted);
+			originalOut.print(formatted);
 		} else {
-			System.err.print(formatted);
+			originalErr.print(formatted);
 		}
 	}
 
