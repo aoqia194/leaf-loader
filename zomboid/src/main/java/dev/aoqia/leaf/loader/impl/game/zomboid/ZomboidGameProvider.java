@@ -246,8 +246,10 @@ public class ZomboidGameProvider implements GameProvider {
 
 		processArgumentMap(arguments, envType);
 
-        // Force headless mode because PZ really wants to enable it, and it messes with the loader (like exc window)
-        System.setProperty("java.awt.headless", "false");
+        // Force headless mode in production because PZ really wants to enable it, and it messes with the exc window.
+        if (!LeafLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
+            System.setProperty("java.awt.headless", "false");
+        }
 
 		return true;
 	}
