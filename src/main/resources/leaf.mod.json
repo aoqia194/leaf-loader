@@ -6,7 +6,7 @@
   "environment": "*",
   "description": "The base mod loader.",
   "contact": {
-    "sources": "https://github.com/aoqia194/leaf-loader"
+    "sources": "https://github.com/LeafPZ/leaf-loader"
   },
   "license": "Apache-2.0",
   "icon": "assets/leafloader/icon.png",

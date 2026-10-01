@@ -87,7 +87,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: 'src/main/resources/leaf-installer.json'
-          destination_repo: 'aoqia194/leaf'
+          destination_repo: 'LeafPZ/leaf'
           destination_folder: "dist/loader/${{ env.LOADER_VERSION }}.json"
           user_email: 'aoqia@aoqia.dev'
-          user_name: 'aoqia194'
+          user_name: 'LeafPZ'

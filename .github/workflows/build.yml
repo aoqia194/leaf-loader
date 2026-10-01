@@ -67,7 +67,7 @@ jobs:
         run: ./gradlew build -x test -S -Pleaf.loom.minimalSetup=true
 
 #  client_test:
-#    if: ${{ github.repository_owner == 'aoqia194' }}
+#    if: ${{ github.repository_owner == 'LeafPZ' }}
 #    runs-on: self-hosted
 #    steps:
 #      - name: Checkout

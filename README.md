@@ -7,10 +7,10 @@
     </a>
 </h1>
 
-![License](https://img.shields.io/github/license/aoqia194/leaf-loader?label=License)
+![License](https://img.shields.io/github/license/LeafPZ/leaf-loader?label=License)
 ![Gradle version](https://img.shields.io/badge/Gradle-9.7.1-teal?logo=gradle)
-![Build status](https://github.com/aoqia194/leaf-loader/actions/workflows/build.yml/badge.svg?branch=main&label=build)
-![Code Size](https://img.shields.io/github/languages/code-size/aoqia194/leaf-loader?label=Code%20Size)
+![Build status](https://github.com/LeafPZ/leaf-loader/actions/workflows/build.yml/badge.svg?branch=main&label=build)
+![Code Size](https://img.shields.io/github/languages/code-size/LeafPZ/leaf-loader?label=Code%20Size)
 ![Maven status](https://img.shields.io/website?url=https%3A%2F%2Fmaven.aoqia.dev%2F&label=Maven)
 
 </div>
@@ -56,6 +56,6 @@ official [Project Zomboid Modding Community](https://discord.gg/2Vr6Wyh6Am) Disc
 
 [FabricLoader]: https://github.com/FabricMC/fabric-loader
 [FabricLoaderWiki]: https://docs.fabricmc.net/develop/loader/
-[LeafInstaller]: https://github.com/aoqia194/leaf-installer
-[LeafLoom]: https://github.com/aoqia194/leaf-loom
+[LeafInstaller]: https://github.com/LeafPZ/leaf-installer
+[LeafLoom]: https://github.com/LeafPZ/leaf-loom
 [PZWikiPage]: https://pzwiki.net/wiki/Leaf
