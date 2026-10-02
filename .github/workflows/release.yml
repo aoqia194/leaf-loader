@@ -94,14 +94,14 @@ jobs:
         with:
           repository: LeafPZ/leaf
           token: ${{ steps.generate_token.outputs.token }}
-          path: ../leaf
+          path: leaf
       - name: Copy Installer JSON to Leaf
         if: needs.pre.outputs.is_full_release == 'true'
         shell: bash
         run: |
-          destFile="../leaf/dist/loader/${{ env.LOADER_VERSION }}.json"
+          destFile="leaf/dist/loader/${{ env.LOADER_VERSION }}.json"
           cp 'src/main/resources/leaf-installer.json' $destFile
-          cd ../leaf
+          cd leaf
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add $destFile
