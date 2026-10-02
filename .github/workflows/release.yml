@@ -99,12 +99,12 @@ jobs:
         if: needs.pre.outputs.is_full_release == 'true'
         shell: bash
         run: |
-          destFile="leaf/dist/loader/${{ env.LOADER_VERSION }}.json"
-          cp 'src/main/resources/leaf-installer.json' $destFile
+          destFile="${{ env.LOADER_VERSION }}.json"
+          cp 'src/main/resources/leaf-installer.json' "leaf/dist/loader/${destFile}"
           cd leaf
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add $destFile
+          git add "dist/loader/${destFile}"
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
